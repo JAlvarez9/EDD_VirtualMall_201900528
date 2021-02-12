@@ -39,8 +39,9 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 		sizeindex = i+1
 	}
 	cubix = make([][] Listas.NodeListas, sizeindex)
-	for i, datos := range newDoc.Datos{
 
+	for i, datos := range newDoc.Datos{
+		sup := make([]Listas.NodeListas, sizedep)
 		for j, departamentos := range datos.Departamentos{
 
 			for _, tienda := range departamentos.Tiendas{
@@ -57,9 +58,10 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 					nil,
 					nil,
 				}
-				putStore(aux2,i,j )
+				sup = putStore(aux2,sup,j)
 			}
 		}
+		cubix[i] = sup
 
 	}
 
@@ -92,34 +94,32 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 
 }
 
-func putStore(aux2 Listas.Node, indice int, depa int,){
-	//salir := bool()
-
-		sup := make([]Listas.NodeListas, sizedep)
-
-			switch aux2.Tienda.Calificacion {
-			case 1:
-				sup[depa].Lista1 = append(sup[depa].Lista1, &aux2)
-				break
-			case 2:
-				sup[depa].Lista2 = append(sup[depa].Lista2, &aux2)
-				break
-			case 3:
-				sup[depa].Lista3 = append(sup[depa].Lista3, &aux2)
-				break
-			case 4:
-				sup[depa].Lista4 = append(sup[depa].Lista4, &aux2)
-				break
-			case 5:
-				sup[depa].Lista5 = append(sup[depa].Lista5, &aux2)
-				break
-			}
-
-
-		cubix[indice] = sup
+func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.NodeListas{
 
 
 
+	switch aux2.Tienda.Calificacion {
+	case 1:
+		sup[depa].Lista1 = append(sup[depa].Lista1, &aux2)
+		break
+	case 2:
+		sup[depa].Lista2 = append(sup[depa].Lista2, &aux2)
+		break
+	case 3:
+		sup[depa].Lista3 = append(sup[depa].Lista3, &aux2)
+		break
+	case 4:
+		sup[depa].Lista4 = append(sup[depa].Lista4, &aux2)
+		break
+	case 5:
+		sup[depa].Lista5 = append(sup[depa].Lista5, &aux2)
+		break
+
+	}
+	if aux2.Departamento == " "{
+
+	}
+	return sup
 }
 
 func main() {

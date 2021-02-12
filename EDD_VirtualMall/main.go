@@ -26,7 +26,6 @@ func example(w http.ResponseWriter, r *http.Request){
 
 func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	var newDoc Listas.Enlace
-
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil{
 		fmt.Fprintf(w,"Insert correct Values")
@@ -58,6 +57,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 					nil,
 					nil,
 				}
+
 				sup = putStore(aux2,sup,j)
 			}
 		}
@@ -90,13 +90,9 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newDoc)
-
-
 }
 
 func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.NodeListas{
-
-
 
 	switch aux2.Tienda.Calificacion {
 	case 1:
@@ -114,10 +110,6 @@ func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.Nod
 	case 5:
 		sup[depa].Lista5 = append(sup[depa].Lista5, &aux2)
 		break
-
-	}
-	if aux2.Departamento == " "{
-
 	}
 	return sup
 }

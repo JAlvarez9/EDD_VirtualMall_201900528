@@ -30,6 +30,10 @@ type Shops struct {
 	Tiendas []Tiendas
 }
 
+type contain struct {
+	Tiendas []Node
+}
+
 type Node struct {
 	Tienda Tiendas
 	Departamento string
@@ -37,6 +41,7 @@ type Node struct {
 	Next *Node
 	Back *Node
 }
+
 
 type NodeListas struct {
 	Lista1 []*Node
@@ -49,6 +54,12 @@ type NodeListas struct {
 type List struct {
 	first, last *Node
 	size int
+}
+
+type TrueNode struct {
+	Stuff []*Node
+	next *TrueNode
+	back *TrueNode
 }
 
 func NuevaLista() *List{

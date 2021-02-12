@@ -1,7 +1,8 @@
 package Listas
 
 import (
-	//"fmt"
+	"strconv"
+	"fmt"
 )
 
 type Tiendas struct {
@@ -25,13 +26,24 @@ type Enlace struct {
 	Datos []Datos `json:Datos`
 }
 
+type Shops struct {
+	Tiendas []Tiendas
+}
+
 type Node struct {
-	Nombre string
-	Descripcion string
-	Contacto string
-	Calificacion int
+	Tienda Tiendas
+	Departamento string
+	Indice string
 	Next *Node
 	Back *Node
+}
+
+type NodeListas struct {
+	Lista1 []*Node
+	Lista2 []*Node
+	Lista3 []*Node
+	Lista4 []*Node
+	Lista5 []*Node
 }
 
 type List struct {
@@ -56,5 +68,29 @@ func (this *List)Insertar(nuevo *Node){
 		nuevo.Back = this.last
 		this.last = nuevo
 	}
+	this.size++
 }
+
+func (this *Node) To_string() string {
+	cadena := "--> Indice: "+ this.Indice + " , Destino: "+ this.Departamento + ", NombreTienda: "+ this.Tienda.Nombre
+	cadena += "CalificacionTienda: "+ strconv.Itoa(this.Tienda.Calificacion)
+
+	return cadena
+}
+
+func (this *List) To_string() string {
+	var cadena string
+	aux := this.first
+	for aux != nil {
+		cadena += aux.To_string()
+		aux = aux.Next
+	}
+	return cadena
+}
+
+func (this *List) Imprimir() {
+	fmt.Println("Lista -------------")
+	fmt.Println(this.To_string())
+}
+
 

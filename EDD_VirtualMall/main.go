@@ -8,19 +8,18 @@ import (
 	"log"
 	"net/http"
 	"EDD_VirtualMall/Listas"
+	"strconv"
 )
 
 
-
-var tiendas = Listas.NuevaLista()
+var tiendas2 [] Listas.List
 
 var cubix [][] Listas.NodeListas
 var sizedep int
 var sizeindex int
 
 func example(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintf(w,"Example de mi Rest API")
-	tiendas.Imprimir()
+	fmt.Fprintf(w,"Welcome to my REST API of EDD, hopefully you enjoy it! :)")
 
 }
 
@@ -65,50 +64,110 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 
 	}
 
-	for i:= 0; i< sizeindex; i++{
-		for j:=0; j< sizedep; j++{
-			for k:= 0; k< len(cubix[i][j].Lista1); k++{
-				tiendas.Insertar(cubix[i][j].Lista1[k])
-			}
-			for k:= 0; k< len(cubix[i][j].Lista2); k++{
-				tiendas.Insertar(cubix[i][j].Lista2[k])
-			}
-			for k:= 0; k< len(cubix[i][j].Lista3); k++{
-				tiendas.Insertar(cubix[i][j].Lista4[k])
-			}
-			for k:= 0; k< len(cubix[i][j].Lista4); k++{
-				tiendas.Insertar(cubix[i][j].Lista4[k])
-			}
-			for k:= 0; k< len(cubix[i][j].Lista5); k++{
-				tiendas.Insertar(cubix[i][j].Lista5[k])
-			}
+	for i:= 0; i< sizedep; i++{
+		for j:=0; j< sizeindex; j++{
+
+			tiendas2 = append(tiendas2, cubix[j][i].Lista1)
+			tiendas2 = append(tiendas2, cubix[j][i].Lista2)
+			tiendas2 = append(tiendas2, cubix[j][i].Lista3)
+			tiendas2 = append(tiendas2, cubix[j][i].Lista4)
+			tiendas2 = append(tiendas2, cubix[j][i].Lista5)
+
 		}
 	}
-	solo := tiendas.GetSize()
-	fmt.Println(solo)
-	tiendas.Imprimir()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newDoc)
+}
+
+func Deletition(w http.ResponseWriter, r *http.Request){
+	var newDoc Listas.Pedidos
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var contain bool
+	if err != nil{
+		fmt.Fprintf(w,"Insert correct Values")
+	}
+	json.Unmarshal(reqBody, &newDoc)
+
+	for i:= 0; i< len(tiendas2) ; i++{
+		if tiendas2[i].Delete(&newDoc) == true{
+			contain = true
+			break
+		}else {
+			contain = false
+		}
+	}
+	if contain{
+		fmt.Fprintf(w,"The Store was deleted succesfully")
+	}else {
+		fmt.Fprintf(w,"We don't found that store please check your values")
+	}
+	var solo = len(tiendas2)
+	fmt.Println(solo)
+
+}
+
+func Search(w http.ResponseWriter, r *http.Request){
+	var newDoc Listas.Pedidos
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var contain bool
+	var finded Listas.Tiendas
+	if err != nil{
+		fmt.Fprintf(w,"Insert correct Values")
+	}
+	json.Unmarshal(reqBody, &newDoc)
+
+	for i:= 0; i < len(tiendas2);i++{
+		finded = tiendas2[i].Search(&newDoc)
+		if finded.Nombre != ""{
+			contain = true
+			break
+		}else {
+			contain = false
+		}
+	}
+	if contain{
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(finded)
+	}else {
+		fmt.Fprintf(w,"We don't found that store please check your values")
+	}
+}
+
+func ShowList (w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	PosVector, err :=strconv.Atoi(vars["id"])
+	var stores []Listas.Tiendas
+	if err != nil {
+		fmt.Fprintf(w,"Invalid ID")
+		return
+	}
+	var list = tiendas2[PosVector-1]
+	stores = list.Show()
+	if len(stores)==0{
+		fmt.Fprintf(w,"In this list don't exist a store :(")
+	}else {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(stores)
+	}
 }
 
 func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.NodeListas{
 
 	switch aux2.Tienda.Calificacion {
 	case 1:
-		sup[depa].Lista1 = append(sup[depa].Lista1, &aux2)
+		sup[depa].Lista1.Insertar(&aux2)
 		break
-	case 2:
-		sup[depa].Lista2 = append(sup[depa].Lista2, &aux2)
+	case 2:sup[depa].Lista2.Insertar(&aux2)
 		break
 	case 3:
-		sup[depa].Lista3 = append(sup[depa].Lista3, &aux2)
+		sup[depa].Lista3.Insertar(&aux2)
 		break
 	case 4:
-		sup[depa].Lista4 = append(sup[depa].Lista4, &aux2)
+		sup[depa].Lista4.Insertar(&aux2)
 		break
 	case 5:
-		sup[depa].Lista5 = append(sup[depa].Lista5, &aux2)
+		sup[depa].Lista5.Insertar(&aux2)
 		break
 	}
 	return sup
@@ -119,6 +178,9 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
+	router.HandleFunc("/Eliminar", Deletition).Methods("POST")
+	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
+	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }

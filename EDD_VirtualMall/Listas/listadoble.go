@@ -1,8 +1,7 @@
 package Listas
 
 import (
-	"strconv"
-	"fmt"
+
 )
 
 type Tiendas struct {
@@ -30,10 +29,6 @@ type Shops struct {
 	Tiendas []Tiendas
 }
 
-type contain struct {
-	Tiendas []Node
-}
-
 type Node struct {
 	Tienda Tiendas
 	Departamento string
@@ -44,11 +39,11 @@ type Node struct {
 
 
 type NodeListas struct {
-	Lista1 []*Node
-	Lista2 []*Node
-	Lista3 []*Node
-	Lista4 []*Node
-	Lista5 []*Node
+	Lista1 List
+	Lista2 List
+	Lista3 List
+	Lista4 List
+	Lista5 List
 }
 
 type List struct {
@@ -62,8 +57,10 @@ type TrueNode struct {
 	back *TrueNode
 }
 
-func NuevaLista() *List{
-	return &List{nil,nil,0}
+type Pedidos struct {
+	Categoria string `json:Categoria`
+	Nombre string `json: Nombre`
+	Calificacion int	`json:Calificacion`
 }
 
 func (this *List) GetSize() int{
@@ -82,26 +79,60 @@ func (this *List)Insertar(nuevo *Node){
 	this.size++
 }
 
-func (this *Node) To_string() string {
-	cadena := "--> Indice: "+ this.Indice + " , Destino: "+ this.Departamento + ", NombreTienda: "+ this.Tienda.Nombre
-	cadena += "CalificacionTienda: "+ strconv.Itoa(this.Tienda.Calificacion)
-
-	return cadena
-}
-
-func (this *List) To_string() string {
-	var cadena string
-	aux := this.first
-	for aux != nil {
-		cadena += aux.To_string()
+func (this *List)Search(ped *Pedidos) Tiendas {
+	var aux = this.first
+	for aux != nil{
+		if aux.Departamento == ped.Categoria && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
+			return aux.Tienda
+		}
 		aux = aux.Next
 	}
-	return cadena
+	nulo := Tiendas{
+		Nombre:       "",
+		Descripcion:  "",
+		Contacto:     "",
+		Calificacion: 0,
+	}
+	return nulo
 }
 
-func (this *List) Imprimir() {
-	fmt.Println("Lista -------------")
-	fmt.Println(this.To_string())
+func(this *List) Delete(ped *Pedidos) bool{
+	var aux = this.first
+	for aux != nil{
+		if aux.Departamento == ped.Categoria && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
+			if aux == this.last{
+				aux.Back.Next = nil
+				this.last = aux.Back
+				this.size--
+				return true
+			}else if aux == this.first{
+				aux.Next.Back = nil
+				this.first = aux.Next
+				this.size--
+				return true
+			}
+			aux.Next.Back = aux.Back
+			aux.Back.Next = aux.Next
+
+			aux.Next = nil
+			aux.Back = nil
+			this.size--
+			return true
+		}else {
+			return false
+		}
+		aux = aux.Next
+	}
+	return false
 }
 
+func (this *List)Show() []Tiendas{
+	var tiendas []Tiendas
+	var aux = this.first
+	for aux != nil{
+		tiendas = append(tiendas,aux.Tienda)
+		aux = aux.Next
+	}
+	return tiendas
+}
 

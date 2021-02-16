@@ -1,0 +1,237 @@
+digraph G{ 
+node[shape=record]; 
+node0[label=vacio]; 
+ node0v[label=" ", color="white" 
+]node0->node0v; 
+node1[label=vacio]; 
+ node1v[label=" ", color="white" 
+]node1->node1v; 
+node2[label=vacio]; 
+ node2v[label=" ", color="white" 
+]node2->node2v; 
+node3[label="Deportes|A "]; 
+ node0xc0000d2150[label="Amador|4 "]; 
+ node3->node0xc0000d2150; 
+node4[label="Deportes|A "]; 
+ node0xc0000d20e0[label="Aurora|5 "]; 
+ node0xc0000d21c0[label="Armados|5 "]; 
+ node0xc0000d20e0->node0xc0000d21c0; 
+node0xc0000d21c0->node0xc0000d20e0; 
+node0xc0000d2230[label="Arpedos|5 "]; 
+ node0xc0000d21c0->node0xc0000d2230; 
+node0xc0000d2230->node0xc0000d21c0; 
+node0xc0000d22a0[label="Aislados|5 "]; 
+ node0xc0000d2230->node0xc0000d22a0; 
+node0xc0000d22a0->node0xc0000d2230; 
+node4->node0xc0000d20e0; 
+node5[label=vacio]; 
+ node5v[label=" ", color="white" 
+]node5->node5v; 
+node6[label=vacio]; 
+ node6v[label=" ", color="white" 
+]node6->node6v; 
+node7[label=vacio]; 
+ node7v[label=" ", color="white" 
+]node7->node7v; 
+node8[label=vacio]; 
+ node8v[label=" ", color="white" 
+]node8->node8v; 
+node9[label="Deportes|B "]; 
+ node0xc0000d24d0[label="Barcelona|5 "]; 
+ node9->node0xc0000d24d0; 
+node10[label="Deportes|C "]; 
+ node0xc0000d2700[label="Champieons|1 "]; 
+ node10->node0xc0000d2700; 
+node11[label=vacio]; 
+ node11v[label=" ", color="white" 
+]node11->node11v; 
+node12[label=vacio]; 
+ node12v[label=" ", color="white" 
+]node12->node12v; 
+node13[label=vacio]; 
+ node13v[label=" ", color="white" 
+]node13->node13v; 
+node14[label=vacio]; 
+ node14v[label=" ", color="white" 
+]node14->node14v; 
+node15[label=vacio]; 
+ node15v[label=" ", color="white" 
+]node15->node15v; 
+node16[label=vacio]; 
+ node16v[label=" ", color="white" 
+]node16->node16v; 
+node17[label=vacio]; 
+ node17v[label=" ", color="white" 
+]node17->node17v; 
+node18[label=vacio]; 
+ node18v[label=" ", color="white" 
+]node18->node18v; 
+node19[label="Comida|A "]; 
+ node0xc0000d2310[label="Amaris|5 "]; 
+ node19->node0xc0000d2310; 
+node20[label="Comida|B "]; 
+ node0xc0000d2540[label="Barquitos|1 "]; 
+ node20->node0xc0000d2540; 
+node21[label=vacio]; 
+ node21v[label=" ", color="white" 
+]node21->node21v; 
+node22[label=vacio]; 
+ node22v[label=" ", color="white" 
+]node22->node22v; 
+node23[label=vacio]; 
+ node23v[label=" ", color="white" 
+]node23->node23v; 
+node24[label=vacio]; 
+ node24v[label=" ", color="white" 
+]node24->node24v; 
+node25[label=vacio]; 
+ node25v[label=" ", color="white" 
+]node25->node25v; 
+node26[label=vacio]; 
+ node26v[label=" ", color="white" 
+]node26->node26v; 
+node27[label=vacio]; 
+ node27v[label=" ", color="white" 
+]node27->node27v; 
+node28[label=vacio]; 
+ node28v[label=" ", color="white" 
+]node28->node28v; 
+node29[label="Comida|C "]; 
+ node0xc0000d2770[label="Chicharroneria|5 "]; 
+ node29->node0xc0000d2770; 
+node30[label=vacio]; 
+ node30v[label=" ", color="white" 
+]node30->node30v; 
+node31[label=vacio]; 
+ node31v[label=" ", color="white" 
+]node31->node31v; 
+node32[label=vacio]; 
+ node32v[label=" ", color="white" 
+]node32->node32v; 
+node33[label=vacio]; 
+ node33v[label=" ", color="white" 
+]node33->node33v; 
+node34[label="Celulares|A "]; 
+ node0xc0000d2380[label="Aifon|5 "]; 
+ node34->node0xc0000d2380; 
+node35[label=vacio]; 
+ node35v[label=" ", color="white" 
+]node35->node35v; 
+node36[label=vacio]; 
+ node36v[label=" ", color="white" 
+]node36->node36v; 
+node37[label=vacio]; 
+ node37v[label=" ", color="white" 
+]node37->node37v; 
+node38[label=vacio]; 
+ node38v[label=" ", color="white" 
+]node38->node38v; 
+node39[label="Celulares|B "]; 
+ node0xc0000d25b0[label="Bayoneta|5 "]; 
+ node39->node0xc0000d25b0; 
+node40[label=vacio]; 
+ node40v[label=" ", color="white" 
+]node40->node40v; 
+node41[label="Celulares|C "]; 
+ node0xc0000d27e0[label="Claro|2 "]; 
+ node41->node0xc0000d27e0; 
+node42[label=vacio]; 
+ node42v[label=" ", color="white" 
+]node42->node42v; 
+node43[label=vacio]; 
+ node43v[label=" ", color="white" 
+]node43->node43v; 
+node44[label=vacio]; 
+ node44v[label=" ", color="white" 
+]node44->node44v; 
+node45[label=vacio]; 
+ node45v[label=" ", color="white" 
+]node45->node45v; 
+node46[label=vacio]; 
+ node46v[label=" ", color="white" 
+]node46->node46v; 
+node47[label="Viajes|A "]; 
+ node0xc0000d23f0[label="Aeropostal|3 "]; 
+ node47->node0xc0000d23f0; 
+node48[label=vacio]; 
+ node48v[label=" ", color="white" 
+]node48->node48v; 
+node49[label=vacio]; 
+ node49v[label=" ", color="white" 
+]node49->node49v; 
+node50[label=vacio]; 
+ node50v[label=" ", color="white" 
+]node50->node50v; 
+node51[label="Viajes|B "]; 
+ node0xc0000d2620[label="Boreal|2 "]; 
+ node51->node0xc0000d2620; 
+node52[label=vacio]; 
+ node52v[label=" ", color="white" 
+]node52->node52v; 
+node53[label=vacio]; 
+ node53v[label=" ", color="white" 
+]node53->node53v; 
+node54[label=vacio]; 
+ node54v[label=" ", color="white" 
+]node54->node54v; 
+node55[label=vacio]; 
+ node55v[label=" ", color="white" 
+]node55->node55v; 
+node56[label=vacio]; 
+ node56v[label=" ", color="white" 
+]node56->node56v; 
+node57[label=vacio]; 
+ node57v[label=" ", color="white" 
+]node57->node57v; 
+node58[label="Viajes|C "]; 
+ node0xc0000d2850[label="Claus|4 "]; 
+ node58->node0xc0000d2850; 
+node59[label=vacio]; 
+ node59v[label=" ", color="white" 
+]node59->node59v; 
+node60[label=vacio]; 
+ node60v[label=" ", color="white" 
+]node60->node60v; 
+node61[label="Inmuebles|A "]; 
+ node0xc0000d2460[label="Artic|2 "]; 
+ node61->node0xc0000d2460; 
+node62[label=vacio]; 
+ node62v[label=" ", color="white" 
+]node62->node62v; 
+node63[label=vacio]; 
+ node63v[label=" ", color="white" 
+]node63->node63v; 
+node64[label=vacio]; 
+ node64v[label=" ", color="white" 
+]node64->node64v; 
+node65[label=vacio]; 
+ node65v[label=" ", color="white" 
+]node65->node65v; 
+node66[label=vacio]; 
+ node66v[label=" ", color="white" 
+]node66->node66v; 
+node67[label=vacio]; 
+ node67v[label=" ", color="white" 
+]node67->node67v; 
+node68[label=vacio]; 
+ node68v[label=" ", color="white" 
+]node68->node68v; 
+node69[label="Inmuebles|B "]; 
+ node0xc0000d2690[label="Barcelo|5 "]; 
+ node69->node0xc0000d2690; 
+node70[label=vacio]; 
+ node70v[label=" ", color="white" 
+]node70->node70v; 
+node71[label=vacio]; 
+ node71v[label=" ", color="white" 
+]node71->node71v; 
+node72[label=vacio]; 
+ node72v[label=" ", color="white" 
+]node72->node72v; 
+node73[label="Inmuebles|C "]; 
+ node0xc0000d28c0[label="Cocoa|4 "]; 
+ node73->node0xc0000d28c0; 
+node74[label=vacio]; 
+ node74v[label=" ", color="white" 
+]node74->node74v; 
+} 

@@ -1,7 +1,8 @@
 package Listas
 
 import (
-
+	"fmt"
+	"strings"
 )
 
 type Tiendas struct {
@@ -37,7 +38,6 @@ type Node struct {
 	Back *Node
 }
 
-
 type NodeListas struct {
 	Lista1 List
 	Lista2 List
@@ -64,7 +64,14 @@ type Pedidos struct {
 }
 
 func (this *List) GetSize() int{
+	if this.first == nil{
+		this.size=0
+	}
 	return this.size
+}
+
+func (this *List)GetFirst() *Node {
+	return this.first
 }
 
 func (this *List)Insertar(nuevo *Node){
@@ -135,4 +142,21 @@ func (this *List)Show() []Tiendas{
 	}
 	return tiendas
 }
+
+func (this *List)Graphic(cadenita *strings.Builder)  {
+	graphic(this.first, cadenita, nil)
+}
+
+func graphic(back *Node, s *strings.Builder, now *Node){
+	if back != nil{
+		fmt.Fprintf(s, "node%p[label=\"%v|%v \"]; \n ",&(*back),back.Tienda.Nombre, back.Tienda.Calificacion)
+		if now != nil{
+			fmt.Fprintf(s, "node%p->node%p; \n", &(*now),&(*back))
+			fmt.Fprintf(s, "node%p->node%p; \n", &(*back),&(*now))
+		}
+		graphic(back.Next, s , back)
+	}
+
+}
+
 

@@ -1,14 +1,16 @@
 package main
 
 import (
+	"EDD_VirtualMall/Listas"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"EDD_VirtualMall/Listas"
+	"os"
 	"strconv"
+	"strings"
 )
 
 
@@ -152,6 +154,31 @@ func ShowList (w http.ResponseWriter, r *http.Request){
 	}
 }
 
+func Graphviz(w http.ResponseWriter, r *http.Request){
+	var cadenita strings.Builder
+	fmt.Fprintf(&cadenita, "digraph G{ \n")
+	fmt.Fprintf(&cadenita, "node[shape=record]; \n")
+	for i:= 0; i< len(tiendas2); i++{
+		if tiendas2[i].GetSize() == 0{
+			fmt.Fprintf(&cadenita, "node%d[label=vacio]; \n ", i)
+			fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\"] \n",i)
+			fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
+
+		}else{
+			fmt.Fprintf(&cadenita, "node%d[label=\"%v|%v \"]; \n ", i,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Indice)
+			tiendas2[i].Graphic(&cadenita)
+			fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
+
+		}
+		//fmt.Fprintf(&cadenita, "node%d[label=\"%v|%v \"]; \n ", i,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Indice)
+
+	}
+	fmt.Fprintf(&cadenita, "} \n")
+	saveDot(cadenita.String())
+
+
+}
+
 func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.NodeListas{
 
 	switch aux2.Tienda.Calificacion {
@@ -173,14 +200,35 @@ func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.Nod
 	return sup
 }
 
+func saveDot(s string){
+	f, err := os.Create("lista.dot")
+	if err != nil{
+		fmt.Println("There was an error!")
+	}
+	l, err := f.WriteString(s)
+	if err != nil{
+		fmt.Println("There was an error!")
+		f.Close()
+		return
+	}
+	fmt.Println(l,"The graphic was created succesfully")
+	err = f.Close()
+	if err!=nil{
+		fmt.Println("There was an erro!")
+		return
+	}
+}
+
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
-	router.HandleFunc("/Eliminar", Deletition).Methods("POST")
+	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
+	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }

@@ -34,6 +34,7 @@ type Node struct {
 	Tienda Tiendas
 	Departamento string
 	Indice string
+	Ascii int
 	Next *Node
 	Back *Node
 }
@@ -149,7 +150,7 @@ func (this *List)Graphic(cadenita *strings.Builder)  {
 
 func graphic(back *Node, s *strings.Builder, now *Node){
 	if back != nil{
-		fmt.Fprintf(s, "node%p[label=\"%v|%v \"]; \n ",&(*back),back.Tienda.Nombre, back.Tienda.Calificacion)
+		fmt.Fprintf(s, "node%p[label=\"%v|%v|%v \"]; \n ",&(*back),back.Tienda.Nombre, back.Ascii,back.Tienda.Contacto)
 		if now != nil{
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*now),&(*back))
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*back),&(*now))

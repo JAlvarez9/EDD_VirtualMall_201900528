@@ -55,6 +55,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 					aux3,
 					departamentos.Nombre,
 					datos.Indice,
+					convertAscii(tienda.Nombre),
 					nil,
 					nil,
 				}
@@ -157,10 +158,11 @@ func ShowList (w http.ResponseWriter, r *http.Request){
 func Graphviz(w http.ResponseWriter, r *http.Request){
 	var cadenita strings.Builder
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
+	fmt.Fprintf(&cadenita, "rankdir= \" LR \" \n")
 	fmt.Fprintf(&cadenita, "node[shape=record]; \n")
 	for i:= 0; i< len(tiendas2); i++{
 		if tiendas2[i].GetSize() == 0{
-			fmt.Fprintf(&cadenita, "node%d[label=vacio]; \n ", i)
+			fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
 			fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\"] \n",i)
 			fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
 
@@ -219,6 +221,21 @@ func saveDot(s string){
 	}
 }
 
+func convertAscii(s string)int{
+	ascii:= int(0)
+	runes := []rune(s)
+
+	var result []int
+
+	for i := 0; i < len(runes); i++ {
+		result = append(result, int(runes[i]))
+	}
+	for i := 0; i < len(result);i++ {
+		ascii = ascii + result[i]
+	}
+
+	return ascii
+}
 
 func main() {
 

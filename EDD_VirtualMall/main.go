@@ -19,6 +19,8 @@ var tiendas2 [] Listas.List
 var cubix [][] Listas.NodeListas
 var sizedep int
 var sizeindex int
+var departa [] string
+var indice [] string
 
 func example(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Welcome to my REST API of EDD, hopefully you enjoy it! :)")
@@ -39,8 +41,13 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 		sizeindex = i+1
 	}
 	cubix = make([][] Listas.NodeListas, sizeindex)
-
+	for i:= 0; i < len(newDoc.Datos[0].Departamentos); i++{
+		departa = append(departa, newDoc.Datos[0].Departamentos[i].Nombre )
+	}
 	for i, datos := range newDoc.Datos{
+
+		indice = append(indice, datos.Indice)
+
 		sup := make([]Listas.NodeListas, sizedep)
 		for j, departamentos := range datos.Departamentos{
 
@@ -87,20 +94,14 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 	var newDoc Listas.Pedidos
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var contain bool
+	var position int
 	if err != nil{
 		fmt.Fprintf(w,"Insert correct Values")
 	}
 	json.Unmarshal(reqBody, &newDoc)
-
-	for i:= 0; i< len(tiendas2) ; i++{
-		if tiendas2[i].Delete(&newDoc) == true{
-			contain = true
-			break
-		}else {
-			contain = false
-		}
-	}
-	if contain{
+	position = searchingVector(&newDoc)
+	contain = tiendas2[position].Delete(&newDoc)
+	if contain || position >= 0{
 		fmt.Fprintf(w,"The Store was deleted succesfully")
 	}else {
 		fmt.Fprintf(w,"We don't found that store please check your values")
@@ -113,23 +114,17 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 func Search(w http.ResponseWriter, r *http.Request){
 	var newDoc Listas.Pedidos
 	reqBody, err := ioutil.ReadAll(r.Body)
-	var contain bool
 	var finded Listas.Tiendas
+	var position int
 	if err != nil{
 		fmt.Fprintf(w,"Insert correct Values")
 	}
 	json.Unmarshal(reqBody, &newDoc)
 
-	for i:= 0; i < len(tiendas2);i++{
-		finded = tiendas2[i].Search(&newDoc)
-		if finded.Nombre != ""{
-			contain = true
-			break
-		}else {
-			contain = false
-		}
-	}
-	if contain{
+	position = searchingVector(&newDoc)
+	finded = tiendas2[position].Search(&newDoc)
+
+	if position >= 0 || finded.Nombre != ""{
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(finded)
 	}else {
@@ -172,12 +167,47 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
 
 		}
-		//fmt.Fprintf(&cadenita, "node%d[label=\"%v|%v \"]; \n ", i,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Indice)
 
 	}
 	fmt.Fprintf(&cadenita, "} \n")
 	saveDot(cadenita.String())
 
+
+}
+
+func searchingVector(pedido *Listas.Pedidos) int{
+	var indicefound, depafound bool
+	var first, second, result int
+
+	for i, s := range indice{
+		if s[0] == pedido.Nombre[0]{
+			first = i
+			indicefound = true
+		}
+	}
+	for i, s := range departa{
+		if s == pedido.Categoria{
+			second = i
+			depafound = true
+		}
+	}
+
+	if !indicefound {
+		return -1
+	}
+
+	if !depafound{
+		return -1
+	}
+
+	f := second - 0
+	s := f * len(indice) + first
+	result = s * 5 + pedido.Calificacion
+	return result
+	/*[i][j][w]
+	primero = j-0
+	segundo = primero * cantidad filas + i
+	tercero = segundo*5 + w*/
 
 }
 

@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -171,12 +172,17 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 
 		}
 		if cont == 5{
-
-			//cadenita = " "
+			fmt.Fprintf(&cadenita, "} \n")
+			saveDot(cadenita.String(), i)
+			cadenita.Reset()
+			fmt.Fprintf(&cadenita, "digraph G{ \n")
+			fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
+			fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
+			cont = 0
 		}
+		cont++
 	}
-	fmt.Fprintf(&cadenita, "} \n")
-	saveDot(cadenita.String())
+
 
 }
 
@@ -261,24 +267,25 @@ func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.Nod
 
 	switch aux2.Tienda.Calificacion {
 	case 1:
-		sup[depa].Lista1.Insertar(&aux2)
+		sup[depa].Lista1.SortedInsert(&aux2)
 		break
-	case 2:sup[depa].Lista2.Insertar(&aux2)
+	case 2:sup[depa].Lista2.SortedInsert(&aux2)
 		break
 	case 3:
-		sup[depa].Lista3.Insertar(&aux2)
+		sup[depa].Lista3.SortedInsert(&aux2)
 		break
 	case 4:
-		sup[depa].Lista4.Insertar(&aux2)
+		sup[depa].Lista4.SortedInsert(&aux2)
 		break
 	case 5:
-		sup[depa].Lista5.Insertar(&aux2)
+		sup[depa].Lista5.SortedInsert(&aux2)
 		break
 	}
 	return sup
 }
 
-func saveDot(s string){
+func saveDot(s string,i int){
+	nombre := string("lista"+strconv.Itoa(i)+".pdf")
 	f, err := os.Create("lista.dot")
 	if err != nil{
 		fmt.Println("There was an error!")
@@ -289,12 +296,23 @@ func saveDot(s string){
 		f.Close()
 		return
 	}
-	fmt.Println(l,"The graphic was created succesfully")
-	err = f.Close()
-	if err!=nil{
-		fmt.Println("There was an erro!")
-		return
+	fmt.Println(l,"Created Succesfully")
+	p := "dot -Tpdf lista.dot -o " + nombre + ".pdf"
+
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+
 	}
+	fmt.Printf("%s\n", b)
+	//cmd := exec.Command(p)
+	/*p = "dot -Tpdf " + nomnre.dot + " -o" + nombrepdf + ".pdf"
+	os.system(p)
+	os.system(trab.name + ".pdf")
+	 */
 }
 
 func convertAscii(s string)int{

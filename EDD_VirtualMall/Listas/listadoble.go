@@ -81,14 +81,18 @@ func (this *List)GetFirst() *Node {
 	return this.first
 }
 
-func (this *List)Insertar(nuevo *Node){
-	if this.first ==nil{
+func (this *List)SortedInsert(nuevo *Node) {
+	var aux *Node
+	if this.first == nil || this.first.Ascii >= nuevo.Ascii{
+		nuevo.Next = this.first
 		this.first = nuevo
-		this.last = nuevo
 	}else{
-		this.last.Next = nuevo
-		nuevo.Back = this.last
-		this.last = nuevo
+		aux = this.first
+		for aux.Next != nil && aux.Next.Ascii < nuevo.Ascii{
+			aux = aux.Next
+		}
+		nuevo.Next = aux.Next
+		aux.Next = nuevo
 	}
 	this.size++
 }

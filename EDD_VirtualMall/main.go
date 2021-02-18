@@ -22,6 +22,8 @@ var sizeindex int
 var departa [] string
 var indice [] string
 
+var prueba Listas.Enlace
+
 func example(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Welcome to my REST API of EDD, hopefully you enjoy it! :)")
 
@@ -91,7 +93,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 }
 
 func Deletition(w http.ResponseWriter, r *http.Request){
-	var newDoc Listas.Pedidos
+	var newDoc Listas.PedidosE
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var contain bool
 	var position int
@@ -99,9 +101,9 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 		fmt.Fprintf(w,"Insert correct Values")
 	}
 	json.Unmarshal(reqBody, &newDoc)
-	position = searchingVector(&newDoc)
+	position = searchingVectorE(&newDoc)
 	contain = tiendas2[position].Delete(&newDoc)
-	if contain || position >= 0{
+	if contain && position >= 0{
 		fmt.Fprintf(w,"The Store was deleted succesfully")
 	}else {
 		fmt.Fprintf(w,"We don't found that store please check your values")
@@ -112,7 +114,7 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 }
 
 func Search(w http.ResponseWriter, r *http.Request){
-	var newDoc Listas.Pedidos
+	var newDoc Listas.PedidosS
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var finded Listas.Tiendas
 	var position int
@@ -121,15 +123,16 @@ func Search(w http.ResponseWriter, r *http.Request){
 	}
 	json.Unmarshal(reqBody, &newDoc)
 
-	position = searchingVector(&newDoc)
+	position = searchingVectorS(&newDoc)
 	finded = tiendas2[position].Search(&newDoc)
 
-	if position >= 0 || finded.Nombre != ""{
+	if position >= 0 && finded.Nombre != ""{
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(finded)
 	}else {
 		fmt.Fprintf(w,"We don't found that store please check your values")
 	}
+	fmt.Print("asd")
 }
 
 func ShowList (w http.ResponseWriter, r *http.Request){
@@ -152,30 +155,37 @@ func ShowList (w http.ResponseWriter, r *http.Request){
 
 func Graphviz(w http.ResponseWriter, r *http.Request){
 	var cadenita strings.Builder
+	cont := int(0)
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
-	fmt.Fprintf(&cadenita, "rankdir= \" LR \" \n")
-	fmt.Fprintf(&cadenita, "node[shape=record]; \n")
+	fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
+	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
 	for i:= 0; i< len(tiendas2); i++{
 		if tiendas2[i].GetSize() == 0{
 			fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
-			fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\"] \n",i)
+			fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n",i)
 			fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
-
 		}else{
-			fmt.Fprintf(&cadenita, "node%d[label=\"%v|%v \"]; \n ", i,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Indice)
+			fmt.Fprintf(&cadenita, "node%d[label=\"Indice%v |%v|{%d|No.%d}\"]; \n ", i,tiendas2[i].GetFirst().Indice,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Tienda.Calificacion,i)
 			tiendas2[i].Graphic(&cadenita)
 			fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
 
 		}
+		if cont == 5{
 
+			//cadenita = " "
+		}
 	}
 	fmt.Fprintf(&cadenita, "} \n")
 	saveDot(cadenita.String())
 
+}
+
+func SaveStuff(w http.ResponseWriter, r *http.Request){
+
 
 }
 
-func searchingVector(pedido *Listas.Pedidos) int{
+func searchingVectorE(pedido *Listas.PedidosE) int{
 	var indicefound, depafound bool
 	var first, second, result int
 
@@ -202,7 +212,43 @@ func searchingVector(pedido *Listas.Pedidos) int{
 
 	f := second - 0
 	s := f * len(indice) + first
-	result = s * 5 + pedido.Calificacion
+	result = s * 5 + pedido.Calificacion-1
+	return result
+	/*[i][j][w]
+	primero = j-0
+	segundo = primero * cantidad filas + i
+	tercero = segundo*5 + w*/
+
+}
+
+func searchingVectorS(pedido *Listas.PedidosS) int{
+	var indicefound, depafound bool
+	var first, second, result int
+
+	for i, s := range indice{
+		if s[0] == pedido.Nombre[0]{
+			first = i
+			indicefound = true
+		}
+	}
+	for i, s := range departa{
+		if s == pedido.Departamento{
+			second = i
+			depafound = true
+		}
+	}
+
+	if !indicefound {
+		return -1
+	}
+
+	if !depafound{
+		return -1
+	}
+
+	f := second - 0
+	s := f * len(indice) + first
+	result = s * 5 + pedido.Calificacion-1
 	return result
 	/*[i][j][w]
 	primero = j-0
@@ -276,6 +322,7 @@ func main() {
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
+	router.HandleFunc("/guardar", Graphviz).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }

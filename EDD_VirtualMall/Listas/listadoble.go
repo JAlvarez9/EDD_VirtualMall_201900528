@@ -58,8 +58,14 @@ type TrueNode struct {
 	back *TrueNode
 }
 
-type Pedidos struct {
+type PedidosE struct {
 	Categoria string `json:Categoria`
+	Nombre string `json: Nombre`
+	Calificacion int	`json:Calificacion`
+}
+
+type PedidosS struct {
+	Departamento string `json:Departamento`
 	Nombre string `json: Nombre`
 	Calificacion int	`json:Calificacion`
 }
@@ -87,10 +93,10 @@ func (this *List)Insertar(nuevo *Node){
 	this.size++
 }
 
-func (this *List)Search(ped *Pedidos) Tiendas {
+func (this *List)Search(ped *PedidosS) Tiendas {
 	var aux = this.first
 	for aux != nil{
-		if aux.Departamento == ped.Categoria && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
+		if aux.Departamento == ped.Departamento && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
 			return aux.Tienda
 		}
 		aux = aux.Next
@@ -104,7 +110,7 @@ func (this *List)Search(ped *Pedidos) Tiendas {
 	return nulo
 }
 
-func(this *List) Delete(ped *Pedidos) bool{
+func(this *List) Delete(ped *PedidosE) bool{
 	var aux = this.first
 	for aux != nil{
 		if aux.Departamento == ped.Categoria && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
@@ -150,7 +156,7 @@ func (this *List)Graphic(cadenita *strings.Builder)  {
 
 func graphic(back *Node, s *strings.Builder, now *Node){
 	if back != nil{
-		fmt.Fprintf(s, "node%p[label=\"%v|%v|%v \"]; \n ",&(*back),back.Tienda.Nombre, back.Ascii,back.Tienda.Contacto)
+		fmt.Fprintf(s, "node%p[label=\"%v| Ascii:%v| %v \" fillcolor=\"olivedrab1\"]; \n ",&(*back),back.Tienda.Nombre, back.Ascii,back.Tienda.Contacto)
 		if now != nil{
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*now),&(*back))
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*back),&(*now))

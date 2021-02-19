@@ -160,18 +160,23 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
 	fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
 	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
-	for i:= 0; i< len(tiendas2); i++{
-		if tiendas2[i].GetSize() == 0{
-			fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
-			fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n",i)
-			fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
-		}else{
-			fmt.Fprintf(&cadenita, "node%d[label=\"Indice%v |%v|{%d|No.%d}\"]; \n ", i,tiendas2[i].GetFirst().Indice,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Tienda.Calificacion,i)
-			tiendas2[i].Graphic(&cadenita)
-			fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
+	for i:= 0; i<= len(tiendas2);{
+		if cont < 5{
+			if i != len(tiendas2){
+				if tiendas2[i].GetSize() == 0{
+					fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
+					fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n",i)
+					fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
+				}else{
+					fmt.Fprintf(&cadenita, "node%d[label=\"Indice%v |%v|{%d|No.%d}\"]; \n ", i,tiendas2[i].GetFirst().Indice,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Tienda.Calificacion,i)
+					tiendas2[i].Graphic(&cadenita)
+					fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
 
-		}
-		if cont == 5{
+				}
+				cont++
+			}
+			i++
+		}else{
 			fmt.Fprintf(&cadenita, "} \n")
 			saveDot(cadenita.String(), i)
 			cadenita.Reset()
@@ -180,13 +185,55 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
 			cont = 0
 		}
-		cont++
+
 	}
 
 
 }
 
 func SaveStuff(w http.ResponseWriter, r *http.Request){
+	var stuffsvaing []Listas.Datos
+
+	 for i:= 0; i< len(indice); i++{
+		 var stuffdepa []Listas.Departamentos
+	 	aux := Listas.Datos{
+			Indice:        indice[i],
+			Departamentos: stuffdepa,
+		}
+	 	stuffsvaing = append(stuffsvaing, aux)
+	 }
+
+	 for i:= 0; i<len(indice); i++{
+	 	for j:= 0; j<len(departa) ;j++{
+			stores := []Listas.Tiendas{}
+			aux2:= Listas.Departamentos{
+				Nombre:  departa[j],
+				Tiendas: stores,
+			}
+			stuffsvaing[i].Departamentos = append(stuffsvaing[i].Departamentos, aux2)
+		 }
+
+	 }
+
+	for _, listas := range tiendas2{
+		t := listas.GetStores()
+		if listas.GetSize()> 0 {
+			for i, indices := range stuffsvaing{
+				if indices.Indice == listas.GetFirst().Indice{
+					for j, depars := range indices.Departamentos{
+						if depars.Nombre == listas.GetFirst().Departamento{
+							stuffsvaing[i].Departamentos[j].Tiendas = append(stuffsvaing[i].Departamentos[j].Tiendas, t...)
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+	var sending Listas.Enlace
+	sending.Datos = stuffsvaing
+	f,_ := json.MarshalIndent(sending,""," ")
+	_ = ioutil.WriteFile("NewStuff.json",f,0644)
 
 
 }
@@ -297,7 +344,7 @@ func saveDot(s string,i int){
 		return
 	}
 	fmt.Println(l,"Created Succesfully")
-	p := "dot -Tpdf lista.dot -o " + nombre + ".pdf"
+	p := "dot -Tpdf lista.dot -o " + nombre
 
 	args := strings.Split(p, " ")
 	cmd := exec.Command(args[0], args[1:]...)
@@ -308,11 +355,6 @@ func saveDot(s string,i int){
 
 	}
 	fmt.Printf("%s\n", b)
-	//cmd := exec.Command(p)
-	/*p = "dot -Tpdf " + nomnre.dot + " -o" + nombrepdf + ".pdf"
-	os.system(p)
-	os.system(trab.name + ".pdf")
-	 */
 }
 
 func convertAscii(s string)int{
@@ -340,7 +382,7 @@ func main() {
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
-	router.HandleFunc("/guardar", Graphviz).Methods("GET")
+	router.HandleFunc("/guardar", SaveStuff).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }

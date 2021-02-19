@@ -48,7 +48,7 @@ type NodeListas struct {
 }
 
 type List struct {
-	first, last *Node
+	first *Node
 	size int
 }
 
@@ -83,16 +83,25 @@ func (this *List)GetFirst() *Node {
 
 func (this *List)SortedInsert(nuevo *Node) {
 	var aux *Node
-	if this.first == nil || this.first.Ascii >= nuevo.Ascii{
-		nuevo.Next = this.first
+	if this.first == nil {
 		this.first = nuevo
-	}else{
+
+	}else if this.first.Ascii >= nuevo.Ascii{
+		nuevo.Next = this.first
+
+		nuevo.Next.Back = nuevo
+		this.first = nuevo
+	}else {
 		aux = this.first
 		for aux.Next != nil && aux.Next.Ascii < nuevo.Ascii{
 			aux = aux.Next
 		}
 		nuevo.Next = aux.Next
+		if aux.Next != nil{
+			nuevo.Next.Back = nuevo
+		}
 		aux.Next = nuevo
+		nuevo.Back = aux
 	}
 	this.size++
 }
@@ -115,12 +124,16 @@ func (this *List)Search(ped *PedidosS) Tiendas {
 }
 
 func(this *List) Delete(ped *PedidosE) bool{
+	var finded bool
 	var aux = this.first
 	for aux != nil{
 		if aux.Departamento == ped.Categoria && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
-			if aux == this.last{
+			if aux == this.first && aux.Next == nil {
+				this.first = nil
+				this.size --
+				return true
+			}else if aux.Next == nil{
 				aux.Back.Next = nil
-				this.last = aux.Back
 				this.size--
 				return true
 			}else if aux == this.first{
@@ -137,11 +150,11 @@ func(this *List) Delete(ped *PedidosE) bool{
 			this.size--
 			return true
 		}else {
-			return false
+			finded = false
 		}
 		aux = aux.Next
 	}
-	return false
+	return finded
 }
 
 func (this *List)Show() []Tiendas{
@@ -152,6 +165,22 @@ func (this *List)Show() []Tiendas{
 		aux = aux.Next
 	}
 	return tiendas
+}
+
+func (this *List)GetStores() []Tiendas {
+	var tiendas []Tiendas
+	aux := this.first
+	if this.GetSize() == 0{
+		return tiendas
+	}else {
+		for aux != nil{
+			tiendas = append(tiendas, aux.Tienda)
+			aux = aux.Next
+		}
+
+		return tiendas
+	}
+
 }
 
 func (this *List)Graphic(cadenita *strings.Builder)  {

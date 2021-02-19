@@ -15,6 +15,13 @@ type Tiendas struct {
 type Departamentos struct {
 	Nombre string `json:Nombre`
 	Tiendas []Tiendas `json:Tiendas`
+
+}
+
+type Departamentos2 struct {
+	Nombre string `json:Nombre`
+	Tiendas []Tiendas `json:Tiendas`
+	Indice string
 }
 
 type Datos struct {

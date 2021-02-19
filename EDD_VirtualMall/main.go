@@ -225,7 +225,62 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 }
 
 func SaveStuff(w http.ResponseWriter, r *http.Request){
-	var stuffsvaing []Listas.Datos
+	var stuffdatos []Listas.Datos
+	var stuffdepa []Listas.Departamentos2
+
+	for _, indi := range indice{
+		for i:= 0; i < len(departa); i++{
+			aux2 := []Listas.Tiendas {}
+			aux:= Listas.Departamentos2{
+				Nombre:  departa[i],
+				Tiendas: aux2,
+				Indice:  indi,
+			}
+			stuffdepa = append(stuffdepa, aux)
+
+		}
+	}
+
+
+
+	for _, lista := range tiendas2{
+		l := lista.GetStores()
+		if lista.GetSize() > 0{
+			for j, depa := range stuffdepa{
+				if depa.Nombre == lista.GetFirst().Departamento && depa.Indice == lista.GetFirst().Indice{
+					stuffdepa[j].Tiendas = append(stuffdepa[j].Tiendas, l...)
+				}
+			}
+		}
+
+	}
+	for i:= 0; i < len(indice); i++{
+		aux3:= Listas.Datos{
+			Indice:        "",
+			Departamentos: nil,
+		}
+		for _, depa := range stuffdepa{
+			if indice[i] == depa.Indice{
+				aux6:= Listas.Departamentos{
+					Nombre:  depa.Nombre,
+					Tiendas: depa.Tiendas,
+				}
+				aux3.Indice = indice[i]
+				aux3.Departamentos = append(aux3.Departamentos, aux6)
+
+			}
+		}
+		stuffdatos = append(stuffdatos, aux3)
+	}
+
+	var sending Listas.Enlace
+	sending.Datos = stuffdatos
+	f,_ := json.MarshalIndent(sending,""," ")
+	_ = ioutil.WriteFile("NewStuff.json",f,0644)
+
+
+
+	/*var stuffsvaing []Listas.Datos
 
 	 for i:= 0; i< len(indice); i++{
 		 var stuffdepa []Listas.Departamentos
@@ -267,7 +322,7 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 	sending.Datos = stuffsvaing
 	f,_ := json.MarshalIndent(sending,""," ")
 	_ = ioutil.WriteFile("NewStuff.json",f,0644)
-
+	*/
 
 }
 

@@ -189,7 +189,7 @@ func (this *List)Graphic(cadenita *strings.Builder)  {
 
 func graphic(back *Node, s *strings.Builder, now *Node){
 	if back != nil{
-		fmt.Fprintf(s, "node%p[label=\"%v| Ascii:%v| %v \" fillcolor=\"olivedrab1\"]; \n ",&(*back),back.Tienda.Nombre, back.Ascii,back.Tienda.Contacto)
+		fmt.Fprintf(s, "node%p[shape=\"record\" label=\"%v| Ascii:%v| %v \" fillcolor=\"olivedrab1\"]; \n ",&(*back),back.Tienda.Nombre, back.Ascii,back.Tienda.Contacto)
 		if now != nil{
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*now),&(*back))
 			fmt.Fprintf(s, "node%p->node%p; \n", &(*back),&(*now))

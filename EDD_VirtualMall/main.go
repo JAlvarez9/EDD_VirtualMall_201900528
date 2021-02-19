@@ -156,10 +156,11 @@ func ShowList (w http.ResponseWriter, r *http.Request){
 
 func Graphviz(w http.ResponseWriter, r *http.Request){
 	var cadenita strings.Builder
+	var nodes []string
 	cont := int(0)
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
 	fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
-	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
+	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=\"box\" color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
 	for i:= 0; i<= len(tiendas2);{
 		if cont < 5{
 			if i != len(tiendas2){
@@ -167,8 +168,23 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 					fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
 					fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n",i)
 					fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
+					aux := string("node"+strconv.Itoa(i))
+					nodes = append(nodes, aux)
 				}else{
-					fmt.Fprintf(&cadenita, "node%d[label=\"Indice%v |%v|{%d|No.%d}\"]; \n ", i,tiendas2[i].GetFirst().Indice,tiendas2[i].GetFirst().Departamento,tiendas2[i].GetFirst().Tienda.Calificacion,i)
+					fmt.Fprintf(&cadenita, "node%d[style=\"filled\" color=\"blue\" fillcolor=\"mediumspringgreen\" label=< \n", i)
+					fmt.Fprintf(&cadenita, "<TABLE BORDER=\"0\" ALIGN=\"LEFT\"> \n")
+					fmt.Fprintf(&cadenita, "<TR> \n")
+					fmt.Fprintf(&cadenita, "<TD >Indice %v</TD> \n", tiendas2[i].GetFirst().Indice)
+					fmt.Fprintf(&cadenita, "<TD BORDER=\"1\"> No. %d </TD> \n", i)
+					fmt.Fprintf(&cadenita, "</TR> \n")
+					fmt.Fprintf(&cadenita, "<TR> \n")
+					fmt.Fprintf(&cadenita, "<TD BORDER=\"1\">%v</TD> \n", tiendas2[i].GetFirst().Departamento)
+					fmt.Fprintf(&cadenita, "<TD> Cal. %d </TD> \n", tiendas2[i].GetFirst().Tienda.Calificacion)
+					fmt.Fprintf(&cadenita, "</TR> \n")
+					fmt.Fprintf(&cadenita, "</TABLE> \n")
+					fmt.Fprintf(&cadenita, ">, ]; \n")
+					aux := string("node"+strconv.Itoa(i))
+					nodes = append(nodes, aux)
 					tiendas2[i].Graphic(&cadenita)
 					fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
 
@@ -177,13 +193,30 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 			}
 			i++
 		}else{
+			fmt.Fprintf(&cadenita, "{rank=\"same\" ;"+nodes[0]+" \n")
+			for i:= 1; i<len(nodes); i++{
+				fmt.Fprintf(&cadenita, ";"+nodes[i]+"\n")
+			}
+			fmt.Fprintf(&cadenita, " }\n")
+			aux2:= string(" ")
+			for i, node := range nodes{
+				if i == 0{
+					aux2 = node
+				}else {
+					fmt.Fprintf(&cadenita, "%v -> %v \n", aux2, node)
+					aux2 = node
+				}
+			}
+			aux2 = " "
+			fmt.Print(aux2)
 			fmt.Fprintf(&cadenita, "} \n")
 			saveDot(cadenita.String(), i)
 			cadenita.Reset()
 			fmt.Fprintf(&cadenita, "digraph G{ \n")
 			fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
-			fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=record color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
+			fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=\"box\" color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
 			cont = 0
+			nodes = nodes[:0]
 		}
 
 	}

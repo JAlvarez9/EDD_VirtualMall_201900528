@@ -34,7 +34,8 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	var newDoc Listas.Enlace
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil{
-		fmt.Fprintf(w,"Insert correct Values")
+		error := Listas.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
 	for i, indice := range newDoc.Datos{
@@ -90,7 +91,8 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newDoc)
+	error := Listas.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
+	json.NewEncoder(w).Encode(error)
 }
 
 func Deletition(w http.ResponseWriter, r *http.Request){
@@ -105,9 +107,11 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 	position = searchingVectorE(&newDoc)
 	contain = tiendas2[position].Delete(&newDoc)
 	if contain && position >= 0{
-		fmt.Fprintf(w,"The Store was deleted succesfully")
+		error := Listas.JsonErrors{Mensaje: "The store was deleted succesfully"}
+		json.NewEncoder(w).Encode(error)
 	}else {
-		fmt.Fprintf(w,"We don't found that store please check your values")
+		error := Listas.JsonErrors{Mensaje: "We don´t find the store check your values"}
+		json.NewEncoder(w).Encode(error)
 	}
 	var solo = len(tiendas2)
 	fmt.Println(solo)
@@ -160,7 +164,7 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 	cont := int(0)
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
 	fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
-	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=\"box\" color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
+	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=\"record\" color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
 	for i:= 0; i<= len(tiendas2);{
 		if cont < 5{
 			if i != len(tiendas2){
@@ -220,7 +224,8 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 		}
 
 	}
-
+	mens := Listas.JsonErrors{Mensaje: "The graphic was created!"}
+	json.NewEncoder(w).Encode(mens)
 
 }
 
@@ -277,7 +282,8 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 	sending.Datos = stuffdatos
 	f,_ := json.MarshalIndent(sending,""," ")
 	_ = ioutil.WriteFile("NewStuff.json",f,0644)
-
+	msg := Listas.JsonErrors{Mensaje: "The json file was created!"}
+	json.NewEncoder(w).Encode(msg)
 
 
 	/*var stuffsvaing []Listas.Datos

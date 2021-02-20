@@ -12,6 +12,10 @@ type Tiendas struct {
 	Calificacion int `json:Calificacion`
 }
 
+type JsonErrors struct {
+	Mensaje string `json:Mensajer`
+}
+
 type Departamentos struct {
 	Nombre string `json:Nombre`
 	Tiendas []Tiendas `json:Tiendas`

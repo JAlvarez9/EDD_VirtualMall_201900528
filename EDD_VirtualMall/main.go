@@ -148,7 +148,7 @@ func ShowList (w http.ResponseWriter, r *http.Request){
 		fmt.Fprintf(w,"Invalid ID")
 		return
 	}
-	var list = tiendas2[PosVector-1]
+	var list = tiendas2[PosVector]
 	stores = list.Show()
 	if len(stores)==0{
 		fmt.Fprintf(w,"In this list don't exist a store :(")

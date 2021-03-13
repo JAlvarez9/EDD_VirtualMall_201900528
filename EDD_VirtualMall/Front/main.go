@@ -1,7 +1,7 @@
 package main
 
 import (
-	"EDD_VirtualMall/Listas"
+	"EDD_VirtualMall/Structs"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -15,26 +15,30 @@ import (
 )
 
 
-var tiendas2 [] Listas.List
-
-var cubix [][] Listas.NodeListas
+var tiendas2 [] Structs.List
+var treeAVL Structs.TreeAVL
+var pedidios Structs.ListYear
+var cubix [][] Structs.NodeListas
 var sizedep int
 var sizeindex int
 var departa [] string
 var indice [] string
 
-var prueba Listas.Enlace
+var prueba Structs.Enlace
 
 func example(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Welcome to my REST API of EDD, hopefully you enjoy it! :)")
+	aux := int(06)
+	fmt.Println(aux)
+
 
 }
 
 func cargaArchivos(w http.ResponseWriter, r *http.Request){
-	var newDoc Listas.Enlace
+	var newDoc Structs.Enlace
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil{
-		error := Listas.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
@@ -44,7 +48,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 		}
 		sizeindex = i+1
 	}
-	cubix = make([][] Listas.NodeListas, sizeindex)
+	cubix = make([][] Structs.NodeListas, sizeindex)
 	for i:= 0; i < len(newDoc.Datos[0].Departamentos); i++{
 		departa = append(departa, newDoc.Datos[0].Departamentos[i].Nombre )
 	}
@@ -52,17 +56,18 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 
 		indice = append(indice, datos.Indice)
 
-		sup := make([]Listas.NodeListas, sizedep)
+		sup := make([]Structs.NodeListas, sizedep)
 		for j, departamentos := range datos.Departamentos{
 
 			for _, tienda := range departamentos.Tiendas{
-				aux3 :=Listas.Tiendas{
+				aux3 := Structs.Tiendas{
 					tienda.Nombre,
 					tienda.Descripcion,
 					tienda.Contacto,
 					tienda.Calificacion,
+					tienda.Logo,
 				}
-				aux2:= Listas.Node{
+				aux2:= Structs.Node{
 					aux3,
 					departamentos.Nombre,
 					datos.Indice,
@@ -91,12 +96,69 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	error := Listas.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
+	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
 	json.NewEncoder(w).Encode(error)
 }
 
+func CargarProductos(w http.ResponseWriter, r *http.Request){
+	var newDoc Structs.EnlaceInventario
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	treeAVL := Structs.NewArbol()
+	for _, inven := range newDoc.Inventarios{
+		for _, product := range inven.Productos{
+			treeAVL.Insert(product, &inven.Departamento, &inven.Departamento, &inven.Calificacion)
+		}
+	}
+}
+
+func CargarPedidos(w http.ResponseWriter, r*http.Request){
+	var newDoc Structs.EnlacePedidos
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+
+	for _, pedido := range newDoc.Pedidos {
+		supp := Structs.Stack{
+			Top:  nil,
+			Size: 0,
+		}
+		for _, cod := range  pedido.Productos {
+			aux2 := Structs.NodeStack{
+				Value: cod,
+				Next: nil,
+				Prev: nil,
+			}
+			supp.Push(&aux2)
+		}
+			aux := Structs.NodeMatrix{
+				Value: pedido,
+				Year:  getYear(pedido.Fecha),
+				Dia:   getDay(pedido.Fecha),
+				Month: getMonth(pedido.Fecha),
+				MonthString: getStringMonth(getMonth(pedido.Fecha)),
+				Ascii: convertAscii(pedido.Departamento),
+				StackCode: &supp,
+				Right: nil,
+				Left:  nil,
+				Up:    nil,
+				Down:  nil,
+			}
+			pedidios.AddYear(&aux)
+	}
+	fmt.Print("asd")
+
+}
+
 func Deletition(w http.ResponseWriter, r *http.Request){
-	var newDoc Listas.PedidosE
+	var newDoc Structs.PedidosE
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var contain bool
 	var position int
@@ -107,10 +169,10 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 	position = searchingVectorE(&newDoc)
 	contain = tiendas2[position].Delete(&newDoc)
 	if contain && position >= 0{
-		error := Listas.JsonErrors{Mensaje: "The store was deleted succesfully"}
+		error := Structs.JsonErrors{Mensaje: "The store was deleted succesfully"}
 		json.NewEncoder(w).Encode(error)
 	}else {
-		error := Listas.JsonErrors{Mensaje: "We don´t find the store check your values"}
+		error := Structs.JsonErrors{Mensaje: "We don´t find the store check your values"}
 		json.NewEncoder(w).Encode(error)
 	}
 	var solo = len(tiendas2)
@@ -119,9 +181,9 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 }
 
 func Search(w http.ResponseWriter, r *http.Request){
-	var newDoc Listas.PedidosS
+	var newDoc Structs.PedidosS
 	reqBody, err := ioutil.ReadAll(r.Body)
-	var finded Listas.Tiendas
+	var finded Structs.Tiendas
 	var position int
 	if err != nil{
 		fmt.Fprintf(w,"Insert correct Values")
@@ -143,7 +205,7 @@ func Search(w http.ResponseWriter, r *http.Request){
 func ShowList (w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	PosVector, err :=strconv.Atoi(vars["id"])
-	var stores []Listas.Tiendas
+	var stores []Structs.Tiendas
 	if err != nil {
 		fmt.Fprintf(w,"Invalid ID")
 		return
@@ -224,19 +286,19 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 		}
 
 	}
-	mens := Listas.JsonErrors{Mensaje: "The graphic was created!"}
+	mens := Structs.JsonErrors{Mensaje: "The graphic was created!"}
 	json.NewEncoder(w).Encode(mens)
 
 }
 
 func SaveStuff(w http.ResponseWriter, r *http.Request){
-	var stuffdatos []Listas.Datos
-	var stuffdepa []Listas.Departamentos2
+	var stuffdatos []Structs.Datos
+	var stuffdepa []Structs.Departamentos2
 
 	for _, indi := range indice{
 		for i:= 0; i < len(departa); i++{
-			aux2 := []Listas.Tiendas {}
-			aux:= Listas.Departamentos2{
+			aux2 := []Structs.Tiendas {}
+			aux:= Structs.Departamentos2{
 				Nombre:  departa[i],
 				Tiendas: aux2,
 				Indice:  indi,
@@ -260,13 +322,13 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 
 	}
 	for i:= 0; i < len(indice); i++{
-		aux3:= Listas.Datos{
+		aux3:= Structs.Datos{
 			Indice:        "",
 			Departamentos: nil,
 		}
 		for _, depa := range stuffdepa{
 			if indice[i] == depa.Indice{
-				aux6:= Listas.Departamentos{
+				aux6:= Structs.Departamentos{
 					Nombre:  depa.Nombre,
 					Tiendas: depa.Tiendas,
 				}
@@ -278,19 +340,19 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 		stuffdatos = append(stuffdatos, aux3)
 	}
 
-	var sending Listas.Enlace
+	var sending Structs.Enlace
 	sending.Datos = stuffdatos
 	f,_ := json.MarshalIndent(sending,""," ")
 	_ = ioutil.WriteFile("NewStuff.json",f,0644)
-	msg := Listas.JsonErrors{Mensaje: "The json file was created!"}
+	msg := Structs.JsonErrors{Mensaje: "The json file was created!"}
 	json.NewEncoder(w).Encode(msg)
 
 
-	/*var stuffsvaing []Listas.Datos
+	/*var stuffsvaing []Structs.Datos
 
 	 for i:= 0; i< len(indice); i++{
-		 var stuffdepa []Listas.Departamentos
-	 	aux := Listas.Datos{
+		 var stuffdepa []Structs.Departamentos
+	 	aux := Structs.Datos{
 			Indice:        indice[i],
 			Departamentos: stuffdepa,
 		}
@@ -299,8 +361,8 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 
 	 for i:= 0; i<len(indice); i++{
 	 	for j:= 0; j<len(departa) ;j++{
-			stores := []Listas.Tiendas{}
-			aux2:= Listas.Departamentos{
+			stores := []Structs.Tiendas{}
+			aux2:= Structs.Departamentos{
 				Nombre:  departa[j],
 				Tiendas: stores,
 			}
@@ -324,7 +386,7 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 			}
 		}
 	}
-	var sending Listas.Enlace
+	var sending Structs.Enlace
 	sending.Datos = stuffsvaing
 	f,_ := json.MarshalIndent(sending,""," ")
 	_ = ioutil.WriteFile("NewStuff.json",f,0644)
@@ -332,7 +394,7 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 
 }
 
-func searchingVectorE(pedido *Listas.PedidosE) int{
+func searchingVectorE(pedido *Structs.PedidosE) int{
 	var indicefound, depafound bool
 	var first, second, result int
 
@@ -368,7 +430,7 @@ func searchingVectorE(pedido *Listas.PedidosE) int{
 
 }
 
-func searchingVectorS(pedido *Listas.PedidosS) int{
+func searchingVectorS(pedido *Structs.PedidosS) int{
 	var indicefound, depafound bool
 	var first, second, result int
 
@@ -404,7 +466,7 @@ func searchingVectorS(pedido *Listas.PedidosS) int{
 
 }
 
-func putStore(aux2 Listas.Node, sup []Listas.NodeListas, depa int,) []Listas.NodeListas{
+func putStore(aux2 Structs.Node, sup []Structs.NodeListas, depa int,) []Structs.NodeListas{
 
 	switch aux2.Tienda.Calificacion {
 	case 1:
@@ -467,6 +529,75 @@ func convertAscii(s string)int{
 	return ascii
 }
 
+func getDay(s string)int{
+	aux := strings.Split(s,"-")
+	i, err := strconv.Atoi(aux[0])
+	if err != nil {
+		fmt.Println("Na")
+	}
+	return i
+}
+
+func getYear(s string)int{
+	aux := strings.Split(s,"-")
+	i, err := strconv.Atoi(aux[2])
+	if err != nil {
+		fmt.Println("Na")
+	}
+	return i
+}
+
+func getMonth(s string)int{
+	aux := strings.Split(s,"-")
+	i, err := strconv.Atoi(aux[1])
+	if err != nil {
+		fmt.Println("Na")
+	}
+	return i
+}
+
+func getStringMonth(s int)string{
+	switch s {
+	case 1:
+		return "Enero"
+		break
+	case 2:
+		return "Febrero"
+		break
+	case 3:
+		return "Marzo"
+		break
+	case 4:
+		return "Abril"
+		break
+	case 5:
+		return "Mayo"
+		break
+	case 6:
+		return "Junio"
+		break
+	case 7:
+		return "Julio"
+		break
+	case 8:
+		return "Agosto"
+		break
+	case 9:
+		return "Septiembre"
+		break
+	case 10:
+		return "Octubre"
+		break
+	case 11:
+		return "Noviembre"
+		break
+	case 12:
+		return "Diciembre"
+		break
+	}
+	return "0"
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -477,6 +608,8 @@ func main() {
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
 	router.HandleFunc("/guardar", SaveStuff).Methods("GET")
+	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
+	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }

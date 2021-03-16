@@ -4,6 +4,7 @@ import (
 	"EDD_VirtualMall/Structs"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -601,6 +602,10 @@ func getStringMonth(s int)string{
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
+	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET","PUT","POST","DELETE"})
+	origins := handlers.AllowedOrigins([]string{"*"})
+	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
 	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
@@ -611,5 +616,5 @@ func main() {
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 }

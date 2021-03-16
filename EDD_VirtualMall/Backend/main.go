@@ -130,28 +130,28 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 			Top:  nil,
 			Size: 0,
 		}
-		for _, cod := range  pedido.Productos {
-			aux2 := Structs.NodeStack{
-				Value: cod,
-				Next: nil,
-				Prev: nil,
-			}
-			supp.Push(&aux2)
+		aux2 := Structs.NodeStack{
+			Value: pedido,
+			Next:  nil,
+			Prev:  nil,
 		}
-			aux := Structs.NodeMatrix{
-				Value: pedido,
-				Year:  getYear(pedido.Fecha),
-				Dia:   getDay(pedido.Fecha),
-				Month: getMonth(pedido.Fecha),
-				MonthString: getStringMonth(getMonth(pedido.Fecha)),
-				Ascii: convertAscii(pedido.Departamento),
-				StackCode: &supp,
-				Right: nil,
-				Left:  nil,
-				Up:    nil,
-				Down:  nil,
-			}
-			pedidios.AddYear(&aux)
+
+		supp.Push(&aux2)
+		aux3 := supp.First()
+		aux := Structs.NodeMatrix{
+			StackPedidos: &supp,
+			Value: *aux3,
+			Year:  getYear(pedido.Fecha),
+			Dia:   getDay(pedido.Fecha),
+			Month: getMonth(pedido.Fecha),
+			MonthString: getStringMonth(getMonth(pedido.Fecha)),
+			Ascii: convertAscii(pedido.Departamento),
+			Right: nil,
+			Left:  nil,
+			Up:    nil,
+			Down:  nil,
+		}
+		pedidios.AddYear(&aux)
 	}
 	fmt.Print("asd")
 

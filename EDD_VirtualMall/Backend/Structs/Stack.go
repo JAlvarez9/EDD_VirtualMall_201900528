@@ -3,7 +3,7 @@ package Structs
 type (
 
 	NodeStack struct {
-		Value CodProducto
+		Value Pedidos
 		Next *NodeStack
 		Prev *NodeStack
 	}
@@ -36,7 +36,7 @@ func (this *Stack)Push(stack *NodeStack) {
 
 }
 
-func (this *Stack)Pop() *CodProducto{
+func (this *Stack)Pop() *Pedidos{
 	if this.Size == 0{
 		aux := this.Top
 		this.Top.Prev.Next = nil
@@ -45,4 +45,8 @@ func (this *Stack)Pop() *CodProducto{
 		return &aux.Value
 	}
 	return nil
+}
+
+func (this *Stack)First() *Pedidos{
+	return &this.Top.Value
 }

@@ -2,28 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9de513ec-96bf-4aa9-8031-c5085dd183d5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Front/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/.idea/EDD_VirtualMall.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/EDD_VirtualMall.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/Structs/Datos.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/Structs/SparseMatrix.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/Structs/Stack.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/Structs/arbol.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/Structs/listadoble.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/EDD_VirtualMall.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EDD_VirtualMall.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Listas/listadoble.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Back/edd_virtual/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/reportWebVitals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back/edd_virtual/src/setupTests.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front/Structs/SparseMatrix.go" beforeDir="false" afterPath="$PROJECT_DIR$/Front/Structs/SparseMatrix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front/Structs/Stack.go" beforeDir="false" afterPath="$PROJECT_DIR$/Front/Structs/Stack.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Front/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +26,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Go File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -57,7 +50,7 @@
     </option>
   </component>
   <component name="ProjectId" id="1op0GJW5vI54wOmEyPv0jpQMhMS" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">

@@ -7,13 +7,13 @@ import (
 
 type (
 		NodeMatrix struct {
+			StackPedidos *Stack
 			Value Pedidos
 			Year int
 			Dia int
 			Month int
 			MonthString string
 			Ascii int
-			StackCode *Stack
 			Right, Left, Up, Down interface{}
 		}
 
@@ -75,7 +75,7 @@ func (this *SperseMatrix)createY(ascci int, depa string) *NodeY  {
 		return nueva
 	}
 	var sup interface{} = this.HeadY
-	if ascci < sup.(*NodeY).Ascii {
+	if ascci <= sup.(*NodeY).Ascii {
 		nueva := &NodeY{
 			Departamento: depa,
 			Ascii:        ascci,

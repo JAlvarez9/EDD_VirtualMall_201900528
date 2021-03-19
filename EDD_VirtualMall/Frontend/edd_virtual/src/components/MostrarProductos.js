@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import Mosaico from './Mosaico'
+import MosaicoP from './MosaicoP'
 
 
-const axios = require('axios')
-function MostrarTiendas() {
-    const [stores, setstores] = useState([])
+const axios = require ('axios')
+function MostrarProductos(props) {
+    let id = props.match.params.id
+    const [products, setproducts] = useState([])
     const [loading, setloading] = useState(false)
     useEffect(() => {
         async function obtener() {
-            if (stores.length === 0) {
-                const data = await axios.get(`http://localhost:3000/obtenerTiendas`);
+            if (products.length === 0) {
+                const data = await axios.get(`http://localhost:3000/obtenerTiendas/${id}`);
                 if (data.status !== 204) {
                     console.log(data.data)
-                    setstores(data.data)
+                    setproducts(data.data)
                     setloading(true)
                 }
 
@@ -31,12 +32,13 @@ function MostrarTiendas() {
         )
     } else {
         return (
-            <div className="ImportList">
+            <div className="Productos">
                 <br></br>
-                <Mosaico stores={stores} />
+                <MosaicoP products={products} />
             </div>
         )
     }
+
 }
 
-export default MostrarTiendas
+export default MostrarProductos

@@ -8,6 +8,9 @@ import CargarPedidos from './components/CargarPedidos';
 import MostrarPedidos from './components/MostrarPedidos';
 import MostrarTiendas from './components/MostrarTiendas';
 import PaginaPrincipal from './components/PaginaPrincipal';
+import MostrarProductos from './components/MostrarProductos';
+import Arbolito from './components/Arbolito'
+import Carrito from './components/Carrito';
 
 
 
@@ -23,6 +26,9 @@ function App() {
         <Route path="/cargarpedidos" component={CargarPedidos}/>
         <Route path="/mostrarpedidos" component={MostrarPedidos}/>
         <Route path="/mostrartiendas" component={MostrarTiendas}/>
+        <Route path="/mostrarproductos/:id" component={MostrarProductos}/>
+        <Route path="/mostrararbol/:id" component={Arbolito}/>
+        <Route path="/carrito" component={Carrito}/>
     </Router>
     </>
   );

@@ -10,7 +10,11 @@ const SegmentExamplePlaceholderInline = () => (
         Choose your file json in your device !
       </Header>
       <Segment.Inline>
-        <input type="file"></input>
+        <input type="file"
+          id='file'
+          className='input-file'
+          accept='.json'
+        />
       </Segment.Inline>
       <Segment.Inline>
           <Button className="botoncito" primary>Cargar Tiendas</Button>

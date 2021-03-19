@@ -2,6 +2,8 @@ package Structs
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -18,7 +20,7 @@ type (
 
 	}
 	TreeAVL struct {
-		root *NodeTree
+		Root *NodeTree
 	}
 
 )
@@ -159,35 +161,78 @@ func rotacionID(n *NodeTree, n1 *NodeTree) *NodeTree {
 	return n2
 }
 
+func (this *TreeAVL)GetProducts() []Productos  {
+	var aux []Productos
+	aux = PostOrden(this.Root, aux)
+
+	return aux
+}
+
+func PostOrden(aux *NodeTree, arreglo []Productos) []Productos{
+	if aux != nil {
+		arreglo = PostOrden(aux.Left, arreglo)
+		arreglo= PostOrden(aux.Right, arreglo)
+		arreglo = append(arreglo, aux.Productos)
+	}
+	return arreglo
+}
+
 func (this *TreeAVL) Insert(p Productos,tienda *string, depa *string, cali *int)  {
 	b := false
 	a := &b
-	this.root = insertar(this.root,p,a,tienda,depa,cali)
+	this.Root = insertar(this.Root,p,a,tienda,depa,cali)
 }
 
 func (this *TreeAVL)Generate()  {
 	var cadena strings.Builder
 	fmt.Fprintf(&cadena, "digraph G{\n")
 	fmt.Fprintf(&cadena, "node[shape=\"record\"];\n")
-	if this.root != nil {
-		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code:%v | <f2>\"]; \n", &(*this.root),this.root.Productos.Codigo)
-		this.generate(&cadena, (this.root), this.root.Left, true)
-		this.generate(&cadena, this.root, this.root.Right, false)
+	if this.Root != nil {
+		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code: %v|<f2> Name:%v |<f3> Mount:%v  | <f4>\"];\n",&(*this.Root),this.Root.Productos.Codigo, this.Root.Productos.Nombre,this.Root.Productos.Cantidad)
+		this.generate(&cadena, (this.Root), this.Root.Left, true)
+		this.generate(&cadena, this.Root, this.Root.Right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	fmt.Println(cadena.String())
+	savedot(cadena.String(),*this.Root.Tienda )
 }
 
 func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *NodeTree, izquierda bool)  {
 	if actual != nil {
-		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code %v | <f2>\"];\n",&(*actual),actual.Productos.Codigo)
+		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code: %v|<f2> Name:%s |<f3> Mount:%v  | <f4>\"];\n",&(*actual),actual.Productos.Codigo, actual.Productos.Nombre,actual.Productos.Cantidad)
 		if izquierda {
-			fmt.Fprintf(cadena, "node%p:f0 -> node%p:f1 \n",&(*padre),&(*actual))
+			fmt.Fprintf(cadena, "node%p:f0 -> node%p:f2 \n",&(*padre),&(*actual))
 		}else {
-			fmt.Fprintf(cadena, "node%p:f2 -> node%p:f1 \n", &(*padre),&(*actual))
+			fmt.Fprintf(cadena, "node%p:f4 -> node%p:f2 \n", &(*padre),&(*actual))
 		}
 		this.generate(cadena, actual, actual.Left, true)
 		this.generate(cadena, actual, actual.Right, false)
 	}
+}
+
+func savedot(s string, i string)  {
+	nombre := string("Arbol"+ i +".pdf")
+	nombre = strings.Replace(nombre," ","_",-1)
+	f, err := os.Create("arbol.dot")
+	if err != nil{
+		fmt.Println("There was an error!")
+	}
+	l, err := f.WriteString(s)
+	if err != nil{
+		fmt.Println("There was an error!")
+		f.Close()
+		return
+	}
+	fmt.Println(l,"Created Succesfully")
+	p := "dot -Tpdf arbol.dot -o " + nombre
+
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+
+	}
+	fmt.Printf("%s\n", b)
 }
 

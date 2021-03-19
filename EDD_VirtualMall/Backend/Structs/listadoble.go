@@ -45,7 +45,7 @@ type (
 		Lista5 List
 	}
 	List struct {
-		first *Node
+			first *Node
 		size int
 	}
 	PedidosE struct {
@@ -97,11 +97,11 @@ func (this *List)SortedInsert(nuevo *Node) {
 	this.size++
 }
 
-func (this *List)Search(ped *PedidosS) Tiendas {
+func (this *List)Search(ped *PedidosS) *Tiendas {
 	var aux = this.first
 	for aux != nil{
 		if aux.Departamento == ped.Departamento && aux.Tienda.Nombre == ped.Nombre && aux.Tienda.Calificacion == ped.Calificacion{
-			return aux.Tienda
+			return &aux.Tienda
 		}
 		aux = aux.Next
 	}
@@ -111,7 +111,19 @@ func (this *List)Search(ped *PedidosS) Tiendas {
 		Contacto:     "",
 		Calificacion: 0,
 	}
-	return nulo
+	return &nulo
+}
+
+func (this *List)GetShop(s string) *Tiendas {
+	var aux = this.first
+	for aux != nil{
+		if aux.Tienda.Contacto == s{
+			return &aux.Tienda
+		}
+		aux = aux.Next
+	}
+
+	return nil
 }
 
 func(this *List) Delete(ped *PedidosE) bool{

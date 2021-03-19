@@ -17,6 +17,7 @@ function Navbar() {
                 as={Link} to={urls[index]}
                 name={opciones[index]}
                 active={activeItem === c}
+                key={index}
             />
         ))}
       </Menu>

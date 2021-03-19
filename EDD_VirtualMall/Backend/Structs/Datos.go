@@ -6,11 +6,11 @@ type (
 	}
 
 	Pedidos struct {
-		Fecha string `json:Fecha`
-		Tienda string `json:Tienda`
-		Departamento string `json:Departamento`
-		Calificacion int `json:Calificacion`
-		Productos [] CodProducto `json:Productos`
+		Fecha        string        `json:Fecha`
+		Tienda       string        `json:Tienda`
+		Departamento string        `json:Departamento`
+		Calificacion int           `json:Calificacion`
+		Productos    []CodProducto `json:Productos`
 	}
 
 	EnlacePedidos struct {
@@ -18,58 +18,61 @@ type (
 	}
 
 	Productos struct {
-		Nombre string `json:Nombre`
-		Codigo int `json:Codigo`
-		Descripcion string `json:Descripcion`
-		Precio int `json:Precio`
-		Cantidad int `json:Cantidad`
-		Imagen string `json:Imagen`
+		Nombre       string `json:Nombre`
+		Codigo       int    `json:Codigo`
+		Descripcion  string `json:Descripcion`
+		Precio       float64`json:Precio`
+		Cantidad     int    `json:Cantidad`
+		Imagen       string `json:Imagen`
+		Departamento string `json:"Departamento,omitempty"`
+		Tienda       string `json:"Tienda,omitempty"`
+		Calificacion int    `json:Calificacion,omitempty`
 	}
 	Inventario struct {
-		Tienda string `json:Tienda`
-		Departamento string `json:Departamento`
-		Calificacion int `json:Calificacion`
-		Productos []Productos `json:Productos`
+		Tienda       string      `json:Tienda`
+		Departamento string      `json:Departamento`
+		Calificacion int         `json:Calificacion`
+		Productos    []Productos `json:Productos`
 	}
 
 	EnlaceInventario struct {
 		Inventarios []Inventario `json:Inventarios`
 	}
- 	Tiendas struct {
-		Nombre string `json:Nombre`
-		Descripcion string `json:Descripcion`
-		Contacto string `json:Contacto`
-		Calificacion int `json:Calificacion`
-		Logo string `json:Logo`
+	Tiendas struct {
+		Nombre       string   `json:Nombre`
+		Descripcion  string   `json:Descripcion`
+		Contacto     string   `json:Contacto`
+		Calificacion int      `json:Calificacion`
+		Logo         string   `json:Logo`
+		Arbolito     *TreeAVL `json:"Arbol,omitempty"`
+		Key          string   `json:"Key,omitempty"`
 	}
 
- 	JsonErrors struct {
+	JsonErrors struct {
 		Mensaje string `json:Mensajer`
 	}
 
- 	Departamentos struct {
-		Nombre string `json:Nombre`
+	Departamentos struct {
+		Nombre  string    `json:Nombre`
 		Tiendas []Tiendas `json:Tiendas`
-
 	}
 
- 	Departamentos2 struct {
-		Nombre string `json:Nombre`
+	Departamentos2 struct {
+		Nombre  string    `json:Nombre`
 		Tiendas []Tiendas `json:Tiendas`
-		Indice string
+		Indice  string
 	}
 
- 	Datos struct {
-		Indice string `json:Indice`
+	Datos struct {
+		Indice        string          `json:Indice`
 		Departamentos []Departamentos `json:Departamentos`
 	}
 
- 	Enlace struct {
+	Enlace struct {
 		Datos []Datos `json:Datos`
 	}
 
- 	Shops struct {
+	Shops struct {
 		Tiendas []Tiendas
 	}
 )
-

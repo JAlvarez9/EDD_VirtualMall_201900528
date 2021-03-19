@@ -3,6 +3,7 @@ package Structs
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 type (
@@ -19,11 +20,13 @@ type (
 
 		NodeX struct {
 			Dia int
+			X int
 			Right, Left, Up, Down interface{}
 		}
 		NodeY struct {
 			Departamento string
 			Ascii int
+			Y int
 			Right, Left, Up, Down interface{}
 		}
 		SperseMatrix struct {
@@ -288,7 +291,7 @@ func (this *SperseMatrix) Imprimir() {
 		fmt.Print(aux.(*NodeY).Departamento, "***************")
 		tmp := aux.(*NodeY).Right
 		for tmp != nil {
-			fmt.Printf("%v,%v------", tmp.(*NodeMatrix).Dia, tmp.(*NodeMatrix).Ascii)
+			fmt.Printf("%v,%v------", tmp.(*NodeMatrix).Dia, tmp.(*NodeMatrix).Value.Departamento)
 			tmp = tmp.(*NodeMatrix).Right
 		}
 		fmt.Print("\n")
@@ -302,12 +305,84 @@ func (this *SperseMatrix) Imprimir2() {
 		fmt.Print(aux.(*NodeX).Dia, "*****************")
 		tmp := aux.(*NodeX).Down
 		for tmp != nil {
-			fmt.Printf("%v,%v-------", tmp.(*NodeMatrix).Dia, tmp.(*NodeMatrix).Ascii)
+			fmt.Printf("%v,%v-------", tmp.(*NodeMatrix).Dia, tmp.(*NodeMatrix).Value.Departamento)
 			tmp = tmp.(*NodeMatrix).Down
 		}
 		fmt.Println("")
 		aux = aux.(*NodeX).Right
 	}
+}
+
+func (this *SperseMatrix)Graphviz(){
+	var cadenita strings.Builder
+	var sizeX int
+	var sizeY int
+	fmt.Fprintf(&cadenita, "digraph G{ \n")
+	fmt.Fprintf(&cadenita, "node [shape=box] \n")
+	fmt.Fprintf(&cadenita, " Mt[ label = \"Matrix\", width = 1.5, style = filled, fillcolor = firebrick1, group = 1 ]; \n")
+	fmt.Fprintf(&cadenita, "e0[ shape = point, width = 0 ]; \n")
+	fmt.Fprintf(&cadenita, "e1[ shape = point, width = 0 ]; \n")
+	var aux interface{} = this.HeadY
+	cont := 0
+	for aux != nil  {
+
+		fmt.Fprintf(&cadenita, "node%v [label = \"%s\"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; \n",&(*aux.(*NodeY)),aux.(*NodeY).Departamento)
+		if aux.(*NodeY).Down != nil {
+			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(*aux.(*NodeY)),&(aux.(*NodeY).Down))
+			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(aux.(*NodeY).Down),&(*aux.(*NodeY)))
+		}
+
+		aux = aux.(*NodeY).Down
+		sizeY = cont
+		cont++
+	}
+
+	aux = this.HeadX
+	cont = 0
+	for aux != nil  {
+
+		fmt.Fprintf(&cadenita, "node%v [label = \"%d\"    width = 1.5 style = filled, fillcolor = bisque1, group = %v ]; \n",&(*aux.(*NodeX)),aux.(*NodeX).Dia,cont+2)
+		if aux.(*NodeX).Right != nil {
+			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(*aux.(*NodeX)),&(aux.(*NodeX).Right))
+			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(aux.(*NodeX).Right),&(*aux.(*NodeX)))
+		}
+
+		aux = aux.(*NodeX).Right
+		sizeX = cont
+		cont++
+	}
+	aux = this.HeadY
+	fmt.Fprintf(&cadenita, "Mt -> %v \n",&(*aux.(*NodeY)) )
+	aux = this.HeadX
+	fmt.Fprintf(&cadenita, "Mt -> %v \n",&(*aux.(*NodeX)))
+
+	aux = this.HeadX
+	fmt.Fprintf(&cadenita, "{ rank = same; Mt;  ")
+	for aux != nil {
+		cont := 0
+		fmt.Fprintf(&cadenita, "A%v;", cont)
+		aux = aux.(*NodeX).Right
+		cont++
+
+	}
+	fmt.Fprintf(&cadenita, "} \n")
+	for i:= 0; i < sizeY+1 ;i++{
+		for j:=0;j<sizeX+1;j++ {
+
+			fmt.Fprintf(&cadenita, "N%v_L%v [label = \"EJemplo\" width = 1.5, group = %v ]; \n", j,i,j+2)
+		}
+	}
+	for i:= 0; i < sizeY+1 ;i++ {
+		for j := 0; j < sizeX+1; j++ {
+			fmt.Fprintf(&cadenita, "} \n")
+		}
+	}
+		fmt.Fprintf(&cadenita, "U0 -> N0_L0; \n")
+
+	fmt.Print(cadenita.String())
+
+
+
 }
 
 

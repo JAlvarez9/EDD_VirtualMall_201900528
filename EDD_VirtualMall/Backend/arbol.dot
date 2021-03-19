@@ -1,0 +1,16 @@
+digraph G{
+node[shape="record"];
+node0xc00021caa0[label="<f0> | <f1> code: 783|<f2> Name:Television y video |<f3> Mount:339  | <f4>"];
+node0xc00021c8c0[label="<f0>|<f1> code: 781|<f2> Name:Television y video |<f3> Mount:236  | <f4>"];
+node0xc00021caa0:f0 -> node0xc00021c8c0:f2 
+node0xc00021cb40[label="<f0>|<f1> code: 782|<f2> Name:Television y video |<f3> Mount:250  | <f4>"];
+node0xc00021c8c0:f4 -> node0xc00021cb40:f2 
+node0xc00021c820[label="<f0>|<f1> code: 786|<f2> Name:Television y video |<f3> Mount:341  | <f4>"];
+node0xc00021caa0:f4 -> node0xc00021c820:f2 
+node0xc00021ca00[label="<f0>|<f1> code: 784|<f2> Name:Television y video |<f3> Mount:384  | <f4>"];
+node0xc00021c820:f0 -> node0xc00021ca00:f2 
+node0xc00021cbe0[label="<f0>|<f1> code: 785|<f2> Name:Television y video |<f3> Mount:235  | <f4>"];
+node0xc00021ca00:f4 -> node0xc00021cbe0:f2 
+node0xc00021c960[label="<f0>|<f1> code: 787|<f2> Name:Television y video |<f3> Mount:348  | <f4>"];
+node0xc00021c820:f4 -> node0xc00021c960:f2 
+} 

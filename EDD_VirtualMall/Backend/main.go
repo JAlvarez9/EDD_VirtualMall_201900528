@@ -17,14 +17,13 @@ import (
 
 
 var tiendas2 [] Structs.List
-var treeAVL Structs.TreeAVL
 var pedidios Structs.ListYear
 var cubix [][] Structs.NodeListas
 var sizedep int
 var sizeindex int
 var departa [] string
 var indice [] string
-
+var cont int
 var prueba Structs.Enlace
 
 func example(w http.ResponseWriter, r *http.Request){
@@ -61,15 +60,9 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 		for j, departamentos := range datos.Departamentos{
 
 			for _, tienda := range departamentos.Tiendas{
-				aux3 := Structs.Tiendas{
-					tienda.Nombre,
-					tienda.Descripcion,
-					tienda.Contacto,
-					tienda.Calificacion,
-					tienda.Logo,
-				}
+
 				aux2:= Structs.Node{
-					aux3,
+					tienda,
 					departamentos.Nombre,
 					datos.Indice,
 					convertAscii(tienda.Nombre),
@@ -109,12 +102,37 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
-	treeAVL := Structs.NewArbol()
+	var finded *Structs.Tiendas
+	var position int
+
 	for _, inven := range newDoc.Inventarios{
-		for _, product := range inven.Productos{
-			treeAVL.Insert(product, &inven.Departamento, &inven.Departamento, &inven.Calificacion)
+		sup := Structs.PedidosS{
+			Departamento: inven.Departamento,
+			Nombre:       inven.Tienda,
+			Calificacion: inven.Calificacion,
+		}
+		position = searchingVectorS(&sup)
+		finded = tiendas2[position].Search(&sup)
+		if position >= 0 && finded.Nombre != ""{
+			if finded.Arbolito == nil {
+				finded.Arbolito = Structs.NewArbol()
+				for _, product := range inven.Productos{
+					product.Tienda = inven.Tienda
+					product.Departamento = inven.Departamento
+					product.Calificacion = finded.Calificacion
+					finded.Arbolito.Insert(product, &inven.Departamento, &inven.Departamento, &inven.Calificacion)
+				}
+
+			}
+
+		}else {
+
 		}
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
+	json.NewEncoder(w).Encode(error)
 }
 
 func CargarPedidos(w http.ResponseWriter, r*http.Request){
@@ -127,6 +145,7 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 	json.Unmarshal(reqBody, &newDoc)
 
 	for _, pedido := range newDoc.Pedidos {
+		fmt.Println(pedido.Fecha)
 		supp := Structs.Stack{
 			Top:  nil,
 			Size: 0,
@@ -152,7 +171,12 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 			Up:    nil,
 			Down:  nil,
 		}
+
 		pedidios.AddYear(&aux)
+		vere := pedidios.SearchYear(aux.Year)
+		vere2:=vere.Monts.SearchMonth(aux.Month)
+		vere2.Matrix.Graphviz()
+		fmt.Println("asd")
 	}
 	fmt.Print("asd")
 
@@ -192,7 +216,7 @@ func Search(w http.ResponseWriter, r *http.Request){
 	json.Unmarshal(reqBody, &newDoc)
 
 	position = searchingVectorS(&newDoc)
-	finded = tiendas2[position].Search(&newDoc)
+	finded = *tiendas2[position].Search(&newDoc)
 
 	if position >= 0 && finded.Nombre != ""{
 		w.Header().Set("Content-Type", "application/json")
@@ -488,6 +512,53 @@ func putStore(aux2 Structs.Node, sup []Structs.NodeListas, depa int,) []Structs.
 	return sup
 }
 
+func getShops(w http.ResponseWriter, r *http.Request) {
+	var ShopList Structs.Shops
+	if(len(tiendas2) != 0){
+		for i:= 0; i < len(tiendas2) ; i++{
+			aux := tiendas2[i].GetStores()
+			for _, tienda := range aux {
+				tienda.Key = strconv.Itoa(i)+"$"+tienda.Contacto
+				ShopList.Tiendas = append(ShopList.Tiendas, tienda)
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		arreglo := ShopList.Tiendas
+		json.NewEncoder(w).Encode(arreglo)
+	}else {
+		err := Structs.JsonErrors{Mensaje: "No hay tiendas cargadas"}
+		w.WriteHeader(http.StatusNoContent)
+		json.NewEncoder(w).Encode(err)
+	}
+
+}
+
+func getProducts(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	elements := strings.Split(vars["id"],"$")
+	vectorPos, _ := strconv.Atoi(elements[0])
+	ShopList := tiendas2[vectorPos]
+	selectShop := ShopList.GetShop(elements[1])
+	products := selectShop.Arbolito.GetProducts()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	arreglo := products
+	json.NewEncoder(w).Encode(arreglo)
+
+
+}
+
+func getArbolito(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	elements := strings.Split(vars["id"],"$")
+	vectorPos, _ := strconv.Atoi(elements[0])
+	ShopList := tiendas2[vectorPos]
+	selectShop := ShopList.GetShop(elements[1])
+	selectShop.Arbolito.Generate()
+
+}
+
 func saveDot(s string,i int){
 	nombre := string("lista"+strconv.Itoa(i)+".pdf")
 	f, err := os.Create("lista.dot")
@@ -599,13 +670,11 @@ func getStringMonth(s int)string{
 	return "0"
 }
 
+
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
-	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})
-	methods := handlers.AllowedMethods([]string{"GET","PUT","POST","DELETE"})
-	origins := handlers.AllowedOrigins([]string{"*"})
-	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
 	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
@@ -613,8 +682,13 @@ func main() {
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
 	router.HandleFunc("/guardar", SaveStuff).Methods("GET")
+	router.HandleFunc("/obtenerTiendas", getShops).Methods("GET")
+	router.HandleFunc("/obtenerTiendas/{id}", getProducts).Methods("GET")
+	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
-
+	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET","PUT","POST","DELETE"})
+	origins := handlers.AllowedOrigins([]string{"*"})
 	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 }

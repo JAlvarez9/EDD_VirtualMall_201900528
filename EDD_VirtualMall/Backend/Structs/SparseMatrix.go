@@ -138,7 +138,7 @@ func (this *SperseMatrix)createX(dia int) *NodeX {
 		return nueva
 	}
 	var sup interface{} = this.HeadX
-	if dia > sup.(*NodeX).Dia {
+	if dia <= sup.(*NodeX).Dia {
 		nueva := &NodeX{
 			Dia:   dia,
 			Right: nil,
@@ -182,42 +182,42 @@ func (this *SperseMatrix)createX(dia int) *NodeX {
 
 }
 
-func (this *SperseMatrix)getLastY(header *NodeY, ascci int)interface{} {
+func (this *SperseMatrix)getLastY(header *NodeX, ascci int)interface{} {
 	if header.Down ==nil {
 		return header
 	}
 	sup := header.Down
-	if ascci <= sup.(*NodeY).Ascii {
+	if ascci <= sup.(*NodeMatrix).Ascii {
 		return header
 	}
-	for sup.(*NodeY).Down != nil {
-		if ascci > sup.(*NodeY).Ascii && ascci <= sup.(*NodeY).Ascii {
+	for sup.(*NodeMatrix).Down != nil {
+		if ascci > sup.(*NodeMatrix).Ascii && ascci <= sup.(*NodeMatrix).Down.(*NodeMatrix).Ascii {
 			return sup
 		}
-		sup = sup.(*NodeY).Down
+		sup = sup.(*NodeMatrix).Down
 	}
-	if ascci <= sup.(*NodeY).Ascii{
-		return sup.(*NodeY).Up
+	if ascci <= sup.(*NodeMatrix).Ascii{
+		return sup.(*NodeMatrix).Up
 	}
 	return sup
 }
 
-func (this *SperseMatrix)getLastX(header *NodeX, dia int)interface{} {
+func (this *SperseMatrix)getLastX(header *NodeY, dia int)interface{} {
 	if header.Right ==nil {
 		return header
 	}
 	sup := header.Right
-	if dia <= sup.(*NodeX).Dia  {
+	if dia <= sup.(*NodeMatrix).Dia  {
 		return header
 	}
-	for sup.(*NodeX).Right != nil {
-		if dia > sup.(*NodeX).Dia && dia <= sup.(*NodeX).Dia {
+	for sup.(*NodeMatrix).Right != nil {
+		if dia > sup.(*NodeMatrix).Dia && dia <= sup.(*NodeMatrix).Right.(*NodeMatrix).Dia {
 			return sup
 		}
-		sup = sup.(*NodeX).Right
+		sup = sup.(*NodeMatrix).Right
 	}
-	if dia <= sup.(*NodeX).Dia{
-		return sup.(*NodeX).Left
+	if dia <= sup.(*NodeMatrix).Dia{
+		return sup.(*NodeMatrix).Left
 	}
 	return sup
 }
@@ -232,9 +232,9 @@ func (this *SperseMatrix)Add(nuevo *NodeMatrix) {
 	if horizontal == nil{
 		horizontal = this.createX(nuevo.Dia)
 	}
-	superior := this.getLastX(horizontal.(*NodeX), nuevo.Dia)
-	izquierda := this.getLastY(vertical.(*NodeY), nuevo.Ascii)
-	if reflect.TypeOf(izquierda).String() == "*main.NodeMatrix" {
+	izquierda := this.getLastX(vertical.(*NodeY), nuevo.Dia)
+	superior := this.getLastY(horizontal.(*NodeX), nuevo.Ascii)
+	if reflect.TypeOf(izquierda).String() == "*Structs.NodeMatrix" {
 		if izquierda.(*NodeMatrix).Right == nil {
 			izquierda.(*NodeMatrix).Right = nuevo
 			nuevo.Left = izquierda
@@ -243,7 +243,7 @@ func (this *SperseMatrix)Add(nuevo *NodeMatrix) {
 			izquierda.(*NodeMatrix).Right = nuevo
 			nuevo.Left = izquierda
 			temp.(*NodeMatrix).Left = nuevo
-			nuevo.Left = temp
+			nuevo.Right = temp
 		}
 	}else{
 		if izquierda.(*NodeY).Right == nil  {
@@ -253,14 +253,14 @@ func (this *SperseMatrix)Add(nuevo *NodeMatrix) {
 			temp := izquierda.(*NodeY).Right
 			izquierda.(*NodeY).Right = nuevo
 			nuevo.Left = izquierda
-			temp.(*NodeMatrix).Right = nuevo
+			temp.(*NodeMatrix).Left = nuevo
 			nuevo.Right = temp
 		}
 		
 	}
 
 	/* SUPERIOR xd */
-	if reflect.TypeOf(superior).String() == "*main.NodeMatrix" {
+	if reflect.TypeOf(superior).String() == "*Structs.NodeMatrix" {
 		if superior.(*NodeMatrix).Down == nil{
 			superior.(*NodeMatrix).Down = nuevo
 			nuevo.Up = superior
@@ -315,8 +315,8 @@ func (this *SperseMatrix) Imprimir2() {
 
 func (this *SperseMatrix)Graphviz(){
 	var cadenita strings.Builder
-	var sizeX int
-	var sizeY int
+	//var sizeX int
+	//var sizeY int
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
 	fmt.Fprintf(&cadenita, "node [shape=box] \n")
 	fmt.Fprintf(&cadenita, " Mt[ label = \"Matrix\", width = 1.5, style = filled, fillcolor = firebrick1, group = 1 ]; \n")
@@ -326,14 +326,14 @@ func (this *SperseMatrix)Graphviz(){
 	cont := 0
 	for aux != nil  {
 
-		fmt.Fprintf(&cadenita, "node%v [label = \"%s\"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; \n",&(*aux.(*NodeY)),aux.(*NodeY).Departamento)
+		fmt.Fprintf(&cadenita, "node%p [label = \"%s\"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; \n",aux.(*NodeY),aux.(*NodeY).Departamento)
 		if aux.(*NodeY).Down != nil {
-			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(*aux.(*NodeY)),&(aux.(*NodeY).Down))
-			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(aux.(*NodeY).Down),&(*aux.(*NodeY)))
+			fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeY),aux.(*NodeY).Down)
+			fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeY).Down,aux.(*NodeY))
 		}
 
 		aux = aux.(*NodeY).Down
-		sizeY = cont
+		//sizeY = cont
 		cont++
 	}
 
@@ -341,43 +341,86 @@ func (this *SperseMatrix)Graphviz(){
 	cont = 0
 	for aux != nil  {
 
-		fmt.Fprintf(&cadenita, "node%v [label = \"%d\"    width = 1.5 style = filled, fillcolor = bisque1, group = %v ]; \n",&(*aux.(*NodeX)),aux.(*NodeX).Dia,cont+2)
+		fmt.Fprintf(&cadenita, "node%p [label = \"%d\"    width = 1.5 style = filled, fillcolor = bisque1, group = %v ]; \n",aux.(*NodeX),aux.(*NodeX).Dia,cont+2)
 		if aux.(*NodeX).Right != nil {
-			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(*aux.(*NodeX)),&(aux.(*NodeX).Right))
-			fmt.Fprintf(&cadenita, "node%v -> node%v; \n",&(aux.(*NodeX).Right),&(*aux.(*NodeX)))
+			fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeX),aux.(*NodeX).Right)
+			fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeX).Right,aux.(*NodeX))
 		}
 
 		aux = aux.(*NodeX).Right
-		sizeX = cont
+		//sizeX = cont
 		cont++
 	}
 	aux = this.HeadY
-	fmt.Fprintf(&cadenita, "Mt -> %v \n",&(*aux.(*NodeY)) )
+	fmt.Fprintf(&cadenita, "Mt -> node%p \n",aux.(*NodeY) )
 	aux = this.HeadX
-	fmt.Fprintf(&cadenita, "Mt -> %v \n",&(*aux.(*NodeX)))
+	fmt.Fprintf(&cadenita, "Mt -> node%p \n",aux.(*NodeX))
 
 	aux = this.HeadX
 	fmt.Fprintf(&cadenita, "{ rank = same; Mt;  ")
+
 	for aux != nil {
-		cont := 0
-		fmt.Fprintf(&cadenita, "A%v;", cont)
+		fmt.Fprintf(&cadenita, "node%p;", aux.(*NodeX))
 		aux = aux.(*NodeX).Right
-		cont++
 
 	}
 	fmt.Fprintf(&cadenita, "} \n")
-	for i:= 0; i < sizeY+1 ;i++{
-		for j:=0;j<sizeX+1;j++ {
+	aux = this.HeadY
+	cont = 0
+	var aux2 interface{}
 
-			fmt.Fprintf(&cadenita, "N%v_L%v [label = \"EJemplo\" width = 1.5, group = %v ]; \n", j,i,j+2)
+	aux = this.HeadX
+	cont =0
+	for aux != nil{
+
+		aux2 = aux.(*NodeX).Down
+		fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeX),aux2.(*NodeMatrix))
+		for aux2 != nil{
+			fmt.Fprintf(&cadenita, "node%p [label = \"Nodito\" style = filled, fillcolor = darkolivegreen2\t width = 1.5, group = %v ]; \n",aux2.(*NodeMatrix),cont+2)
+			if aux2.(*NodeMatrix).Down != nil {
+				fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux2.(*NodeMatrix),aux2.(*NodeMatrix).Down)
+				fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux2.(*NodeMatrix).Down,aux2.(*NodeMatrix))
+			}
+			aux2 = aux2.(*NodeMatrix).Down
 		}
+		aux = aux.(*NodeX).Right
+		cont++
 	}
-	for i:= 0; i < sizeY+1 ;i++ {
-		for j := 0; j < sizeX+1; j++ {
-			fmt.Fprintf(&cadenita, "} \n")
+	aux = this.HeadY
+	for aux != nil{
+		cont =0
+		aux2 = aux.(*NodeY).Right
+		fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux.(*NodeY),aux2.(*NodeMatrix))
+		for aux2 != nil{
+
+			if aux2.(*NodeMatrix).Right != nil {
+				fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux2.(*NodeMatrix),aux2.(*NodeMatrix).Right)
+				fmt.Fprintf(&cadenita, "node%p -> node%p; \n",aux2.(*NodeMatrix).Right,aux2.(*NodeMatrix))
+			}
+			aux2 = aux2.(*NodeMatrix).Right
+			cont++
 		}
+		aux = aux.(*NodeY).Down
+		cont++
 	}
-		fmt.Fprintf(&cadenita, "U0 -> N0_L0; \n")
+	aux = this.HeadY
+	for aux != nil{
+		aux2 = aux.(*NodeY).Right
+		fmt.Fprintf(&cadenita, "{ rank = same; node%p; ",aux.(*NodeY))
+		for aux2 != nil{
+			fmt.Fprintf(&cadenita, "node%p;", aux2.(*NodeMatrix))
+			aux2 = aux2.(*NodeMatrix).Right
+
+		}
+		fmt.Fprintf(&cadenita, "} \n")
+
+		aux = aux.(*NodeY).Down
+
+	}
+
+	fmt.Fprintf(&cadenita, "} \n")
+
+
 
 	fmt.Print(cadenita.String())
 

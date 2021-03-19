@@ -145,7 +145,7 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 	json.Unmarshal(reqBody, &newDoc)
 
 	for _, pedido := range newDoc.Pedidos {
-		fmt.Println(pedido.Fecha)
+		//fmt.Println(pedido.Fecha)
 		supp := Structs.Stack{
 			Top:  nil,
 			Size: 0,
@@ -173,12 +173,13 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 		}
 
 		pedidios.AddYear(&aux)
-		vere := pedidios.SearchYear(aux.Year)
-		vere2:=vere.Monts.SearchMonth(aux.Month)
-		vere2.Matrix.Graphviz()
-		fmt.Println("asd")
+
 	}
-	fmt.Print("asd")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
+	json.NewEncoder(w).Encode(error)
+	//fmt.Print("asd")
 
 }
 
@@ -224,7 +225,7 @@ func Search(w http.ResponseWriter, r *http.Request){
 	}else {
 		fmt.Fprintf(w,"We don't found that store please check your values")
 	}
-	fmt.Print("asd")
+	//fmt.Print("asd")
 }
 
 func ShowList (w http.ResponseWriter, r *http.Request){
@@ -559,6 +560,19 @@ func getArbolito(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getMatrix(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	elements := strings.Split(vars["id"],"-")
+	year, _ := strconv.Atoi(elements[0])
+	month, _ := strconv.Atoi(elements[1])
+	monthUsed := pedidios.SearchYear(year)
+	sperceMatrix := monthUsed.Monts.SearchMonth(month)
+
+	sperceMatrix.Matrix.Graphviz()
+
+
+}
+
 func saveDot(s string,i int){
 	nombre := string("lista"+strconv.Itoa(i)+".pdf")
 	f, err := os.Create("lista.dot")
@@ -685,6 +699,7 @@ func main() {
 	router.HandleFunc("/obtenerTiendas", getShops).Methods("GET")
 	router.HandleFunc("/obtenerTiendas/{id}", getProducts).Methods("GET")
 	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
+	router.HandleFunc("/obtenerMatriz/{id}", getMatrix).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})

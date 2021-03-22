@@ -2,6 +2,7 @@ package Structs
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -216,6 +217,23 @@ func (this *ListYear)SearchYear(year int) *NodeYear {
 	return nil
 }
 
+func (this *ListYear)GetYeats() []Anios  {
+	aux := this.first
+	if aux == nil{
+		return nil
+	}
+	var sup []Anios
+	for aux!= nil{
+		aux2 := Anios{
+			Year:   strconv.Itoa(aux.Year),
+			Months: aux.Monts.getMonths(),
+		}
+		sup = append(sup,aux2)
+		aux = aux.Next
+	}
+	return sup
+}
+
 func (this *ListYear)AddYear(nuevo *NodeMatrix) {
 	aux := this.SearchYear(nuevo.Year)
 	if aux != nil{
@@ -275,6 +293,21 @@ func (this *ListMonth)SearchMonth(month int) *NodeMonth {
 	}
 	return nil
 
+}
+
+func (this *ListMonth)getMonths() []string {
+	aux := this.first
+	if aux == nil{
+		return nil
+	}
+	var sup []string
+	for aux!= nil{
+		ayudita := aux.MontjString+"("+strconv.Itoa(aux.Mont)+")"
+		sup = append(sup, ayudita )
+		aux = aux.Next
+	}
+
+	return sup
 }
 
 func (this *ListMonth)AddMonth(nuevo *NodeMatrix) {

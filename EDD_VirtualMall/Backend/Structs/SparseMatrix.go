@@ -2,8 +2,13 @@ package Structs
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"os/exec"
 	"reflect"
 	"strings"
+	"strconv"
 )
 
 type (
@@ -422,10 +427,32 @@ func (this *SperseMatrix)Graphviz(){
 
 
 
-	fmt.Print(cadenita.String())
+	savedotMatriz(cadenita.String(), strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Year) +"-" +strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Month) )
 
 
 
+}
+
+func savedotMatriz(s string, i string) {
+
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("Matriz"+i+".png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\matriz.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\matriz.dot -o "+path+"\\Matrices\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
 }
 
 

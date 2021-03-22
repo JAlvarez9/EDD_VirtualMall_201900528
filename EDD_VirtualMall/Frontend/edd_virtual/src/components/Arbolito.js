@@ -1,28 +1,30 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { Image } from 'semantic-ui-react'
 
-const axios = require ('axios')
+const axios = require('axios')
 function Arbolito(props) {
     let id = props.match.params.id
-    const [products, setproducts] = useState([])
-    const [loading, setloading] = useState(false)
-    useEffect(() => {
-        async function obtener() {
-            if (products.length === 0) {
-                const data = await axios.get(`http://localhost:3000/obtenerTiendas/${id}`);
-                if (data.status !== 204) {
-                    console.log(data.data)
-                    setproducts(data.data)
-                    setloading(true)
-                }
+    var contacto = id.split("$")
+    function mostrar(){
+        const data = axios.get(`http://localhost:3000/arbolito/${contacto[1]}`);  
+        console.log(contacto[1])
+        
+        return "http://localhost:3000/arbolito/"+contacto[1]
+        
 
-            }
-        }
-        obtener()
-    });
+    }
+
+    const [imagen] = useState(mostrar())
+    console.log(imagen)
+    
+
+    const data = axios.get(`http://localhost:3000/obtenerArbolito/${id}`);
+    console.log(data)
     return (
-        <Image src='/images/wireframe/image.png' fluid />
+        <Image src={ imagen }></Image>
     )
+
+
 }
 
 export default Arbolito

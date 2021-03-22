@@ -17,6 +17,7 @@ function MosaicoP(props) {
                         tienda={c.Tienda}
                         departa={c.Departamento}
                         califi={c.Calificacion}
+                        conta={c.Contacto}
                     />
                 ))}
             </div>

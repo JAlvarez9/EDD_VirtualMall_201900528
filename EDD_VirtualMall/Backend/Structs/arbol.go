@@ -2,6 +2,8 @@ package Structs
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -188,17 +190,18 @@ func (this *TreeAVL)Generate()  {
 	fmt.Fprintf(&cadena, "digraph G{\n")
 	fmt.Fprintf(&cadena, "node[shape=\"record\"];\n")
 	if this.Root != nil {
-		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code: %v|<f2> Name:%v |<f3> Mount:%v  | <f4>\"];\n",&(*this.Root),this.Root.Productos.Codigo, this.Root.Productos.Nombre,this.Root.Productos.Cantidad)
+		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code: %v|<f2> Name:%v |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n",&(*this.Root),this.Root.Productos.Codigo, this.Root.Productos.Nombre,this.Root.Productos.Cantidad)
 		this.generate(&cadena, (this.Root), this.Root.Left, true)
 		this.generate(&cadena, this.Root, this.Root.Right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	savedot(cadena.String(),*this.Root.Tienda )
+	savedot(cadena.String(),this.Root.Productos.Contacto)
+
 }
 
 func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *NodeTree, izquierda bool)  {
 	if actual != nil {
-		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code: %v|<f2> Name:%s |<f3> Mount:%v  | <f4>\"];\n",&(*actual),actual.Productos.Codigo, actual.Productos.Nombre,actual.Productos.Cantidad)
+		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code: %v|<f2> Name:%s |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n",&(*actual),actual.Productos.Codigo, actual.Productos.Nombre,actual.Productos.Cantidad)
 		if izquierda {
 			fmt.Fprintf(cadena, "node%p:f0 -> node%p:f2 \n",&(*padre),&(*actual))
 		}else {
@@ -209,30 +212,25 @@ func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *
 	}
 }
 
-func savedot(s string, i string)  {
-	nombre := string("Arbol"+ i +".pdf")
-	nombre = strings.Replace(nombre," ","_",-1)
-	f, err := os.Create("arbol.dot")
-	if err != nil{
-		fmt.Println("There was an error!")
-	}
-	l, err := f.WriteString(s)
-	if err != nil{
-		fmt.Println("There was an error!")
-		f.Close()
-		return
-	}
-	fmt.Println(l,"Created Succesfully")
-	p := "dot -Tpdf arbol.dot -o " + nombre
+func savedot(s string, i string) {
 
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("Arbol"+i+".png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\arbol.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\arbol.dot -o "+path+"\\Imagenes\\" + nombre
 	args := strings.Split(p, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("A ocurrido un error", err)
-
+		fmt.Printf("%s\n", b)
 	}
-	fmt.Printf("%s\n", b)
 }
 

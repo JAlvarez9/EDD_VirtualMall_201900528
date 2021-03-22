@@ -120,6 +120,7 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 					product.Tienda = inven.Tienda
 					product.Departamento = inven.Departamento
 					product.Calificacion = finded.Calificacion
+					product.Contacto = finded.Contacto
 					finded.Arbolito.Insert(product, &inven.Departamento, &inven.Departamento, &inven.Calificacion)
 				}
 
@@ -557,19 +558,21 @@ func getArbolito(w http.ResponseWriter, r *http.Request) {
 	ShopList := tiendas2[vectorPos]
 	selectShop := ShopList.GetShop(elements[1])
 	selectShop.Arbolito.Generate()
-
 }
 
 func getMatrix(w http.ResponseWriter, r *http.Request) {
+
 	vars := mux.Vars(r)
 	elements := strings.Split(vars["id"],"-")
-	year, _ := strconv.Atoi(elements[0])
-	month, _ := strconv.Atoi(elements[1])
+	year, err := strconv.Atoi(elements[0])
+	month, err2 := strconv.Atoi(elements[1])
+	if err != nil && err2 != nil {
+		fmt.Println("error")
+	}
 	monthUsed := pedidios.SearchYear(year)
 	sperceMatrix := monthUsed.Monts.SearchMonth(month)
 
 	sperceMatrix.Matrix.Graphviz()
-
 
 }
 
@@ -684,7 +687,28 @@ func getStringMonth(s int)string{
 	return "0"
 }
 
+func mostrarImagenArbolito(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	i, _ :=vars["id"]
+	http.ServeFile(w,r,"Imagenes/Arbol"+i+".png")
 
+}
+
+func mostrarImagenMatriz(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	i, _ :=vars["id"]
+	http.ServeFile(w,r,"Matrices/Matriz"+i+".png")
+
+}
+
+func getYears(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	arreglo := pedidios.GetYeats()
+	json.NewEncoder(w).Encode(arreglo)
+
+}
 
 func main() {
 
@@ -700,8 +724,13 @@ func main() {
 	router.HandleFunc("/obtenerTiendas/{id}", getProducts).Methods("GET")
 	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
 	router.HandleFunc("/obtenerMatriz/{id}", getMatrix).Methods("GET")
+	router.HandleFunc("/obtenerYears", getYears).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
+	router.HandleFunc("/arbolito/{id}", mostrarImagenArbolito)
+	router.HandleFunc("/matriz/{id}", mostrarImagenMatriz)
+
+
 	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET","PUT","POST","DELETE"})
 	origins := handlers.AllowedOrigins([]string{"*"})

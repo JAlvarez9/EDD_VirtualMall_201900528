@@ -27,6 +27,7 @@ type (
 		Departamento string `json:"Departamento,omitempty"`
 		Tienda       string `json:"Tienda,omitempty"`
 		Calificacion int    `json:Calificacion,omitempty`
+		Contacto 	 string    `json:Contacto,omitempty`
 	}
 	Inventario struct {
 		Tienda       string      `json:Tienda`
@@ -46,6 +47,7 @@ type (
 		Logo         string   `json:Logo`
 		Arbolito     *TreeAVL `json:"Arbol,omitempty"`
 		Key          string   `json:"Key,omitempty"`
+
 	}
 
 	JsonErrors struct {
@@ -74,5 +76,10 @@ type (
 
 	Shops struct {
 		Tiendas []Tiendas
+	}
+
+	Anios struct {
+		Year string
+		Months []string
 	}
 )

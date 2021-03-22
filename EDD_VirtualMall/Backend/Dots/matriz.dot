@@ -1,0 +1,15 @@
+digraph G{ 
+node [shape=box] 
+ Mt[ label = "Matrix", width = 1.5, style = filled, fillcolor = firebrick1, group = 1 ]; 
+e0[ shape = point, width = 0 ]; 
+e1[ shape = point, width = 0 ]; 
+node0xc00010a8a0 [label = "Seguridad y vigilancia"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; 
+node0xc00012e500 [label = "31"    width = 1.5 style = filled, fillcolor = bisque1, group = 2 ]; 
+Mt -> node0xc00010a8a0 
+Mt -> node0xc00012e500 
+{ rank = same; Mt;  node0xc00012e500;} 
+node0xc00012e500 -> node0xc000117e10; 
+node0xc000117e10 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 2 ]; 
+node0xc00010a8a0 -> node0xc000117e10; 
+{ rank = same; node0xc00010a8a0; node0xc000117e10;} 
+} 

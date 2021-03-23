@@ -1,84 +1,107 @@
-import React, { useState, useEffect } from 'react'
-import {  Image, Grid, Input, Button } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Modal, Icon, Image, Grid, Button } from 'semantic-ui-react'
 import MenuLateral from './MenuCargarPedidos'
+import Tablita from './TablaPedidos'
 
 const axios = require('axios')
-function obtenerMatriz(fecha) {
-    axios.get(`http://localhost:3000/obtenerMatriz/${fecha}`);
-
-}
 function MostrarPedidos() {
-    const [years, setyears] = useState([])
-    const [loading, setloading] = useState(false)
+    //var obtener = ""
+    const [open, setOpen] = useState(false)
     const [obtener, setobtener] = useState("")
+    const [arPedidos, setarPedidos] = useState([])
+    const encabezados = ["Fecha", "Tienda", "Departamento", "Productos"]
+    const obtenerMatriz = () => {
 
-    console.log(obtener)
+        setobtener((document.getElementById("years")).value)
+        console.log(obtener)
+        axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
 
-
-    useEffect(() => {
-        async function obtener() {
-            if (years.length === 0) {
-                const data = await axios.get(`http://localhost:3000/obtenerYears`);
-                if (data.status !== 204) {
-                    console.log(data.data)
-                    setyears(data.data)
-                    setloading(true)
-                }
-
-            }
-        }
-        obtener()
-    });
-    if (loading === false) {
-        return (
-            <div className="ui segment carga">
-                <div className="ui active dimmer">
-                    <div className="ui text loader">Loading</div>
-                </div>
-                <p />
-            </div>
-        )
-    } else {
-        return (
-
-            <Grid celled>
-                <Grid.Row>
-                    <Grid.Column width={3}>
-
-                        <MenuLateral
-                            years={years}
-                        />
-
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Input placeholder='YYYY-MM' onChange={e => setobtener(e.target.value)} />
-                        <Button secondary floated="left" onClick={obtenerMatriz(obtener)}> Generar Matriz </Button>
-                    </Grid.Column>
-                </Grid.Row>
-
-                <Grid.Row>
-                    <Grid.Column width={3}>
-                        <Button.Group vertical>
-                            <Button secondary>Generar Matriz</Button>
-                            <Button secondary>Guardar Estructura Years</Button>
-                            <Button secondary>Guardar Estructura de Meses</Button>
-                            <Button secondary>Guardar Pedidos por Dia</Button>
-                        </Button.Group>
-                    </Grid.Column>
-                    <Grid.Column width={10}>
-                        <Image src={`http://localhost:3000/matriz/${obtener}`}></Image>
-                    </Grid.Column>
-                    <Grid.Column width={3}>
-                        <Input placeholder="Departamento"></Input>
-                        <Input placeholder="Dia"></Input>
-                        <Button secondary> Observar Pedidos </Button>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-
-
-        )
     }
+
+    const pedidos = () => {
+        const name = (document.getElementById("depa")).value
+        const dia = (document.getElementById("dia")).value
+
+        let aux2 = obtener + "$" + dia + "$" + name
+        const id = aux2
+
+        const asdf = async function () {
+            const data = await axios.get(`http://localhost:3000/obtenerPedidos/${id}`);
+            setarPedidos(data.data)
+        }
+        asdf()
+
+
+    }
+    return (
+
+        <Grid celled>
+            <Grid.Row>
+                <Grid.Column width={3}>
+
+                    <MenuLateral />
+
+                </Grid.Column>
+                <Grid.Column width={8}>
+
+                    <div class="ui input">
+                        <input id="years" type="text" placeholder="YYYY-MM" />
+                    </div>
+                    <Button secondary floated="left" onClick={obtenerMatriz}> Generar Matriz </Button>
+                </Grid.Column>
+            </Grid.Row>
+
+            <Grid.Row>
+                <Grid.Column width={3}>
+                    <Button.Group vertical>
+
+                        <button  download="matriz.png" href={`http://localhost:3000/matriz/${obtener}`} class="ui secondary button">
+                           Descargar Matriz
+                        </button>
+                        <Button secondary>Guardar Estructura Years</Button>
+                        <Button secondary>Guardar Estructura de Meses</Button>
+                        <Button secondary>Guardar Pedidos por Dia</Button>
+                    </Button.Group>
+                </Grid.Column>
+                <Grid.Column width={10}>
+                    <Image src={`http://localhost:3000/matriz/${obtener}`}></Image>
+                </Grid.Column>
+                <Grid.Column width={3}>
+                    <div class="ui input">
+                        <input id="depa" type="text" placeholder="Departamento" />
+                    </div>
+                    <div class="ui input">
+                        <input id="dia" type="text" placeholder="Dia" />
+                    </div>
+                    <Modal
+                        onClose={() => setOpen(false)}
+                        onOpen={() => setOpen(true)}
+                        open={open}
+                        trigger={<Button onClick={pedidos}>Observar Pedidos</Button>}
+                    >
+                        <Modal.Header>Pedidos</Modal.Header>
+                        <Modal.Content >
+                            <Tablita
+                                enca={encabezados}
+                                data={arPedidos}
+                            />
+
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button negative onClick={() => setOpen(false)}>
+                                <Icon name="trash" /> Cerrar
+                            </Button>
+
+                        </Modal.Actions>
+                    </Modal>
+
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+
+
+    )
+
 }
 
 export default MostrarPedidos

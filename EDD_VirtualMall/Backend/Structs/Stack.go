@@ -50,3 +50,15 @@ func (this *Stack)Pop() *Pedidos{
 func (this *Stack)First() *Pedidos{
 	return &this.Top.Value
 }
+
+func (this *Stack)ArregloPedidos() []Pedidos {
+	aux:= this.Top
+	var sup []Pedidos
+	for aux != nil{
+		sup = append(sup,aux.Value)
+
+		aux = aux.Next
+	}
+	return sup
+
+}

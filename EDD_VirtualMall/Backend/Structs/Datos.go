@@ -82,4 +82,22 @@ type (
 		Year string
 		Months []string
 	}
+
+	Producto2 struct {
+		Nombre string
+		Codigo int
+	}
+
+	ShowingPedidos struct {
+		Fecha string
+		Tiendas string
+		Departamento string
+		Producto [] string
+
+	}
+
+	ArregloPedidos struct {
+		Pedidos []ShowingPedidos
+	}
+
 )

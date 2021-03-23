@@ -3,13 +3,54 @@ node [shape=box]
  Mt[ label = "Matrix", width = 1.5, style = filled, fillcolor = firebrick1, group = 1 ]; 
 e0[ shape = point, width = 0 ]; 
 e1[ shape = point, width = 0 ]; 
-node0xc00010a8a0 [label = "Seguridad y vigilancia"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; 
-node0xc00012e500 [label = "31"    width = 1.5 style = filled, fillcolor = bisque1, group = 2 ]; 
-Mt -> node0xc00010a8a0 
-Mt -> node0xc00012e500 
-{ rank = same; Mt;  node0xc00012e500;} 
-node0xc00012e500 -> node0xc000117e10; 
-node0xc000117e10 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 2 ]; 
-node0xc00010a8a0 -> node0xc000117e10; 
-{ rank = same; node0xc00010a8a0; node0xc000117e10;} 
+node0xc000050fc0 [label = "Television y video"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; 
+node0xc000050fc0 -> node0xc000050f00; 
+node0xc000050f00 -> node0xc000050fc0; 
+node0xc000050f00 [label = "Seguridad y vigilancia"    width = 1.5 style = filled, fillcolor = bisque1, group = 1 ]; 
+node0xc000052b90 [label = "13"    width = 1.5 style = filled, fillcolor = bisque1, group = 2 ]; 
+node0xc000052b90 -> node0xc000052cd0; 
+node0xc000052cd0 -> node0xc000052b90; 
+node0xc000052cd0 [label = "16"    width = 1.5 style = filled, fillcolor = bisque1, group = 3 ]; 
+node0xc000052cd0 -> node0xc000052d20; 
+node0xc000052d20 -> node0xc000052cd0; 
+node0xc000052d20 [label = "23"    width = 1.5 style = filled, fillcolor = bisque1, group = 4 ]; 
+node0xc000052d20 -> node0xc000052be0; 
+node0xc000052be0 -> node0xc000052d20; 
+node0xc000052be0 [label = "30"    width = 1.5 style = filled, fillcolor = bisque1, group = 5 ]; 
+node0xc000052be0 -> node0xc000052c80; 
+node0xc000052c80 -> node0xc000052be0; 
+node0xc000052c80 [label = "31"    width = 1.5 style = filled, fillcolor = bisque1, group = 6 ]; 
+Mt -> node0xc000050fc0 
+Mt -> node0xc000052b90 
+{ rank = same; Mt;  node0xc000052b90;node0xc000052cd0;node0xc000052d20;node0xc000052be0;node0xc000052c80;} 
+node0xc000052b90 -> node0xc000021ba0; 
+node0xc000021ba0 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 2 ]; 
+node0xc000021ba0 -> node0xc000021930; 
+node0xc000021930 -> node0xc000021ba0; 
+node0xc000021930 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 2 ]; 
+node0xc000052cd0 -> node0xc000021d40; 
+node0xc000021d40 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 3 ]; 
+node0xc000052d20 -> node0xc000021e10; 
+node0xc000021e10 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 4 ]; 
+node0xc000052be0 -> node0xc000021a00; 
+node0xc000021a00 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 5 ]; 
+node0xc000052c80 -> node0xc000021c70; 
+node0xc000021c70 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 6 ]; 
+node0xc000021c70 -> node0xc000021ee0; 
+node0xc000021ee0 -> node0xc000021c70; 
+node0xc000021ee0 [label = "Nodito" style = filled, fillcolor = darkolivegreen2	 width = 1.5, group = 6 ]; 
+node0xc000050fc0 -> node0xc000021ba0; 
+node0xc000021ba0 -> node0xc000021e10; 
+node0xc000021e10 -> node0xc000021ba0; 
+node0xc000021e10 -> node0xc000021a00; 
+node0xc000021a00 -> node0xc000021e10; 
+node0xc000021a00 -> node0xc000021c70; 
+node0xc000021c70 -> node0xc000021a00; 
+node0xc000050f00 -> node0xc000021930; 
+node0xc000021930 -> node0xc000021d40; 
+node0xc000021d40 -> node0xc000021930; 
+node0xc000021d40 -> node0xc000021ee0; 
+node0xc000021ee0 -> node0xc000021d40; 
+{ rank = same; node0xc000050fc0; node0xc000021ba0;node0xc000021e10;node0xc000021a00;node0xc000021c70;} 
+{ rank = same; node0xc000050f00; node0xc000021930;node0xc000021d40;node0xc000021ee0;} 
 } 

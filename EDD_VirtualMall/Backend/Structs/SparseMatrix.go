@@ -290,6 +290,25 @@ func (this *SperseMatrix)Add(nuevo *NodeMatrix) {
 	}
 }
 
+func (this *SperseMatrix) ObtenerNodito(headx int, heady int) *NodeMatrix  {
+	var aux interface{} = this.HeadX
+	for aux != nil{
+		if aux.(*NodeX).Dia == headx{
+			var sup = aux.(*NodeX).Down
+			for sup != nil{
+				if sup.(*NodeMatrix).Ascii == heady{
+					return sup.(*NodeMatrix)
+				}
+				sup = sup.(*NodeMatrix).Down
+			}
+
+		}
+		aux = aux.(*NodeX).Right
+	}
+
+	return nil
+}
+
 func (this *SperseMatrix) Imprimir() {
 	var aux interface{} = this.HeadY
 	for aux != nil {

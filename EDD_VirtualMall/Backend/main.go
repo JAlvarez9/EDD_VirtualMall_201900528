@@ -576,6 +576,52 @@ func getMatrix(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getPedidos(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	i, _ :=vars["id"]
+	is := strings.Split(i,"$")
+	var datos []string
+
+	var finded *Structs.Tiendas
+	var position int
+	datos = strings.Split(is[0],"-")
+	aux,_ := strconv.Atoi(datos[0])
+	monthUsed:= pedidios.SearchYear(aux)
+	aux,_ = strconv.Atoi(datos[1])
+	sperceMatrix := monthUsed.Monts.SearchMonth(aux)
+	aux2,_ := strconv.Atoi(is[1])
+	aux3 := strings.Replace(is[2],"_"," ",-1)
+
+	pedidos := sperceMatrix.Matrix.ObtenerNodito(aux2,convertAscii(aux3))
+	arregloPedidos := pedidos.StackPedidos.ArregloPedidos()
+	var pedidosEnviar []Structs.ShowingPedidos
+	for _, pedi := range arregloPedidos{
+		sup := Structs.PedidosS{
+			Departamento: pedi.Departamento,
+			Nombre:       pedi.Tienda,
+			Calificacion: pedi.Calificacion,
+		}
+		position = searchingVectorS(&sup)
+		finded = tiendas2[position].Search(&sup)
+		var sup3 [] string
+		sup2 := Structs.ShowingPedidos{
+			Fecha:        pedi.Fecha,
+			Tiendas:      pedi.Tienda,
+			Departamento: pedi.Departamento,
+			Producto:     sup3,
+		}
+		for _, codProd := range pedi.Productos{
+			aux4 := finded.Arbolito.SearchPrduc(codProd.Codigo)
+			sup2.Producto = append(sup2.Producto, *aux4)
+		}
+		pedidosEnviar = append(pedidosEnviar, sup2)
+
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(pedidosEnviar)
+}
+
 func saveDot(s string,i int){
 	nombre := string("lista"+strconv.Itoa(i)+".pdf")
 	f, err := os.Create("lista.dot")
@@ -725,6 +771,7 @@ func main() {
 	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
 	router.HandleFunc("/obtenerMatriz/{id}", getMatrix).Methods("GET")
 	router.HandleFunc("/obtenerYears", getYears).Methods("GET")
+	router.HandleFunc("/obtenerPedidos/{id}", getPedidos).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 	router.HandleFunc("/arbolito/{id}", mostrarImagenArbolito)

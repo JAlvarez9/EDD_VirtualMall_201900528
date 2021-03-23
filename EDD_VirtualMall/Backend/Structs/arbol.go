@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -183,6 +184,26 @@ func (this *TreeAVL) Insert(p Productos,tienda *string, depa *string, cali *int)
 	b := false
 	a := &b
 	this.Root = insertar(this.Root,p,a,tienda,depa,cali)
+}
+
+func (this *TreeAVL)SearchPrduc(codigo int) *string {
+	var product *string
+	if this.Root != nil{
+		product = busqueda(this.Root,codigo, product)
+	}
+	return product
+}
+
+func busqueda(root *NodeTree, codigo int, product *string) *string{
+	if root != nil{
+		if codigo == root.Productos.Codigo{
+			aux := root.Productos.Nombre +"||" +strconv.Itoa(root.Productos.Codigo)
+			return &aux
+		}
+		product = busqueda(root.Left,codigo, product)
+		product = busqueda(root.Right,codigo, product)
+	}
+	return product
 }
 
 func (this *TreeAVL)Generate()  {

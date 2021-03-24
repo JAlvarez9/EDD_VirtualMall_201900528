@@ -3,7 +3,26 @@ import { Table, Button } from 'semantic-ui-react'
 import Fila from './Fila'
 
 
+
+const axios = require('axios')
 function Tablita(props) {
+    
+    const mandarPedidos = () => {
+            
+        
+        axios.post('http://localhost:3000/carrito',
+          props.data,
+          { headers: { 'content-type': 'application/json' } }
+        ).then(data => {
+          alert('file uploaded')
+          console.log(props.data)
+          window.localStorage.clear();
+        }).catch(e => {
+          alert('error')
+          console.log(e)
+        })
+      
+      }
 
     return (
         <Table celled padded>
@@ -28,7 +47,7 @@ function Tablita(props) {
             <Table.Footer fullWidth>
                 <Table.Row>
                     <Table.HeaderCell colSpan='4'>
-                    <Button positive floated='right'>Confirmar Compra</Button>
+                    <Button positive floated='right' onClick={mandarPedidos}>Confirmar Compra</Button>
                     </Table.HeaderCell>
                 </Table.Row>
             </Table.Footer>

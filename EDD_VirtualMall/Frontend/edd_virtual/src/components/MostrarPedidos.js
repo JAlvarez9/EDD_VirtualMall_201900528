@@ -9,13 +9,19 @@ function MostrarPedidos() {
     const [open, setOpen] = useState(false)
     const [obtener, setobtener] = useState("")
     const [arPedidos, setarPedidos] = useState([])
+    const [imagen, setimagen] = useState("")
     const encabezados = ["Fecha", "Tienda", "Departamento", "Productos"]
     const obtenerMatriz = () => {
 
         setobtener((document.getElementById("years")).value)
         console.log(obtener)
-        axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
+        const data = axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
 
+    }
+
+    const descargaMatriz = () => {
+        const data = axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
+        setimagen(`data:image/png;base64,${data}`) 
     }
 
     const pedidos = () => {
@@ -55,8 +61,8 @@ function MostrarPedidos() {
                 <Grid.Column width={3}>
                     <Button.Group vertical>
 
-                        <button  download="matriz.png" href={`http://localhost:3000/matriz/${obtener}`} class="ui secondary button">
-                           Descargar Matriz
+                        <button onClick={descargaMatriz} class="ui secondary button" download="Matriz.png" href={imagen}>
+                            Descargar Matriz
                         </button>
                         <Button secondary>Guardar Estructura Years</Button>
                         <Button secondary>Guardar Estructura de Meses</Button>
@@ -64,6 +70,7 @@ function MostrarPedidos() {
                     </Button.Group>
                 </Grid.Column>
                 <Grid.Column width={10}>
+
                     <Image src={`http://localhost:3000/matriz/${obtener}`}></Image>
                 </Grid.Column>
                 <Grid.Column width={3}>

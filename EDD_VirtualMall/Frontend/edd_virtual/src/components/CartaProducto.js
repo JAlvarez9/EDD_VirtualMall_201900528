@@ -7,19 +7,21 @@ import { Icon, Button, Header, Image, Modal, Form, Input } from 'semantic-ui-rea
 
 
 function CartaProducto(props) {
+    let f = new Date();
     const [open, setOpen] = useState(false)
     const [nombre] = useState(props.name)
     const [descripcion] = useState(props.descripcion)
     const [image] = useState(props.image)
-    const [mount] = useState(props.mount)
-    const [price] = useState(props.price)
-    const [id] = useState(props.id)
+    const [mount] = useState(props.mount.toString())
+    const [price] = useState(props.price.toString())
+    const [id] = useState(props.id.toString())
     const [tienda] = useState(props.tienda)
     const [departa] = useState(props.departa)
-    const [califi] = useState(props.califi)
+    const [califi] = useState(props.califi.toString())
     const [cantidad, setcantidad] = useState(0)
-
+    const [fecha] = useState(f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear())
     const enviar = () => {
+        
         var json = [
             nombre,
             descripcion,
@@ -30,19 +32,33 @@ function CartaProducto(props) {
             tienda,
             departa,
             califi,
-            cantidad
+            cantidad,
+            fecha
         ]
         var datos = localStorage.getItem("productos")
         if (datos == null || datos === undefined) {
-            localStorage.setItem("productos", JSON.stringify([json]))
+            if( cantidad <= mount ){
+                localStorage.setItem("productos", JSON.stringify([json]))
+                alert("El producto se agrego al carrito :)")
+                setOpen(false)
+            }else{
+                alert("La cantidad ingresada es mayor a la cantidad dentro de la tienda :( no se agregara al carrito")
+            }
+            
         } else {
-            datos = JSON.parse(datos)
+            if(cantidad <= mount){
+                datos = JSON.parse(datos)
             datos.push(json)
             console.log(datos)
             localStorage.setItem("productos", JSON.stringify(datos))
+            alert("Su producto se agrego al carrito :)")
+            setOpen(false)
+            }else{
+                alert("La cantidad ingresada es mayor a la cantidad dentro de la tienda :( no se agregara al carrito")
+            }
+            
         }
-        alert(JSON.stringify(json))
-        setOpen(false)
+        
     }
 
     return (
@@ -80,7 +96,7 @@ function CartaProducto(props) {
                                 <Form>
                                     <Form.Field inline>
                                         <label>Cantidad deseada</label>
-                                        <Input onChange={e => setcantidad(e.target.value) } icon="edit" iconPosition='left' placeholder='###' />
+                                        <Input onChange={e => setcantidad(e.target.value)} icon="edit" iconPosition='left' placeholder='###' />
                                     </Form.Field>
                                 </Form>
                             </Modal.Description>

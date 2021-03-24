@@ -1,6 +1,8 @@
 package Structs
 
 import (
+	"bufio"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -337,7 +339,7 @@ func (this *SperseMatrix) Imprimir2() {
 	}
 }
 
-func (this *SperseMatrix)Graphviz(){
+func (this *SperseMatrix)Graphviz() string{
 	var cadenita strings.Builder
 	//var sizeX int
 	//var sizeY int
@@ -446,13 +448,13 @@ func (this *SperseMatrix)Graphviz(){
 
 
 
-	savedotMatriz(cadenita.String(), strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Year) +"-" +strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Month) )
-
+	string64 := savedotMatriz(cadenita.String(), strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Year) +"-" +strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Month) )
+	return string64
 
 
 }
 
-func savedotMatriz(s string, i string) {
+func savedotMatriz(s string, i string) string {
 
 	path, err := os.Getwd()
 	if err!=nil{
@@ -472,6 +474,27 @@ func savedotMatriz(s string, i string) {
 		fmt.Printf("A ocurrido un error", err)
 		fmt.Printf("%s\n", b)
 	}
+
+	imgFile, err := os.Open(path+"\\Matrices\\"+nombre) // DIreccion de la imagen
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	defer imgFile.Close()
+
+	// create a new buffer base on file size
+	fInfo, _ := imgFile.Stat()
+	var size int64 = fInfo.Size()
+	buf := make([]byte, size)
+
+	// read file content into buffer
+	fReader := bufio.NewReader(imgFile)
+	fReader.Read(buf)
+
+	imgBase64Str := base64.StdEncoding.EncodeToString(buf)
+	return imgBase64Str
 }
 
 

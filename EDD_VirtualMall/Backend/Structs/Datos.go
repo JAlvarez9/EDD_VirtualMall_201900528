@@ -100,4 +100,24 @@ type (
 		Pedidos []ShowingPedidos
 	}
 
+	Carrito struct {
+		Nombre string
+		Descripcion string
+		Image string
+		Mount int
+		Price float64
+		Id int
+		Tienda string
+		Departamento string
+		Calificacion int
+		Cantidad int
+		Fecha string
+	}
+
+	ValidarPedidos struct {
+		Tienda string
+		Departamento string
+		Calificacion int
+	}
+
 )

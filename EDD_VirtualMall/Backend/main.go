@@ -4,8 +4,6 @@ import (
 	"EDD_VirtualMall/Structs"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,55 +11,56 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
-
-var tiendas2 [] Structs.List
+var tiendas2 []Structs.List
 var pedidios Structs.ListYear
-var cubix [][] Structs.NodeListas
+var cubix [][]Structs.NodeListas
 var sizedep int
 var sizeindex int
-var departa [] string
-var indice [] string
+var departa []string
+var indice []string
 var cont int
 var prueba Structs.Enlace
 
-func example(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintf(w,"Welcome to my REST API of EDD, hopefully you enjoy it! :)")
+func example(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
 	aux := int(06)
 	fmt.Println(aux)
 
-
 }
 
-func cargaArchivos(w http.ResponseWriter, r *http.Request){
+func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 	var newDoc Structs.Enlace
 	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil{
+	if err != nil {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
-	for i, indice := range newDoc.Datos{
-		for j, _ := range indice.Departamentos{
-			sizedep = j+1
+	for i, indice := range newDoc.Datos {
+		for j, _ := range indice.Departamentos {
+			sizedep = j + 1
 		}
-		sizeindex = i+1
+		sizeindex = i + 1
 	}
-	cubix = make([][] Structs.NodeListas, sizeindex)
-	for i:= 0; i < len(newDoc.Datos[0].Departamentos); i++{
-		departa = append(departa, newDoc.Datos[0].Departamentos[i].Nombre )
+	cubix = make([][]Structs.NodeListas, sizeindex)
+	for i := 0; i < len(newDoc.Datos[0].Departamentos); i++ {
+		departa = append(departa, newDoc.Datos[0].Departamentos[i].Nombre)
 	}
-	for i, datos := range newDoc.Datos{
+	for i, datos := range newDoc.Datos {
 
 		indice = append(indice, datos.Indice)
 
 		sup := make([]Structs.NodeListas, sizedep)
-		for j, departamentos := range datos.Departamentos{
+		for j, departamentos := range datos.Departamentos {
 
-			for _, tienda := range departamentos.Tiendas{
+			for _, tienda := range departamentos.Tiendas {
 
-				aux2:= Structs.Node{
+				aux2 := Structs.Node{
 					tienda,
 					departamentos.Nombre,
 					datos.Indice,
@@ -70,15 +69,15 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 					nil,
 				}
 
-				sup = putStore(aux2,sup,j)
+				sup = putStore(aux2, sup, j)
 			}
 		}
 		cubix[i] = sup
 
 	}
 
-	for i:= 0; i< sizedep; i++{
-		for j:=0; j< sizeindex; j++{
+	for i := 0; i < sizedep; i++ {
+		for j := 0; j < sizeindex; j++ {
 
 			tiendas2 = append(tiendas2, cubix[j][i].Lista1)
 			tiendas2 = append(tiendas2, cubix[j][i].Lista2)
@@ -94,10 +93,10 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(error)
 }
 
-func CargarProductos(w http.ResponseWriter, r *http.Request){
+func CargarProductos(w http.ResponseWriter, r *http.Request) {
 	var newDoc Structs.EnlaceInventario
 	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil{
+	if err != nil {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
@@ -105,7 +104,7 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 	var finded *Structs.Tiendas
 	var position int
 
-	for _, inven := range newDoc.Inventarios{
+	for _, inven := range newDoc.Inventarios {
 		sup := Structs.PedidosS{
 			Departamento: inven.Departamento,
 			Nombre:       inven.Tienda,
@@ -113,10 +112,10 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 		}
 		position = searchingVectorS(&sup)
 		finded = tiendas2[position].Search(&sup)
-		if position >= 0 && finded.Nombre != ""{
+		if position >= 0 && finded.Nombre != "" {
 			if finded.Arbolito == nil {
 				finded.Arbolito = Structs.NewArbol()
-				for _, product := range inven.Productos{
+				for _, product := range inven.Productos {
 					product.Tienda = inven.Tienda
 					product.Departamento = inven.Departamento
 					product.Calificacion = finded.Calificacion
@@ -126,7 +125,7 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 
 			}
 
-		}else {
+		} else {
 
 		}
 	}
@@ -136,10 +135,10 @@ func CargarProductos(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(error)
 }
 
-func CargarPedidos(w http.ResponseWriter, r*http.Request){
+func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 	var newDoc Structs.EnlacePedidos
 	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil{
+	if err != nil {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
@@ -161,16 +160,16 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 		aux3 := supp.First()
 		aux := Structs.NodeMatrix{
 			StackPedidos: &supp,
-			Value: *aux3,
-			Year:  getYear(pedido.Fecha),
-			Dia:   getDay(pedido.Fecha),
-			Month: getMonth(pedido.Fecha),
-			MonthString: getStringMonth(getMonth(pedido.Fecha)),
-			Ascii: convertAscii(pedido.Departamento),
-			Right: nil,
-			Left:  nil,
-			Up:    nil,
-			Down:  nil,
+			Value:        *aux3,
+			Year:         getYear(pedido.Fecha),
+			Dia:          getDay(pedido.Fecha),
+			Month:        getMonth(pedido.Fecha),
+			MonthString:  getStringMonth(getMonth(pedido.Fecha)),
+			Ascii:        convertAscii(pedido.Departamento),
+			Right:        nil,
+			Left:         nil,
+			Up:           nil,
+			Down:         nil,
 		}
 
 		pedidios.AddYear(&aux)
@@ -184,21 +183,21 @@ func CargarPedidos(w http.ResponseWriter, r*http.Request){
 
 }
 
-func Deletition(w http.ResponseWriter, r *http.Request){
+func Deletition(w http.ResponseWriter, r *http.Request) {
 	var newDoc Structs.PedidosE
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var contain bool
 	var position int
-	if err != nil{
-		fmt.Fprintf(w,"Insert correct Values")
+	if err != nil {
+		fmt.Fprintf(w, "Insert correct Values")
 	}
 	json.Unmarshal(reqBody, &newDoc)
 	position = searchingVectorE(&newDoc)
 	contain = tiendas2[position].Delete(&newDoc)
-	if contain && position >= 0{
+	if contain && position >= 0 {
 		error := Structs.JsonErrors{Mensaje: "The store was deleted succesfully"}
 		json.NewEncoder(w).Encode(error)
-	}else {
+	} else {
 		error := Structs.JsonErrors{Mensaje: "We don´t find the store check your values"}
 		json.NewEncoder(w).Encode(error)
 	}
@@ -207,63 +206,63 @@ func Deletition(w http.ResponseWriter, r *http.Request){
 
 }
 
-func Search(w http.ResponseWriter, r *http.Request){
+func Search(w http.ResponseWriter, r *http.Request) {
 	var newDoc Structs.PedidosS
 	reqBody, err := ioutil.ReadAll(r.Body)
 	var finded Structs.Tiendas
 	var position int
-	if err != nil{
-		fmt.Fprintf(w,"Insert correct Values")
+	if err != nil {
+		fmt.Fprintf(w, "Insert correct Values")
 	}
 	json.Unmarshal(reqBody, &newDoc)
 
 	position = searchingVectorS(&newDoc)
 	finded = *tiendas2[position].Search(&newDoc)
 
-	if position >= 0 && finded.Nombre != ""{
+	if position >= 0 && finded.Nombre != "" {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(finded)
-	}else {
-		fmt.Fprintf(w,"We don't found that store please check your values")
+	} else {
+		fmt.Fprintf(w, "We don't found that store please check your values")
 	}
 	//fmt.Print("asd")
 }
 
-func ShowList (w http.ResponseWriter, r *http.Request){
+func ShowList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	PosVector, err :=strconv.Atoi(vars["id"])
+	PosVector, err := strconv.Atoi(vars["id"])
 	var stores []Structs.Tiendas
 	if err != nil {
-		fmt.Fprintf(w,"Invalid ID")
+		fmt.Fprintf(w, "Invalid ID")
 		return
 	}
 	var list = tiendas2[PosVector]
 	stores = list.Show()
-	if len(stores)==0{
-		fmt.Fprintf(w,"In this list don't exist a store :(")
-	}else {
+	if len(stores) == 0 {
+		fmt.Fprintf(w, "In this list don't exist a store :(")
+	} else {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(stores)
 	}
 }
 
-func Graphviz(w http.ResponseWriter, r *http.Request){
+func Graphviz(w http.ResponseWriter, r *http.Request) {
 	var cadenita strings.Builder
 	var nodes []string
 	cont := int(0)
 	fmt.Fprintf(&cadenita, "digraph G{ \n")
 	fmt.Fprintf(&cadenita, "rankdir= \"LR\" \n")
 	fmt.Fprintf(&cadenita, "node[fontname=\"Arial\" style=\"filled\" shape=\"record\" color=\"blue\" fillcolor=\"mediumspringgreen\"]; \n")
-	for i:= 0; i<= len(tiendas2);{
-		if cont < 5{
-			if i != len(tiendas2){
-				if tiendas2[i].GetSize() == 0{
-					fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i,i)
-					fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n",i)
-					fmt.Fprintf(&cadenita, "node%d->node%dv; \n",i,i )
-					aux := string("node"+strconv.Itoa(i))
+	for i := 0; i <= len(tiendas2); {
+		if cont < 5 {
+			if i != len(tiendas2) {
+				if tiendas2[i].GetSize() == 0 {
+					fmt.Fprintf(&cadenita, "node%d[label=\"vacio | %d \"]; \n ", i, i)
+					fmt.Fprintf(&cadenita, "node%dv[label=\" \", color=\"white\" fillcolor=\"white\"] \n", i)
+					fmt.Fprintf(&cadenita, "node%d->node%dv; \n", i, i)
+					aux := string("node" + strconv.Itoa(i))
 					nodes = append(nodes, aux)
-				}else{
+				} else {
 					fmt.Fprintf(&cadenita, "node%d[style=\"filled\" color=\"blue\" fillcolor=\"mediumspringgreen\" label=< \n", i)
 					fmt.Fprintf(&cadenita, "<TABLE BORDER=\"0\" ALIGN=\"LEFT\"> \n")
 					fmt.Fprintf(&cadenita, "<TR> \n")
@@ -276,26 +275,26 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 					fmt.Fprintf(&cadenita, "</TR> \n")
 					fmt.Fprintf(&cadenita, "</TABLE> \n")
 					fmt.Fprintf(&cadenita, ">, ]; \n")
-					aux := string("node"+strconv.Itoa(i))
+					aux := string("node" + strconv.Itoa(i))
 					nodes = append(nodes, aux)
 					tiendas2[i].Graphic(&cadenita)
-					fmt.Fprintf(&cadenita, "node%d->node%p; \n",i,&(*tiendas2[i].GetFirst()) )
+					fmt.Fprintf(&cadenita, "node%d->node%p; \n", i, &(*tiendas2[i].GetFirst()))
 
 				}
 				cont++
 			}
 			i++
-		}else{
+		} else {
 			fmt.Fprintf(&cadenita, "{rank=\"same\" ;"+nodes[0]+" \n")
-			for i:= 1; i<len(nodes); i++{
+			for i := 1; i < len(nodes); i++ {
 				fmt.Fprintf(&cadenita, ";"+nodes[i]+"\n")
 			}
 			fmt.Fprintf(&cadenita, " }\n")
-			aux2:= string(" ")
-			for i, node := range nodes{
-				if i == 0{
+			aux2 := string(" ")
+			for i, node := range nodes {
+				if i == 0 {
 					aux2 = node
-				}else {
+				} else {
 					fmt.Fprintf(&cadenita, "%v -> %v \n", aux2, node)
 					aux2 = node
 				}
@@ -318,14 +317,14 @@ func Graphviz(w http.ResponseWriter, r *http.Request){
 
 }
 
-func SaveStuff(w http.ResponseWriter, r *http.Request){
+func SaveStuff(w http.ResponseWriter, r *http.Request) {
 	var stuffdatos []Structs.Datos
 	var stuffdepa []Structs.Departamentos2
 
-	for _, indi := range indice{
-		for i:= 0; i < len(departa); i++{
-			aux2 := []Structs.Tiendas {}
-			aux:= Structs.Departamentos2{
+	for _, indi := range indice {
+		for i := 0; i < len(departa); i++ {
+			aux2 := []Structs.Tiendas{}
+			aux := Structs.Departamentos2{
 				Nombre:  departa[i],
 				Tiendas: aux2,
 				Indice:  indi,
@@ -335,27 +334,25 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 		}
 	}
 
-
-
-	for _, lista := range tiendas2{
+	for _, lista := range tiendas2 {
 		l := lista.GetStores()
-		if lista.GetSize() > 0{
-			for j, depa := range stuffdepa{
-				if depa.Nombre == lista.GetFirst().Departamento && depa.Indice == lista.GetFirst().Indice{
+		if lista.GetSize() > 0 {
+			for j, depa := range stuffdepa {
+				if depa.Nombre == lista.GetFirst().Departamento && depa.Indice == lista.GetFirst().Indice {
 					stuffdepa[j].Tiendas = append(stuffdepa[j].Tiendas, l...)
 				}
 			}
 		}
 
 	}
-	for i:= 0; i < len(indice); i++{
-		aux3:= Structs.Datos{
+	for i := 0; i < len(indice); i++ {
+		aux3 := Structs.Datos{
 			Indice:        "",
 			Departamentos: nil,
 		}
-		for _, depa := range stuffdepa{
-			if indice[i] == depa.Indice{
-				aux6:= Structs.Departamentos{
+		for _, depa := range stuffdepa {
+			if indice[i] == depa.Indice {
+				aux6 := Structs.Departamentos{
 					Nombre:  depa.Nombre,
 					Tiendas: depa.Tiendas,
 				}
@@ -369,70 +366,25 @@ func SaveStuff(w http.ResponseWriter, r *http.Request){
 
 	var sending Structs.Enlace
 	sending.Datos = stuffdatos
-	f,_ := json.MarshalIndent(sending,""," ")
-	_ = ioutil.WriteFile("NewStuff.json",f,0644)
+	f, _ := json.MarshalIndent(sending, "", " ")
+	_ = ioutil.WriteFile("NewStuff.json", f, 0644)
 	msg := Structs.JsonErrors{Mensaje: "The json file was created!"}
 	json.NewEncoder(w).Encode(msg)
 
-
-	/*var stuffsvaing []Structs.Datos
-
-	 for i:= 0; i< len(indice); i++{
-		 var stuffdepa []Structs.Departamentos
-	 	aux := Structs.Datos{
-			Indice:        indice[i],
-			Departamentos: stuffdepa,
-		}
-	 	stuffsvaing = append(stuffsvaing, aux)
-	 }
-
-	 for i:= 0; i<len(indice); i++{
-	 	for j:= 0; j<len(departa) ;j++{
-			stores := []Structs.Tiendas{}
-			aux2:= Structs.Departamentos{
-				Nombre:  departa[j],
-				Tiendas: stores,
-			}
-			stuffsvaing[i].Departamentos = append(stuffsvaing[i].Departamentos, aux2)
-		 }
-
-	 }
-
-	for _, listas := range tiendas2{
-		t := listas.GetStores()
-		if listas.GetSize()> 0 {
-			for i, indices := range stuffsvaing{
-				if indices.Indice == listas.GetFirst().Indice{
-					for j, depars := range indices.Departamentos{
-						if depars.Nombre == listas.GetFirst().Departamento{
-							stuffsvaing[i].Departamentos[j].Tiendas = append(stuffsvaing[i].Departamentos[j].Tiendas, t...)
-							break
-						}
-					}
-				}
-			}
-		}
-	}
-	var sending Structs.Enlace
-	sending.Datos = stuffsvaing
-	f,_ := json.MarshalIndent(sending,""," ")
-	_ = ioutil.WriteFile("NewStuff.json",f,0644)
-	*/
-
 }
 
-func searchingVectorE(pedido *Structs.PedidosE) int{
+func searchingVectorE(pedido *Structs.PedidosE) int {
 	var indicefound, depafound bool
 	var first, second, result int
 
-	for i, s := range indice{
-		if s[0] == pedido.Nombre[0]{
+	for i, s := range indice {
+		if s[0] == pedido.Nombre[0] {
 			first = i
 			indicefound = true
 		}
 	}
-	for i, s := range departa{
-		if s == pedido.Categoria{
+	for i, s := range departa {
+		if s == pedido.Categoria {
 			second = i
 			depafound = true
 		}
@@ -442,33 +394,29 @@ func searchingVectorE(pedido *Structs.PedidosE) int{
 		return -1
 	}
 
-	if !depafound{
+	if !depafound {
 		return -1
 	}
 
 	f := second - 0
-	s := f * len(indice) + first
-	result = s * 5 + pedido.Calificacion-1
+	s := f*len(indice) + first
+	result = s*5 + pedido.Calificacion - 1
 	return result
-	/*[i][j][w]
-	primero = j-0
-	segundo = primero * cantidad filas + i
-	tercero = segundo*5 + w*/
 
 }
 
-func searchingVectorS(pedido *Structs.PedidosS) int{
+func searchingVectorS(pedido *Structs.PedidosS) int {
 	var indicefound, depafound bool
 	var first, second, result int
 
-	for i, s := range indice{
-		if s[0] == pedido.Nombre[0]{
+	for i, s := range indice {
+		if s[0] == pedido.Nombre[0] {
 			first = i
 			indicefound = true
 		}
 	}
-	for i, s := range departa{
-		if s == pedido.Departamento{
+	for i, s := range departa {
+		if s == pedido.Departamento {
 			second = i
 			depafound = true
 		}
@@ -478,28 +426,25 @@ func searchingVectorS(pedido *Structs.PedidosS) int{
 		return -1
 	}
 
-	if !depafound{
+	if !depafound {
 		return -1
 	}
 
 	f := second - 0
-	s := f * len(indice) + first
-	result = s * 5 + pedido.Calificacion-1
+	s := f*len(indice) + first
+	result = s*5 + pedido.Calificacion - 1
 	return result
-	/*[i][j][w]
-	primero = j-0
-	segundo = primero * cantidad filas + i
-	tercero = segundo*5 + w*/
 
 }
 
-func putStore(aux2 Structs.Node, sup []Structs.NodeListas, depa int,) []Structs.NodeListas{
+func putStore(aux2 Structs.Node, sup []Structs.NodeListas, depa int) []Structs.NodeListas {
 
 	switch aux2.Tienda.Calificacion {
 	case 1:
 		sup[depa].Lista1.SortedInsert(&aux2)
 		break
-	case 2:sup[depa].Lista2.SortedInsert(&aux2)
+	case 2:
+		sup[depa].Lista2.SortedInsert(&aux2)
 		break
 	case 3:
 		sup[depa].Lista3.SortedInsert(&aux2)
@@ -516,11 +461,11 @@ func putStore(aux2 Structs.Node, sup []Structs.NodeListas, depa int,) []Structs.
 
 func getShops(w http.ResponseWriter, r *http.Request) {
 	var ShopList Structs.Shops
-	if(len(tiendas2) != 0){
-		for i:= 0; i < len(tiendas2) ; i++{
+	if len(tiendas2) != 0 {
+		for i := 0; i < len(tiendas2); i++ {
 			aux := tiendas2[i].GetStores()
 			for _, tienda := range aux {
-				tienda.Key = strconv.Itoa(i)+"$"+tienda.Contacto
+				tienda.Key = strconv.Itoa(i) + "$" + tienda.Contacto
 				ShopList.Tiendas = append(ShopList.Tiendas, tienda)
 			}
 		}
@@ -528,7 +473,7 @@ func getShops(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		arreglo := ShopList.Tiendas
 		json.NewEncoder(w).Encode(arreglo)
-	}else {
+	} else {
 		err := Structs.JsonErrors{Mensaje: "No hay tiendas cargadas"}
 		w.WriteHeader(http.StatusNoContent)
 		json.NewEncoder(w).Encode(err)
@@ -536,9 +481,9 @@ func getShops(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getProducts(w http.ResponseWriter, r *http.Request){
+func getProducts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	elements := strings.Split(vars["id"],"$")
+	elements := strings.Split(vars["id"], "$")
 	vectorPos, _ := strconv.Atoi(elements[0])
 	ShopList := tiendas2[vectorPos]
 	selectShop := ShopList.GetShop(elements[1])
@@ -548,12 +493,11 @@ func getProducts(w http.ResponseWriter, r *http.Request){
 	arreglo := products
 	json.NewEncoder(w).Encode(arreglo)
 
-
 }
 
 func getArbolito(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	elements := strings.Split(vars["id"],"$")
+	elements := strings.Split(vars["id"], "$")
 	vectorPos, _ := strconv.Atoi(elements[0])
 	ShopList := tiendas2[vectorPos]
 	selectShop := ShopList.GetShop(elements[1])
@@ -563,7 +507,7 @@ func getArbolito(w http.ResponseWriter, r *http.Request) {
 func getMatrix(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-	elements := strings.Split(vars["id"],"-")
+	elements := strings.Split(vars["id"], "-")
 	year, err := strconv.Atoi(elements[0])
 	month, err2 := strconv.Atoi(elements[1])
 	if err != nil && err2 != nil {
@@ -572,30 +516,33 @@ func getMatrix(w http.ResponseWriter, r *http.Request) {
 	monthUsed := pedidios.SearchYear(year)
 	sperceMatrix := monthUsed.Monts.SearchMonth(month)
 
-	sperceMatrix.Matrix.Graphviz()
+	matriz64str:= sperceMatrix.Matrix.Graphviz()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(matriz64str)
 
 }
 
 func getPedidos(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	i, _ :=vars["id"]
-	is := strings.Split(i,"$")
+	i, _ := vars["id"]
+	is := strings.Split(i, "$")
 	var datos []string
 
 	var finded *Structs.Tiendas
 	var position int
-	datos = strings.Split(is[0],"-")
-	aux,_ := strconv.Atoi(datos[0])
-	monthUsed:= pedidios.SearchYear(aux)
-	aux,_ = strconv.Atoi(datos[1])
+	datos = strings.Split(is[0], "-")
+	aux, _ := strconv.Atoi(datos[0])
+	monthUsed := pedidios.SearchYear(aux)
+	aux, _ = strconv.Atoi(datos[1])
 	sperceMatrix := monthUsed.Monts.SearchMonth(aux)
-	aux2,_ := strconv.Atoi(is[1])
-	aux3 := strings.Replace(is[2],"_"," ",-1)
+	aux2, _ := strconv.Atoi(is[1])
+	aux3 := strings.Replace(is[2], "_", " ", -1)
 
-	pedidos := sperceMatrix.Matrix.ObtenerNodito(aux2,convertAscii(aux3))
+	pedidos := sperceMatrix.Matrix.ObtenerNodito(aux2, convertAscii(aux3))
 	arregloPedidos := pedidos.StackPedidos.ArregloPedidos()
 	var pedidosEnviar []Structs.ShowingPedidos
-	for _, pedi := range arregloPedidos{
+	for _, pedi := range arregloPedidos {
 		sup := Structs.PedidosS{
 			Departamento: pedi.Departamento,
 			Nombre:       pedi.Tienda,
@@ -603,14 +550,14 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 		}
 		position = searchingVectorS(&sup)
 		finded = tiendas2[position].Search(&sup)
-		var sup3 [] string
+		var sup3 []string
 		sup2 := Structs.ShowingPedidos{
 			Fecha:        pedi.Fecha,
 			Tiendas:      pedi.Tienda,
 			Departamento: pedi.Departamento,
 			Producto:     sup3,
 		}
-		for _, codProd := range pedi.Productos{
+		for _, codProd := range pedi.Productos {
 			aux4 := finded.Arbolito.SearchPrduc(codProd.Codigo)
 			sup2.Producto = append(sup2.Producto, *aux4)
 		}
@@ -622,19 +569,19 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pedidosEnviar)
 }
 
-func saveDot(s string,i int){
-	nombre := string("lista"+strconv.Itoa(i)+".pdf")
+func saveDot(s string, i int) {
+	nombre := string("lista" + strconv.Itoa(i) + ".pdf")
 	f, err := os.Create("lista.dot")
-	if err != nil{
+	if err != nil {
 		fmt.Println("There was an error!")
 	}
 	l, err := f.WriteString(s)
-	if err != nil{
+	if err != nil {
 		fmt.Println("There was an error!")
 		f.Close()
 		return
 	}
-	fmt.Println(l,"Created Succesfully")
+	fmt.Println(l, "Created Succesfully")
 	p := "dot -Tpdf lista.dot -o " + nombre
 
 	args := strings.Split(p, " ")
@@ -648,8 +595,8 @@ func saveDot(s string,i int){
 	fmt.Printf("%s\n", b)
 }
 
-func convertAscii(s string)int{
-	ascii:= int(0)
+func convertAscii(s string) int {
+	ascii := int(0)
 	runes := []rune(s)
 
 	var result []int
@@ -657,15 +604,15 @@ func convertAscii(s string)int{
 	for i := 0; i < len(runes); i++ {
 		result = append(result, int(runes[i]))
 	}
-	for i := 0; i < len(result);i++ {
+	for i := 0; i < len(result); i++ {
 		ascii = ascii + result[i]
 	}
 
 	return ascii
 }
 
-func getDay(s string)int{
-	aux := strings.Split(s,"-")
+func getDay(s string) int {
+	aux := strings.Split(s, "-")
 	i, err := strconv.Atoi(aux[0])
 	if err != nil {
 		fmt.Println("Na")
@@ -673,8 +620,8 @@ func getDay(s string)int{
 	return i
 }
 
-func getYear(s string)int{
-	aux := strings.Split(s,"-")
+func getYear(s string) int {
+	aux := strings.Split(s, "-")
 	i, err := strconv.Atoi(aux[2])
 	if err != nil {
 		fmt.Println("Na")
@@ -682,8 +629,8 @@ func getYear(s string)int{
 	return i
 }
 
-func getMonth(s string)int{
-	aux := strings.Split(s,"-")
+func getMonth(s string) int {
+	aux := strings.Split(s, "-")
 	i, err := strconv.Atoi(aux[1])
 	if err != nil {
 		fmt.Println("Na")
@@ -691,7 +638,7 @@ func getMonth(s string)int{
 	return i
 }
 
-func getStringMonth(s int)string{
+func getStringMonth(s int) string {
 	switch s {
 	case 1:
 		return "Enero"
@@ -735,15 +682,15 @@ func getStringMonth(s int)string{
 
 func mostrarImagenArbolito(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	i, _ :=vars["id"]
-	http.ServeFile(w,r,"Imagenes/Arbol"+i+".png")
+	i, _ := vars["id"]
+	http.ServeFile(w, r, "Imagenes/Arbol"+i+".png")
 
 }
 
 func mostrarImagenMatriz(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	i, _ :=vars["id"]
-	http.ServeFile(w,r,"Matrices/Matriz"+i+".png")
+	i, _ := vars["id"]
+	http.ServeFile(w, r, "Matrices/Matriz"+i+".png")
 
 }
 
@@ -753,6 +700,86 @@ func getYears(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	arreglo := pedidios.GetYeats()
 	json.NewEncoder(w).Encode(arreglo)
+
+}
+
+func carritoPedidos(w http.ResponseWriter, r *http.Request) {
+	var newDoc [][]string
+	var pedidos [] Structs.Carrito
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	for i:= 0; i< len(newDoc); i++{
+		mount,_ := strconv.Atoi(newDoc[i][3])
+		precio,_ := strconv.ParseFloat(newDoc[i][4],64)
+		idi,_ :=strconv.Atoi(newDoc[i][5])
+		cali,_ := strconv.Atoi(newDoc[i][8])
+		canti,_:=strconv.Atoi(newDoc[i][9])
+		aux := Structs.Carrito{
+			Nombre:       newDoc[i][0],
+			Descripcion:  newDoc[i][1],
+			Image:        newDoc[i][2],
+			Mount:        mount,
+			Price:        precio,
+			Id:           idi,
+			Tienda:		  newDoc[i][6],
+			Departamento: newDoc[i][7],
+			Calificacion: cali,
+			Cantidad:     canti,
+			Fecha:        newDoc[i][10],
+		}
+		pedidos = append(pedidos,aux)
+	}
+	retirarArbol(&pedidos)
+	agregarPedido(&pedidos)
+
+}
+
+func retirarArbol(pedidos *[]Structs.Carrito)  {
+	var finded *Structs.Tiendas
+	var position int
+	var hojita *Structs.NodeTree
+	for _, carrito := range *pedidos{
+		sup := Structs.PedidosS{
+			Departamento: carrito.Departamento,
+			Nombre:       carrito.Tienda,
+			Calificacion: carrito.Calificacion,
+		}
+		position = searchingVectorS(&sup)
+		finded = tiendas2[position].Search(&sup)
+		hojita = finded.Arbolito.SearchPrduc2(carrito.Id)
+		hojita.Productos.Cantidad = hojita.Productos.Cantidad - carrito.Cantidad
+	}
+
+
+}
+
+func agregarPedido(pedidos *[]Structs.Carrito)  {
+	stack := Structs.NewStack2()
+
+	for _, carrito := range *pedidos{
+		sup := Structs.ValidarPedidos{
+			Tienda:       carrito.Tienda,
+			Departamento: carrito.Departamento,
+			Calificacion: carrito.Calificacion,
+		}
+		aux := Structs.NodeStack2{
+			Pedido: sup,
+			Next:   nil,
+			Prev:   nil,
+		}
+		if(stack.VerificarExsite(&aux)){
+
+		}else{
+			stack.Push2(&aux)
+		}
+	}
+
+	fmt.Println("asdf")
+
 
 }
 
@@ -773,13 +800,13 @@ func main() {
 	router.HandleFunc("/obtenerYears", getYears).Methods("GET")
 	router.HandleFunc("/obtenerPedidos/{id}", getPedidos).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
+	router.HandleFunc("/carrito", carritoPedidos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 	router.HandleFunc("/arbolito/{id}", mostrarImagenArbolito)
 	router.HandleFunc("/matriz/{id}", mostrarImagenMatriz)
 
-
-	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type","Authorization"})
-	methods := handlers.AllowedMethods([]string{"GET","PUT","POST","DELETE"})
+	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
 	origins := handlers.AllowedOrigins([]string{"*"})
 	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 }

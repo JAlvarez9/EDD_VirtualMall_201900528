@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Segment } from 'semantic-ui-react'
 import Tabla from './Tablita'
 
+
+
+
 function Carrito() {
     const encabezados = ["Producto", "Precio Unitario", "Cantidad", "Total"]
     const [listado, setlistado] = useState([])

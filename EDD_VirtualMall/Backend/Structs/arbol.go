@@ -206,6 +206,25 @@ func busqueda(root *NodeTree, codigo int, product *string) *string{
 	return product
 }
 
+func (this *TreeAVL)SearchPrduc2(codigo int) *NodeTree {
+	var product *NodeTree
+	if this.Root != nil{
+		product = busqueda2(this.Root,codigo, product)
+	}
+	return product
+}
+
+func busqueda2(root *NodeTree, codigo int, product *NodeTree) *NodeTree{
+	if root != nil{
+		if codigo == root.Productos.Codigo{
+			return root
+		}
+		product = busqueda2(root.Left,codigo, product)
+		product = busqueda2(root.Right,codigo, product)
+	}
+	return product
+}
+
 func (this *TreeAVL)Generate()  {
 	var cadena strings.Builder
 	fmt.Fprintf(&cadena, "digraph G{\n")

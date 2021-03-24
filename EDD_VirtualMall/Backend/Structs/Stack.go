@@ -12,8 +12,21 @@ type (
 		Top *NodeStack
 		Size int
 	}
-	
+
+	NodeStack2 struct {
+		Pedido ValidarPedidos
+		Next *NodeStack2
+		Prev *NodeStack2
+	}
+
+	Stack2 struct {
+		Top *NodeStack2
+		Size int
+	}
+
 )
+
+/*  Stack de Producto dentro Pedidos   */
 
 func NewStack() *Stack {
 	return &Stack{
@@ -62,3 +75,44 @@ func (this *Stack)ArregloPedidos() []Pedidos {
 	return sup
 
 }
+
+/*  Stack de Validar Pedidos   */
+
+func NewStack2() *Stack2 {
+	return &Stack2{
+		Top:  nil,
+		Size: 0,
+	}
+}
+
+func (this *Stack2)Push2(stack *NodeStack2) {
+	aux := this.Top
+	if aux == nil {
+		this.Top = stack
+		this.Size++
+	}else {
+		if stack.Pedido.Tienda == aux.Pedido.Tienda && stack.Pedido.Departamento == aux.Pedido.Departamento && stack.Pedido.Calificacion == aux.Pedido.Calificacion {
+			aux.Next = stack
+			stack.Prev = this.Top
+			this.Top = stack
+			this.Size++
+		}
+
+	}
+}
+
+func (this *Stack2)VerificarExsite(stack *NodeStack2)bool {
+	aux := this.Top
+	for aux != nil{
+		if stack.Pedido.Tienda == aux.Pedido.Tienda && stack.Pedido.Departamento == aux.Pedido.Departamento && stack.Pedido.Calificacion == aux.Pedido.Calificacion {
+			aux.Next = stack
+			stack.Prev = this.Top
+			this.Top = stack
+			this.Size++
+			return true
+		}
+		aux = aux.Next
+	}
+	return false
+}
+

@@ -1,12 +1,16 @@
 digraph G{
 node[shape="record"];
-node0xc00014b8c0[label="<f0> | <f1> code: 298|<f2> Name:Práctica Fresco Zapatos |<f3> Mount:289  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc00014b760[label="<f0>|<f1> code: 296|<f2> Name:Sin marca Caucho Ensalada |<f3> Mount:436  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc00014b8c0:f0 -> node0xc00014b760:f2 
-node0xc00014ba20[label="<f0>|<f1> code: 295|<f2> Name:Práctica Granito Embutidos |<f3> Mount:391  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc00014b760:f0 -> node0xc00014ba20:f2 
-node0xc00014b970[label="<f0>|<f1> code: 297|<f2> Name:Sin marca Plástico Tuna |<f3> Mount:472  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc00014b760:f4 -> node0xc00014b970:f2 
-node0xc00014b810[label="<f0>|<f1> code: 299|<f2> Name:Genérica Metal Mesa |<f3> Mount:111  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc00014b8c0:f4 -> node0xc00014b810:f2 
+node0xc000126fd0[label="<f0> | <f1> code: 783|<f2> Name:Práctica Acero Queso |<f3> Mount:339  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126dc0[label="<f0>|<f1> code: 781|<f2> Name:Sabrosa Cotton Pantalones |<f3> Mount:236  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126fd0:f0 -> node0xc000126dc0:f2 
+node0xc000127080[label="<f0>|<f1> code: 782|<f2> Name:Licencia Caucho Pelota |<f3> Mount:250  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126dc0:f4 -> node0xc000127080:f2 
+node0xc000126d10[label="<f0>|<f1> code: 786|<f2> Name:Elegante Metal Camisa |<f3> Mount:341  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126fd0:f4 -> node0xc000126d10:f2 
+node0xc000126f20[label="<f0>|<f1> code: 784|<f2> Name:Increíble Fresco Tocino |<f3> Mount:384  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126d10:f0 -> node0xc000126f20:f2 
+node0xc000127130[label="<f0>|<f1> code: 785|<f2> Name:Refinado Hormigón Embutidos |<f3> Mount:235  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126f20:f4 -> node0xc000127130:f2 
+node0xc000126e70[label="<f0>|<f1> code: 787|<f2> Name:Rústico Acero Embutidos |<f3> Mount:348  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc000126d10:f4 -> node0xc000126e70:f2 
 } 

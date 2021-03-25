@@ -9,7 +9,7 @@ function Tablita(props) {
     
     const mandarPedidos = () => {
             
-        
+        console.log(props.data)
         axios.post('http://localhost:3000/carrito',
           props.data,
           { headers: { 'content-type': 'application/json' } }

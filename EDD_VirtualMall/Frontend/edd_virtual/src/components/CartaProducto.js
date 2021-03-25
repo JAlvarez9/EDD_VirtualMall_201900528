@@ -12,26 +12,27 @@ function CartaProducto(props) {
     const [nombre] = useState(props.name)
     const [descripcion] = useState(props.descripcion)
     const [image] = useState(props.image)
-    const [mount] = useState(props.mount.toString())
-    const [price] = useState(props.price.toString())
-    const [id] = useState(props.id.toString())
+    const [mount] = useState(props.mount)
+    const [price] = useState(props.price)
+    const [id] = useState(props.id)
     const [tienda] = useState(props.tienda)
     const [departa] = useState(props.departa)
-    const [califi] = useState(props.califi.toString())
+    const [califi] = useState(props.califi)
     const [cantidad, setcantidad] = useState(0)
     const [fecha] = useState(f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear())
     const enviar = () => {
-        
+
+
         var json = [
             nombre,
             descripcion,
             image,
-            mount,
-            price,
-            id,
+            mount.toString(),
+            price.toString(),
+            id.toString(),
             tienda,
             departa,
-            califi,
+            califi.toString(),
             cantidad,
             fecha
         ]

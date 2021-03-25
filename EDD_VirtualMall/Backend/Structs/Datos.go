@@ -118,6 +118,8 @@ type (
 		Tienda string
 		Departamento string
 		Calificacion int
+		Producto   CodProducto
+		Productos   []CodProducto
 	}
 
 )

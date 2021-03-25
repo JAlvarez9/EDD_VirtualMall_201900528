@@ -91,13 +91,10 @@ func (this *Stack2)Push2(stack *NodeStack2) {
 		this.Top = stack
 		this.Size++
 	}else {
-		if stack.Pedido.Tienda == aux.Pedido.Tienda && stack.Pedido.Departamento == aux.Pedido.Departamento && stack.Pedido.Calificacion == aux.Pedido.Calificacion {
-			aux.Next = stack
-			stack.Prev = this.Top
-			this.Top = stack
-			this.Size++
-		}
-
+		aux.Next = stack
+		stack.Prev = this.Top
+		this.Top = stack
+		this.Size++
 	}
 }
 
@@ -105,14 +102,22 @@ func (this *Stack2)VerificarExsite(stack *NodeStack2)bool {
 	aux := this.Top
 	for aux != nil{
 		if stack.Pedido.Tienda == aux.Pedido.Tienda && stack.Pedido.Departamento == aux.Pedido.Departamento && stack.Pedido.Calificacion == aux.Pedido.Calificacion {
-			aux.Next = stack
-			stack.Prev = this.Top
-			this.Top = stack
-			this.Size++
+			aux.Pedido.Productos = append(aux.Pedido.Productos, stack.Pedido.Producto )
 			return true
 		}
-		aux = aux.Next
+		aux = aux.Prev
 	}
 	return false
+}
+
+func (this *Stack2)ArregloVPedidos() *[]ValidarPedidos {
+	aux := this.Top
+	var sup []ValidarPedidos
+	for aux!= nil{
+		sup = append(sup,aux.Pedido)
+		aux = aux.Prev
+	}
+
+	return &sup
 }
 

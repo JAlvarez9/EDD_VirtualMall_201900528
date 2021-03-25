@@ -179,7 +179,7 @@ func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
 	json.NewEncoder(w).Encode(error)
-	//fmt.Print("asd")
+	fmt.Print("asd")
 
 }
 
@@ -515,12 +515,8 @@ func getMatrix(w http.ResponseWriter, r *http.Request) {
 	}
 	monthUsed := pedidios.SearchYear(year)
 	sperceMatrix := monthUsed.Monts.SearchMonth(month)
-
-	matriz64str:= sperceMatrix.Matrix.Graphviz()
-	w.Header().Set("Content-Type", "application/json")
+	sperceMatrix.Matrix.Graphviz()
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(matriz64str)
-
 }
 
 func getPedidos(w http.ResponseWriter, r *http.Request) {
@@ -753,18 +749,20 @@ func retirarArbol(pedidos *[]Structs.Carrito)  {
 		hojita = finded.Arbolito.SearchPrduc2(carrito.Id)
 		hojita.Productos.Cantidad = hojita.Productos.Cantidad - carrito.Cantidad
 	}
-
-
 }
 
 func agregarPedido(pedidos *[]Structs.Carrito)  {
 	stack := Structs.NewStack2()
 
 	for _, carrito := range *pedidos{
+		var sup2 []Structs.CodProducto
+		sup2 = append(sup2, Structs.CodProducto{Codigo: carrito.Id })
 		sup := Structs.ValidarPedidos{
 			Tienda:       carrito.Tienda,
 			Departamento: carrito.Departamento,
 			Calificacion: carrito.Calificacion,
+			Producto:    Structs.CodProducto{Codigo: carrito.Id },
+			Productos: sup2,
 		}
 		aux := Structs.NodeStack2{
 			Pedido: sup,
@@ -777,10 +775,64 @@ func agregarPedido(pedidos *[]Structs.Carrito)  {
 			stack.Push2(&aux)
 		}
 	}
+	aux := stack.ArregloVPedidos()
+	var aux2 []Structs.Pedidos
+	for _, p := range *aux{
+		sup := Structs.Pedidos{
+			Fecha:        "",
+			Tienda:       p.Tienda,
+			Departamento: p.Departamento,
+			Calificacion: p.Calificacion,
+			Productos:    nil,
+		}
+		aux2 = append(aux2, sup)
+	}
+	for i, p := range aux2{
+		var aux3 []Structs.CodProducto
+		for _, r := range *pedidos{
+			if p.Calificacion == r.Calificacion && p.Departamento == r.Departamento && p.Calificacion == r.Calificacion{
+				aux4 := Structs.CodProducto{Codigo: r.Id}
+				aux3 = append(aux3, aux4)
+			}
+			aux2[i].Fecha = r.Fecha
+		}
+		aux2[i].Productos = aux3
+	}
 
 	fmt.Println("asdf")
 
+	for _, pedido := range aux2 {
+		supp := Structs.Stack{
+			Top:  nil,
+			Size: 0,
+		}
+		aux4 := Structs.NodeStack{
+			Value: pedido,
+			Next:  nil,
+			Prev:  nil,
+		}
 
+		supp.Push(&aux4)
+		aux3 := supp.First()
+		aux5 := Structs.NodeMatrix{
+			StackPedidos: &supp,
+			Value:        *aux3,
+			Year:         getYear(pedido.Fecha),
+			Dia:          getDay(pedido.Fecha),
+			Month:        getMonth(pedido.Fecha),
+			MonthString:  getStringMonth(getMonth(pedido.Fecha)),
+			Ascii:        convertAscii(pedido.Departamento),
+			Right:        nil,
+			Left:         nil,
+			Up:           nil,
+			Down:         nil,
+		}
+
+		pedidios.AddYear(&aux5)
+
+	}
+
+	fmt.Println("asdf")
 }
 
 func main() {

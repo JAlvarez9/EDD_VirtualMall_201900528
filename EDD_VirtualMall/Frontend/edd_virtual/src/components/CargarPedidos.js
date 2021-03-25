@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Header, Icon, Segment } from 'semantic-ui-react'
+import { Header, Icon, Segment } from 'semantic-ui-react'
 import '../css/CargarTiendas.css'
 
 const axios = require('axios')

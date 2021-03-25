@@ -10,6 +10,7 @@ function Mosaico(props) {
                         descripcion={c.Descripcion}
                         contacto = {c.Contacto}
                         logo={c.Logo}
+                        depa = {c.Departamento}
                         calificacion = {c.Calificacion}
                         id={c.Key}
                         key={c.Key}

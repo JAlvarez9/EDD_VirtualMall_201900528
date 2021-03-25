@@ -18,7 +18,7 @@ function Carta(props) {
             <div className="ui card">
 
                 <div className="image">
-                    <img src={props.logo} />
+                    <img  src={props.logo} />
                 </div>
 
                 <div className="content">
@@ -27,6 +27,9 @@ function Carta(props) {
 
                     <div className="meta">
                         <p>Calificacion: {props.calificacion}</p>
+                    </div>
+                    <div className="meta">
+                        <p>Departamento: {props.depa}</p>
                     </div>
 
                     <div className="description">{props.descripcion}</div>

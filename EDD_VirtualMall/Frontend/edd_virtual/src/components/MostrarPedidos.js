@@ -2,26 +2,31 @@ import React, { useState } from 'react'
 import { Modal, Icon, Image, Grid, Button } from 'semantic-ui-react'
 import MenuLateral from './MenuCargarPedidos'
 import Tablita from './TablaPedidos'
+import ReactDOM from "react-dom"
+
 
 const axios = require('axios')
 function MostrarPedidos() {
-    //var obtener = ""
     const [open, setOpen] = useState(false)
-    const [obtener, setobtener] = useState("")
+    const [obtener, setobtener] = useState(String)
     const [arPedidos, setarPedidos] = useState([])
-    const [imagen, setimagen] = useState("")
     const encabezados = ["Fecha", "Tienda", "Departamento", "Productos"]
+
+
     const obtenerMatriz = () => {
+        const a = (document.getElementById("years")).value
+        setobtener(a)
+        const matriz = async function (a) {
+            const data = await axios.get(`http://localhost:3000/obtenerMatriz/${a}`);
+            var imagen = `http://localhost:3000/matriz/${a}`
+            console.log(imagen)
 
-        setobtener((document.getElementById("years")).value)
-        console.log(obtener)
-        const data = axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
+            const Example = ({ imagen }) => <img src={imagen} alt="" style={{ maxWidth: "100%" }} />
+            ReactDOM.render(<Example imagen={imagen} />, document.getElementById('matriz'))
 
-    }
+        }
+        matriz(a)
 
-    const descargaMatriz = () => {
-        const data = axios.get(`http://localhost:3000/obtenerMatriz/${obtener}`);
-        setimagen(`data:image/png;base64,${data}`) 
     }
 
     const pedidos = () => {
@@ -33,11 +38,10 @@ function MostrarPedidos() {
 
         const asdf = async function () {
             const data = await axios.get(`http://localhost:3000/obtenerPedidos/${id}`);
+
             setarPedidos(data.data)
         }
         asdf()
-
-
     }
     return (
 
@@ -61,17 +65,15 @@ function MostrarPedidos() {
                 <Grid.Column width={3}>
                     <Button.Group vertical>
 
-                        <button onClick={descargaMatriz} class="ui secondary button" download="Matriz.png" href={imagen}>
-                            Descargar Matriz
-                        </button>
+                        <Button secondary>Descargar Matriz</Button>
                         <Button secondary>Guardar Estructura Years</Button>
                         <Button secondary>Guardar Estructura de Meses</Button>
                         <Button secondary>Guardar Pedidos por Dia</Button>
                     </Button.Group>
                 </Grid.Column>
                 <Grid.Column width={10}>
-
-                    <Image src={`http://localhost:3000/matriz/${obtener}`}></Image>
+                    <div id="matriz">
+                    </div>
                 </Grid.Column>
                 <Grid.Column width={3}>
                     <div class="ui input">

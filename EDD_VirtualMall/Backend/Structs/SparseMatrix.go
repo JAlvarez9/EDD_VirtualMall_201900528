@@ -1,8 +1,6 @@
 package Structs
 
 import (
-	"bufio"
-	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -233,6 +231,29 @@ func (this *SperseMatrix)Add(nuevo *NodeMatrix) {
 	vertical := this.getY(nuevo.Ascii)
 	horizontal := this.getX(nuevo.Dia)
 
+	for vertical != nil{
+		if vertical.(*NodeY).Ascii == nuevo.Ascii{
+			aux := vertical.(*NodeY).Right
+			for aux != nil{
+				if aux.(*NodeMatrix).Dia == nuevo.Dia{
+					sup := NodeStack{
+						Value: nuevo.Value,
+						Next:  nil,
+						Prev:  nil,
+					}
+					aux.(*NodeMatrix).StackPedidos.Push(&sup)
+					return
+				}
+				aux = aux.(*NodeMatrix).Right
+			}
+		}
+		vertical = vertical.(*NodeY).Down
+
+	}
+
+	vertical = this.getY(nuevo.Ascii)
+	horizontal = this.getX(nuevo.Dia)
+
 	if vertical == nil {
 		vertical = this.createY(nuevo.Ascii,nuevo.Value.Departamento)
 	}
@@ -339,7 +360,7 @@ func (this *SperseMatrix) Imprimir2() {
 	}
 }
 
-func (this *SperseMatrix)Graphviz() string{
+func (this *SperseMatrix)Graphviz(){
 	var cadenita strings.Builder
 	//var sizeX int
 	//var sizeY int
@@ -448,13 +469,11 @@ func (this *SperseMatrix)Graphviz() string{
 
 
 
-	string64 := savedotMatriz(cadenita.String(), strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Year) +"-" +strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Month) )
-	return string64
-
+	savedotMatriz(cadenita.String(), strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Year) +"-" +strconv.Itoa(this.HeadX.Down.(*NodeMatrix).Month) )
 
 }
 
-func savedotMatriz(s string, i string) string {
+func savedotMatriz(s string, i string) {
 
 	path, err := os.Getwd()
 	if err!=nil{
@@ -475,26 +494,7 @@ func savedotMatriz(s string, i string) string {
 		fmt.Printf("%s\n", b)
 	}
 
-	imgFile, err := os.Open(path+"\\Matrices\\"+nombre) // DIreccion de la imagen
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	defer imgFile.Close()
-
-	// create a new buffer base on file size
-	fInfo, _ := imgFile.Stat()
-	var size int64 = fInfo.Size()
-	buf := make([]byte, size)
-
-	// read file content into buffer
-	fReader := bufio.NewReader(imgFile)
-	fReader.Read(buf)
-
-	imgBase64Str := base64.StdEncoding.EncodeToString(buf)
-	return imgBase64Str
 }
 
 

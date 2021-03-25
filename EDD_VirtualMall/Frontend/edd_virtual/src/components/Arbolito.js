@@ -21,6 +21,7 @@ function Arbolito(props) {
     const data = axios.get(`http://localhost:3000/obtenerArbolito/${id}`);
     console.log(data)
     return (
+        
         <Image src={ imagen }></Image>
     )
 

@@ -11,21 +11,18 @@ import (
 )
 
 type (
-
 	NodeTree struct {
-		Tienda *string
+		Tienda       *string
 		Departamento *string
 		Calificacion *int
-		Productos Productos
-		Factor int
-		Left *NodeTree
-		Right *NodeTree
-
+		Productos    Productos
+		Factor       int
+		Left         *NodeTree
+		Right        *NodeTree
 	}
 	TreeAVL struct {
 		Root *NodeTree
 	}
-
 )
 
 func NewArbol() *TreeAVL {
@@ -44,13 +41,13 @@ func NewNodeTree(p Productos, tienda *string, depa *string, cali *int) *NodeTree
 	}
 }
 
-func insertar(raiz *NodeTree,p Productos, hc *bool, tienda *string, depa *string, cali *int) *NodeTree {
+func insertar(raiz *NodeTree, p Productos, hc *bool, tienda *string, depa *string, cali *int) *NodeTree {
 	var n1 *NodeTree
 	if raiz == nil {
-		raiz = NewNodeTree(p,tienda,depa,cali)
+		raiz = NewNodeTree(p, tienda, depa, cali)
 		*hc = true
 	} else if p.Codigo < raiz.Productos.Codigo {
-		left := insertar(raiz.Left, p, hc,tienda, depa,cali)
+		left := insertar(raiz.Left, p, hc, tienda, depa, cali)
 		raiz.Left = left
 		if *hc {
 			switch raiz.Factor {
@@ -72,7 +69,7 @@ func insertar(raiz *NodeTree,p Productos, hc *bool, tienda *string, depa *string
 			}
 		}
 	} else if p.Codigo > raiz.Productos.Codigo {
-		right := insertar(raiz.Right,p, hc,tienda,depa,cali)
+		right := insertar(raiz.Right, p, hc, tienda, depa, cali)
 		raiz.Right = right
 		if *hc {
 			switch raiz.Factor {
@@ -164,88 +161,88 @@ func rotacionID(n *NodeTree, n1 *NodeTree) *NodeTree {
 	return n2
 }
 
-func (this *TreeAVL)GetProducts() []Productos  {
+func (this *TreeAVL) GetProducts() []Productos {
 	var aux []Productos
 	aux = PostOrden(this.Root, aux)
 
 	return aux
 }
 
-func PostOrden(aux *NodeTree, arreglo []Productos) []Productos{
+func PostOrden(aux *NodeTree, arreglo []Productos) []Productos {
 	if aux != nil {
 		arreglo = PostOrden(aux.Left, arreglo)
-		arreglo= PostOrden(aux.Right, arreglo)
+		arreglo = PostOrden(aux.Right, arreglo)
 		arreglo = append(arreglo, aux.Productos)
 	}
 	return arreglo
 }
 
-func (this *TreeAVL) Insert(p Productos,tienda *string, depa *string, cali *int)  {
+func (this *TreeAVL) Insert(p Productos, tienda *string, depa *string, cali *int) {
 	b := false
 	a := &b
-	this.Root = insertar(this.Root,p,a,tienda,depa,cali)
+	this.Root = insertar(this.Root, p, a, tienda, depa, cali)
 }
 
-func (this *TreeAVL)SearchPrduc(codigo int) *string {
+func (this *TreeAVL) SearchPrduc(codigo int) *string {
 	var product *string
-	if this.Root != nil{
-		product = busqueda(this.Root,codigo, product)
+	if this.Root != nil {
+		product = busqueda(this.Root, codigo, product)
 	}
 	return product
 }
 
-func busqueda(root *NodeTree, codigo int, product *string) *string{
-	if root != nil{
-		if codigo == root.Productos.Codigo{
-			aux := root.Productos.Nombre +"||" +strconv.Itoa(root.Productos.Codigo)
+func busqueda(root *NodeTree, codigo int, product *string) *string {
+	if root != nil {
+		if codigo == root.Productos.Codigo {
+			aux := root.Productos.Nombre + "||" + strconv.Itoa(root.Productos.Codigo)
 			return &aux
 		}
-		product = busqueda(root.Left,codigo, product)
-		product = busqueda(root.Right,codigo, product)
+		product = busqueda(root.Left, codigo, product)
+		product = busqueda(root.Right, codigo, product)
 	}
 	return product
 }
 
-func (this *TreeAVL)SearchPrduc2(codigo int) *NodeTree {
+func (this *TreeAVL) SearchPrduc2(codigo int) *NodeTree {
 	var product *NodeTree
-	if this.Root != nil{
-		product = busqueda2(this.Root,codigo, product)
+	if this.Root != nil {
+		product = busqueda2(this.Root, codigo, product)
 	}
 	return product
 }
 
-func busqueda2(root *NodeTree, codigo int, product *NodeTree) *NodeTree{
-	if root != nil{
-		if codigo == root.Productos.Codigo{
+func busqueda2(root *NodeTree, codigo int, product *NodeTree) *NodeTree {
+	if root != nil {
+		if codigo == root.Productos.Codigo {
 			return root
 		}
-		product = busqueda2(root.Left,codigo, product)
-		product = busqueda2(root.Right,codigo, product)
+		product = busqueda2(root.Left, codigo, product)
+		product = busqueda2(root.Right, codigo, product)
 	}
 	return product
 }
 
-func (this *TreeAVL)Generate()  {
+func (this *TreeAVL) Generate() {
 	var cadena strings.Builder
 	fmt.Fprintf(&cadena, "digraph G{\n")
 	fmt.Fprintf(&cadena, "node[shape=\"record\"];\n")
 	if this.Root != nil {
-		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code: %v|<f2> Name:%v |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n",&(*this.Root),this.Root.Productos.Codigo, this.Root.Productos.Nombre,this.Root.Productos.Cantidad)
+		fmt.Fprintf(&cadena, "node%p[label=\"<f0> | <f1> code: %v|<f2> Name:%v |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n", &(*this.Root), this.Root.Productos.Codigo, this.Root.Productos.Nombre, this.Root.Productos.Cantidad)
 		this.generate(&cadena, (this.Root), this.Root.Left, true)
 		this.generate(&cadena, this.Root, this.Root.Right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	savedot(cadena.String(),this.Root.Productos.Contacto)
+	savedot(cadena.String(), this.Root.Productos.Contacto)
 
 }
 
-func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *NodeTree, izquierda bool)  {
+func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *NodeTree, izquierda bool) {
 	if actual != nil {
-		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code: %v|<f2> Name:%s |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n",&(*actual),actual.Productos.Codigo, actual.Productos.Nombre,actual.Productos.Cantidad)
+		fmt.Fprintf(cadena, "node%p[label=\"<f0>|<f1> code: %v|<f2> Name:%s |<f3> Mount:%v  | <f4>\" style = filled, fillcolor = darkolivegreen2];\n", &(*actual), actual.Productos.Codigo, actual.Productos.Nombre, actual.Productos.Cantidad)
 		if izquierda {
-			fmt.Fprintf(cadena, "node%p:f0 -> node%p:f2 \n",&(*padre),&(*actual))
-		}else {
-			fmt.Fprintf(cadena, "node%p:f4 -> node%p:f2 \n", &(*padre),&(*actual))
+			fmt.Fprintf(cadena, "node%p:f0 -> node%p:f2 \n", &(*padre), &(*actual))
+		} else {
+			fmt.Fprintf(cadena, "node%p:f4 -> node%p:f2 \n", &(*padre), &(*actual))
 		}
 		this.generate(cadena, actual, actual.Left, true)
 		this.generate(cadena, actual, actual.Right, false)
@@ -255,15 +252,15 @@ func (this *TreeAVL) generate(cadena *strings.Builder, padre *NodeTree, actual *
 func savedot(s string, i string) {
 
 	path, err := os.Getwd()
-	if err!=nil{
+	if err != nil {
 		log.Println(err)
 	}
-	nombre := string("Arbol"+i+".png")
-	nombre = strings.Replace(nombre," ","-",-1)
+	nombre := string("Arbol" + i + ".png")
+	nombre = strings.Replace(nombre, " ", "-", -1)
 
-	_ = ioutil.WriteFile(path+"\\Dots\\arbol.dot",[]byte(s),0644)
+	_ = ioutil.WriteFile(path+"\\Dots\\arbol.dot", []byte(s), 0644)
 
-	p := "dot -Tpng " + path +"\\Dots\\arbol.dot -o "+path+"\\Imagenes\\" + nombre
+	p := "dot -Tpng " + path + "\\Dots\\arbol.dot -o " + path + "\\Imagenes\\" + nombre
 	args := strings.Split(p, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 
@@ -273,4 +270,3 @@ func savedot(s string, i string) {
 		fmt.Printf("%s\n", b)
 	}
 }
-

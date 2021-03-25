@@ -701,19 +701,19 @@ func getYears(w http.ResponseWriter, r *http.Request) {
 
 func carritoPedidos(w http.ResponseWriter, r *http.Request) {
 	var newDoc [][]string
-	var pedidos [] Structs.Carrito
+	var pedidos []Structs.Carrito
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
-	for i:= 0; i< len(newDoc); i++{
-		mount,_ := strconv.Atoi(newDoc[i][3])
-		precio,_ := strconv.ParseFloat(newDoc[i][4],64)
-		idi,_ :=strconv.Atoi(newDoc[i][5])
-		cali,_ := strconv.Atoi(newDoc[i][8])
-		canti,_:=strconv.Atoi(newDoc[i][9])
+	for i := 0; i < len(newDoc); i++ {
+		mount, _ := strconv.Atoi(newDoc[i][3])
+		precio, _ := strconv.ParseFloat(newDoc[i][4], 64)
+		idi, _ := strconv.Atoi(newDoc[i][5])
+		cali, _ := strconv.Atoi(newDoc[i][8])
+		canti, _ := strconv.Atoi(newDoc[i][9])
 		aux := Structs.Carrito{
 			Nombre:       newDoc[i][0],
 			Descripcion:  newDoc[i][1],
@@ -721,24 +721,24 @@ func carritoPedidos(w http.ResponseWriter, r *http.Request) {
 			Mount:        mount,
 			Price:        precio,
 			Id:           idi,
-			Tienda:		  newDoc[i][6],
+			Tienda:       newDoc[i][6],
 			Departamento: newDoc[i][7],
 			Calificacion: cali,
 			Cantidad:     canti,
 			Fecha:        newDoc[i][10],
 		}
-		pedidos = append(pedidos,aux)
+		pedidos = append(pedidos, aux)
 	}
 	retirarArbol(&pedidos)
 	agregarPedido(&pedidos)
 
 }
 
-func retirarArbol(pedidos *[]Structs.Carrito)  {
+func retirarArbol(pedidos *[]Structs.Carrito) {
 	var finded *Structs.Tiendas
 	var position int
 	var hojita *Structs.NodeTree
-	for _, carrito := range *pedidos{
+	for _, carrito := range *pedidos {
 		sup := Structs.PedidosS{
 			Departamento: carrito.Departamento,
 			Nombre:       carrito.Tienda,
@@ -751,33 +751,33 @@ func retirarArbol(pedidos *[]Structs.Carrito)  {
 	}
 }
 
-func agregarPedido(pedidos *[]Structs.Carrito)  {
+func agregarPedido(pedidos *[]Structs.Carrito) {
 	stack := Structs.NewStack2()
 
-	for _, carrito := range *pedidos{
+	for _, carrito := range *pedidos {
 		var sup2 []Structs.CodProducto
-		sup2 = append(sup2, Structs.CodProducto{Codigo: carrito.Id })
+		sup2 = append(sup2, Structs.CodProducto{Codigo: carrito.Id})
 		sup := Structs.ValidarPedidos{
 			Tienda:       carrito.Tienda,
 			Departamento: carrito.Departamento,
 			Calificacion: carrito.Calificacion,
-			Producto:    Structs.CodProducto{Codigo: carrito.Id },
-			Productos: sup2,
+			Producto:     Structs.CodProducto{Codigo: carrito.Id},
+			Productos:    sup2,
 		}
 		aux := Structs.NodeStack2{
 			Pedido: sup,
 			Next:   nil,
 			Prev:   nil,
 		}
-		if(stack.VerificarExsite(&aux)){
+		if stack.VerificarExsite(&aux) {
 
-		}else{
+		} else {
 			stack.Push2(&aux)
 		}
 	}
 	aux := stack.ArregloVPedidos()
 	var aux2 []Structs.Pedidos
-	for _, p := range *aux{
+	for _, p := range *aux {
 		sup := Structs.Pedidos{
 			Fecha:        "",
 			Tienda:       p.Tienda,
@@ -787,10 +787,10 @@ func agregarPedido(pedidos *[]Structs.Carrito)  {
 		}
 		aux2 = append(aux2, sup)
 	}
-	for i, p := range aux2{
+	for i, p := range aux2 {
 		var aux3 []Structs.CodProducto
-		for _, r := range *pedidos{
-			if p.Calificacion == r.Calificacion && p.Departamento == r.Departamento && p.Calificacion == r.Calificacion{
+		for _, r := range *pedidos {
+			if p.Calificacion == r.Calificacion && p.Departamento == r.Departamento && p.Calificacion == r.Calificacion {
 				aux4 := Structs.CodProducto{Codigo: r.Id}
 				aux3 = append(aux3, aux4)
 			}

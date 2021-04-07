@@ -7,6 +7,11 @@ function FilaPedidos(props) {
         <Table.Row>
             <Table.Cell>
                 <Header>
+                    {props.cliente}
+                </Header>
+            </Table.Cell>
+            <Table.Cell>
+                <Header>
                     {props.fecha}
                 </Header>
             </Table.Cell>

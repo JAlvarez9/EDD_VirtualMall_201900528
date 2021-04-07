@@ -1,48 +1,14 @@
 digraph G{
 node[shape="record"];
-node0xc000253970[label="<f0> | <f1> code: 591|<f2> Name:Rústico Metal Toallas |<f3> Mount:331  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253ad0[label="<f0>|<f1> code: 588|<f2> Name:Increíble Fresco Jabón |<f3> Mount:35  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253970:f0 -> node0xc000253ad0:f2 
-node0xc000253c30[label="<f0>|<f1> code: 584|<f2> Name:Sin marca Madera Queso |<f3> Mount:201  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253ad0:f0 -> node0xc000253c30:f2 
-node0xc000253e40[label="<f0>|<f1> code: 583|<f2> Name:Refinado Granito Tocino |<f3> Mount:100  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253c30:f0 -> node0xc000253e40:f2 
-node0xc000254000[label="<f0>|<f1> code: 586|<f2> Name:Increíble Madera Jabón |<f3> Mount:6  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253c30:f4 -> node0xc000254000:f2 
-node0xc000254370[label="<f0>|<f1> code: 585|<f2> Name:Inteligente Metal Jabón |<f3> Mount:59  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254000:f0 -> node0xc000254370:f2 
-node0xc0002540b0[label="<f0>|<f1> code: 587|<f2> Name:Refinado Soft Ensalada |<f3> Mount:225  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254000:f4 -> node0xc0002540b0:f2 
-node0xc000253ef0[label="<f0>|<f1> code: 589|<f2> Name:Gorgeous Caucho Pescado |<f3> Mount:182  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253ad0:f4 -> node0xc000253ef0:f2 
-node0xc000254210[label="<f0>|<f1> code: 590|<f2> Name:Increíble Cotton Ensalada |<f3> Mount:289  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253ef0:f4 -> node0xc000254210:f2 
-node0xc0002536b0[label="<f0>|<f1> code: 596|<f2> Name:Inteligente Frozen Camisa |<f3> Mount:431  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253970:f4 -> node0xc0002536b0:f2 
-node0xc0002538c0[label="<f0>|<f1> code: 593|<f2> Name:Práctica Plástico Pantalones |<f3> Mount:243  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002536b0:f0 -> node0xc0002538c0:f2 
-node0xc000254160[label="<f0>|<f1> code: 592|<f2> Name:Ergonómico Metal Pelota |<f3> Mount:82  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002538c0:f0 -> node0xc000254160:f2 
-node0xc000253a20[label="<f0>|<f1> code: 594|<f2> Name:Inteligente Fresco Pizza |<f3> Mount:191  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002538c0:f4 -> node0xc000253a20:f2 
-node0xc000254420[label="<f0>|<f1> code: 595|<f2> Name:Genérica Fresco Auto |<f3> Mount:5  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253a20:f4 -> node0xc000254420:f2 
-node0xc000253760[label="<f0>|<f1> code: 600|<f2> Name:Rústico Caucho Pizza |<f3> Mount:40  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002536b0:f4 -> node0xc000253760:f2 
-node0xc000254630[label="<f0>|<f1> code: 598|<f2> Name:Hecho a mano Caucho Pantalones |<f3> Mount:93  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253760:f0 -> node0xc000254630:f2 
-node0xc000253ce0[label="<f0>|<f1> code: 597|<f2> Name:Elegante Acero Pantalones |<f3> Mount:439  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254630:f0 -> node0xc000253ce0:f2 
-node0xc000253b80[label="<f0>|<f1> code: 599|<f2> Name:Increíble Hormigón Zapatos |<f3> Mount:376  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254630:f4 -> node0xc000253b80:f2 
-node0xc0002542c0[label="<f0>|<f1> code: 604|<f2> Name:Increíble Madera Sombrero |<f3> Mount:482  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000253760:f4 -> node0xc0002542c0:f2 
-node0xc000254580[label="<f0>|<f1> code: 602|<f2> Name:Elegante Fresco Sombrero |<f3> Mount:333  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002542c0:f0 -> node0xc000254580:f2 
-node0xc0002544d0[label="<f0>|<f1> code: 601|<f2> Name:Sabrosa Madera Ensalada |<f3> Mount:215  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254580:f0 -> node0xc0002544d0:f2 
-node0xc000253810[label="<f0>|<f1> code: 603|<f2> Name:Genérica Madera Ensalada |<f3> Mount:222  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000254580:f4 -> node0xc000253810:f2 
-node0xc000253d90[label="<f0>|<f1> code: 605|<f2> Name:Hecho a mano Metal Toallas |<f3> Mount:342  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0002542c0:f4 -> node0xc000253d90:f2 
+node0xc0003760b0[label="<f0> | <f1> code: 323|<f2> Name:Licencia Granito Ratón |<f3> Mount:57  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0000a7ef0[label="<f0>|<f1> code: 322|<f2> Name:Fantástico Fresco Embutidos |<f3> Mount:117  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0003760b0:f0 -> node0xc0000a7ef0:f2 
+node0xc000376160[label="<f0>|<f1> code: 321|<f2> Name:Sin marca Granito Toallas |<f3> Mount:1  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0000a7ef0:f0 -> node0xc000376160:f2 
+node0xc0000a7d90[label="<f0>|<f1> code: 325|<f2> Name:Práctica Plástico Ratón |<f3> Mount:355  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0003760b0:f4 -> node0xc0000a7d90:f2 
+node0xc000376000[label="<f0>|<f1> code: 324|<f2> Name:Ergonómico Fresco Ratón |<f3> Mount:101  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0000a7d90:f0 -> node0xc000376000:f2 
+node0xc0000a7e40[label="<f0>|<f1> code: 326|<f2> Name:Elegante Hormigón Zapatos |<f3> Mount:290  | <f4>" style = filled, fillcolor = darkolivegreen2];
+node0xc0000a7d90:f4 -> node0xc0000a7e40:f2 
 } 

@@ -20,6 +20,7 @@ function CartaProducto(props) {
     const [califi] = useState(props.califi)
     const [cantidad, setcantidad] = useState(0)
     const [fecha] = useState(f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear())
+    const [cliente, setcliente] = useState(window.sessionStorage.getItem("dpi"))
     const enviar = () => {
 
 
@@ -34,7 +35,8 @@ function CartaProducto(props) {
             departa,
             califi.toString(),
             cantidad,
-            fecha
+            fecha,
+            cliente
         ]
         var datos = localStorage.getItem("productos")
         if (datos == null || datos === undefined) {

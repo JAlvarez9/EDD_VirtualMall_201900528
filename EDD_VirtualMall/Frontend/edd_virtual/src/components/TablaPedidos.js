@@ -18,6 +18,7 @@ function TablaPedidos(props) {
 
                     <Fila
                         index={index}
+                        cliente={dato.Cliente}
                         fecha = {dato.Fecha}
                         tienda = {dato.Tiendas}
                         depa = {dato.Departamento}

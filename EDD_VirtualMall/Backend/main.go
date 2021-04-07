@@ -2,8 +2,10 @@ package main
 
 import (
 	"EDD_VirtualMall/Structs"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"github.com/fernet/fernet-go"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,6 +20,9 @@ import (
 
 var tiendas2 []Structs.List
 var pedidios Structs.ListYear
+var Btree *Structs.BTree
+var BtreeE *Structs.BTree
+var BtreeES *Structs.BTree
 var cubix [][]Structs.NodeListas
 var sizedep int
 var sizeindex int
@@ -28,8 +33,6 @@ var prueba Structs.Enlace
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
-	aux := int(06)
-	fmt.Println(aux)
 
 }
 
@@ -181,6 +184,126 @@ func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(error)
 	fmt.Print("asd")
 
+}
+
+func CargarUsuarios(w http.ResponseWriter, r *http.Request)  {
+
+	var newDoc Structs.EnlaceUsuarios
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	mk:= "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4="
+	Btree = Structs.NewBTree(5)
+	BtreeE = Structs.NewBTree(5)
+	BtreeES = Structs.NewBTree(5)
+	for _, usu := range newDoc.Usuarios{
+		sup := Structs.UsuariosEncrit{
+			DPI:      strconv.Itoa(usu.DPI),
+			DPIN:	  usu.DPI,
+			Nombre:   usu.Nombre,
+			Correo:   usu.Correo,
+			Password: EncryptPass(usu.Password),
+			Cuenta:   usu.Cuenta,
+		}
+		aux := Structs.NewKey(sup)
+		Btree.Insert(aux)
+		sup2 := Structs.UsuariosEncrit{
+			DPI:      BtreeCodificado(strconv.Itoa(usu.DPI),mk),
+			DPIN:	  usu.DPI,
+			Nombre:   usu.Nombre,
+			Correo:   BtreeCodificado(usu.Correo,mk),
+			Password: EncryptPass(usu.Password),
+			Cuenta:   usu.Cuenta,
+		}
+		aux2:= Structs.NewKey(sup2)
+		BtreeES.Insert(aux2)
+		sup3 := Structs.UsuariosEncrit{
+			DPI:      BtreeCodificado(strconv.Itoa(usu.DPI),mk),
+			DPIN:	  usu.DPI,
+			Nombre:   BtreeCodificado(usu.Nombre,mk),
+			Correo:   BtreeCodificado(usu.Correo,mk),
+			Password: EncryptPass(usu.Password),
+			Cuenta:   BtreeCodificado(usu.Cuenta,mk),
+		}
+		aux3:= Structs.NewKey(sup3)
+		BtreeE.Insert(aux3)
+	}
+	Btree.Graph()
+	BtreeE.GraphBTreeE()
+	BtreeES.GraphBTreeES()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los Usuarios"}
+	json.NewEncoder(w).Encode(error)
+
+}
+
+func CreateUsu(w http.ResponseWriter, r *http.Request)  {
+	var newUsu []string
+	reqBody, err := ioutil.ReadAll(r.Body)
+	mk:= "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4="
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newUsu)
+	
+	aux := Structs.UsuariosEncrit{
+		DPI:      newUsu[0],
+		DPIN:     stringToint(newUsu[0]),
+		Nombre:   newUsu[1],
+		Correo:   newUsu[2],
+		Password: EncryptPass(newUsu[3]),
+		Cuenta:   newUsu[4],
+	}
+	sup := Structs.NewKey(aux)
+	Btree.Insert(sup)
+	aux2 := Structs.UsuariosEncrit{
+		DPI:      BtreeCodificado(newUsu[0],mk),
+		DPIN:     stringToint(newUsu[0]),
+		Nombre:   newUsu[1],
+		Correo:   BtreeCodificado(newUsu[2],mk),
+		Password: EncryptPass(newUsu[3]),
+		Cuenta:   newUsu[4],
+	}
+	sup2 := Structs.NewKey(aux2)
+	BtreeES.Insert(sup2)
+	aux3 := Structs.UsuariosEncrit{
+		DPI:      BtreeCodificado(newUsu[0],mk),
+		DPIN:     stringToint(newUsu[0]),
+		Nombre:   BtreeCodificado(newUsu[1],mk),
+		Correo:   BtreeCodificado(newUsu[2],mk),
+		Password: EncryptPass(newUsu[3]),
+		Cuenta:   BtreeCodificado(newUsu[4],mk),
+	}
+	sup3:= Structs.NewKey(aux3)
+	BtreeE.Insert(sup3)
+	Btree.Graph()
+	BtreeE.GraphBTreeE()
+	BtreeES.GraphBTreeES()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	error := Structs.JsonErrors{Mensaje: "Se Creo exitosamente el Usuario"}
+	json.NewEncoder(w).Encode(error)
+}
+
+func EncryptPass(pass string) string {
+	  contr := sha256.Sum256([]byte(pass))
+	  aux := string(contr[:])
+	  return aux
+}
+
+func BtreeCodificado(aux string, mk string) string {
+	k := fernet.MustDecodeKeys(mk)
+	tok, err := fernet.EncryptAndSign([]byte(aux), k[0])
+	if err != nil {
+		panic(err)
+	}
+	aux2 := string(tok[:])
+	return aux2
 }
 
 func Deletition(w http.ResponseWriter, r *http.Request) {
@@ -495,6 +618,24 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getUsuario(w http.ResponseWriter, r *http.Request)  {
+	var newDoc []string
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	aux2:= Structs.InicioSesion{
+		DPI:   newDoc[0],
+		Password: EncryptPass(newDoc[1]),
+	}
+	aux:= Btree.FindNode(&aux2)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(aux)
+}
+
 func getArbolito(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	elements := strings.Split(vars["id"], "$")
@@ -551,6 +692,7 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 			Fecha:        pedi.Fecha,
 			Tiendas:      pedi.Tienda,
 			Departamento: pedi.Departamento,
+			Cliente: pedi.Cliente,
 			Producto:     sup3,
 		}
 		for _, codProd := range pedi.Productos {
@@ -726,6 +868,7 @@ func carritoPedidos(w http.ResponseWriter, r *http.Request) {
 			Calificacion: cali,
 			Cantidad:     canti,
 			Fecha:        newDoc[i][10],
+			Cliente:      newDoc[i][11],
 		}
 		pedidos = append(pedidos, aux)
 	}
@@ -761,6 +904,7 @@ func agregarPedido(pedidos *[]Structs.Carrito) {
 			Tienda:       carrito.Tienda,
 			Departamento: carrito.Departamento,
 			Calificacion: carrito.Calificacion,
+			Cliente:       carrito.Cliente,
 			Producto:     Structs.CodProducto{Codigo: carrito.Id},
 			Productos:    sup2,
 		}
@@ -780,6 +924,7 @@ func agregarPedido(pedidos *[]Structs.Carrito) {
 	for _, p := range *aux {
 		sup := Structs.Pedidos{
 			Fecha:        "",
+			Cliente:       p.Cliente,
 			Tienda:       p.Tienda,
 			Departamento: p.Departamento,
 			Calificacion: p.Calificacion,
@@ -790,7 +935,7 @@ func agregarPedido(pedidos *[]Structs.Carrito) {
 	for i, p := range aux2 {
 		var aux3 []Structs.CodProducto
 		for _, r := range *pedidos {
-			if p.Calificacion == r.Calificacion && p.Departamento == r.Departamento && p.Calificacion == r.Calificacion {
+			if p.Calificacion == r.Calificacion && p.Departamento == r.Departamento && p.Calificacion == r.Calificacion && p.Cliente == r.Cliente {
 				aux4 := Structs.CodProducto{Codigo: r.Id}
 				aux3 = append(aux3, aux4)
 			}
@@ -798,8 +943,6 @@ func agregarPedido(pedidos *[]Structs.Carrito) {
 		}
 		aux2[i].Productos = aux3
 	}
-
-	fmt.Println("asdf")
 
 	for _, pedido := range aux2 {
 		supp := Structs.Stack{
@@ -832,7 +975,16 @@ func agregarPedido(pedidos *[]Structs.Carrito) {
 
 	}
 
-	fmt.Println("asdf")
+}
+
+func stringToint(cadena string) int {
+	numero, _ := strconv.Atoi(cadena)
+	return numero
+}
+
+func intTostring(numero int) string {
+	cadena := strconv.Itoa(numero)
+	return cadena
 }
 
 func main() {
@@ -840,8 +992,10 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
+	router.HandleFunc("/cargarusuarios", CargarUsuarios).Methods("POST")
 	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
+	router.HandleFunc("/CreateUsu", CreateUsu).Methods("POST")
 	router.HandleFunc("/id/{id}", ShowList).Methods("GET")
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
 	router.HandleFunc("/guardar", SaveStuff).Methods("GET")
@@ -850,6 +1004,7 @@ func main() {
 	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
 	router.HandleFunc("/obtenerMatriz/{id}", getMatrix).Methods("GET")
 	router.HandleFunc("/obtenerYears", getYears).Methods("GET")
+	router.HandleFunc("/obtenerUsu", getUsuario).Methods("POST")
 	router.HandleFunc("/obtenerPedidos/{id}", getPedidos).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/carrito", carritoPedidos).Methods("POST")

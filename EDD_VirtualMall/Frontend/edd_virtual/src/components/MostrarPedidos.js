@@ -10,7 +10,7 @@ function MostrarPedidos() {
     const [open, setOpen] = useState(false)
     const [obtener, setobtener] = useState(String)
     const [arPedidos, setarPedidos] = useState([])
-    const encabezados = ["Fecha", "Tienda", "Departamento", "Productos"]
+    const encabezados = ["Cliente","Fecha", "Tienda", "Departamento", "Productos"]
 
 
     const obtenerMatriz = () => {

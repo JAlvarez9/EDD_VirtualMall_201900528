@@ -1,5 +1,5 @@
 import React from 'react'
-import {BrowserRouter as Router, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import NavBar from "./components/Navbar";
 import Header from "./components/Headerr"
 import CargarTiendas from './components/CargarTiendas';
@@ -11,27 +11,43 @@ import PaginaPrincipal from './components/PaginaPrincipal';
 import MostrarProductos from './components/MostrarProductos';
 import Arbolito from './components/Arbolito'
 import Carrito from './components/Carrito';
+import InicioSesion from './components/InicioSesion'
+import CrearUsu from './components/CrearUsu';
 
 
 
 function App() {
+  
+
   return (
     <>
-    <Router>
+      <Router>
         <Header />
-        <NavBar/>
-        <Route path="/principal" component={PaginaPrincipal}/>
-        <Route path="/cargartienda" component={CargarTiendas}/>
-        <Route path="/cargarproducto" component={CargarProductos}/>
-        <Route path="/cargarpedidos" component={CargarPedidos}/>
-        <Route path="/mostrarpedidos" component={MostrarPedidos}/>
-        <Route path="/mostrartiendas" component={MostrarTiendas}/>
-        <Route path="/mostrarproductos/:id" component={MostrarProductos}/>
-        <Route path="/mostrararbol/:id" component={Arbolito}/>
-        <Route path="/carrito" component={Carrito}/>
-    </Router>
+        <NavBar />
+        <Route exact path="/"><Redirect to="/inicio" /></Route>
+        <Route path="/inicio" component={InicioSesion} />
+        <Route path="/form" component={CrearUsu} />
+        <Route path="/principal" component={PaginaPrincipal} />
+        <Route path="/cargartienda" component={CargarTiendas} />
+        <Route path="/cargarproducto" component={CargarProductos} />
+        <Route path="/cargarpedidos" component={CargarPedidos} />
+        <Route path="/mostrarpedidos" component={MostrarPedidos} />
+        <Route path="/mostrartiendas" component={MostrarTiendas} />
+        <Route path="/mostrarproductos/:id" component={MostrarProductos} />
+        <Route path="/mostrararbol/:id" component={Arbolito} />
+        <Route path="/carrito" component={Carrito} />
+      </Router>
+
     </>
-  );
+  )
+
+
+
+
+
+
+
+
 }
 
 export default App;

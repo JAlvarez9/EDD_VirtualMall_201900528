@@ -7,6 +7,7 @@ type (
 
 	Pedidos struct {
 		Fecha        string        `json:Fecha`
+		Cliente      string         `json:Cliente`
 		Tienda       string        `json:Tienda`
 		Departamento string        `json:Departamento`
 		Calificacion int           `json:Calificacion`
@@ -92,6 +93,7 @@ type (
 		Fecha string
 		Tiendas string
 		Departamento string
+		Cliente string
 		Producto [] string
 
 	}
@@ -112,14 +114,42 @@ type (
 		Calificacion int
 		Cantidad int
 		Fecha string
+		Cliente string
 	}
 
 	ValidarPedidos struct {
 		Tienda string
 		Departamento string
 		Calificacion int
+		Cliente string
 		Producto   CodProducto
 		Productos   []CodProducto
+	}
+
+	Usuarios struct {
+		DPI int 	`json:DPI`
+		Nombre string  `json:Nombre`
+		Correo string	`json:Correo`
+		Password string  `json:Password`
+		Cuenta string	 `json:Cuenta`
+	}
+
+	EnlaceUsuarios struct {
+		Usuarios []Usuarios `json:Usuarios`
+	}
+
+	InicioSesion struct {
+		DPI string
+		Password string
+	}
+
+	UsuariosEncrit struct {
+		DPI string
+		DPIN int
+		Nombre string
+		Correo string
+		Password string
+		Cuenta string
 	}
 
 )

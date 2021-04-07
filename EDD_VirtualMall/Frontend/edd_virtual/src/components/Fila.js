@@ -4,10 +4,15 @@ import { Header, Table } from 'semantic-ui-react'
 
 function Fila(props) {
     const [totala] = useState(props.datas[4] * props.datas[9])
-    
-    
+    console.log(props.datas)
+
     return (
         <Table.Row>
+            <Table.Cell>
+                <Header as='h2' textAlign='center'>
+                    {props.datas[11]}
+                </Header>
+            </Table.Cell>
             <Table.Cell>
                 <Header as='h2' textAlign='center'>
                     {props.datas[0]}

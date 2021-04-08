@@ -4,13 +4,13 @@ import '../css/CargarTiendas.css'
 
 const axios = require('axios')
 const cargarTienditas = (event) => {
-  console.log("asd")
   const json = event.target.files[0];
   axios.post('http://localhost:3000/cargartienda',
     json,
     { headers: { 'content-type': 'application/json' } }
   ).then(data => {
     alert('file uploaded')
+    axios.get('http://localhost:3000/getArreglo')
     console.log(data)
   }).catch(e => {
     console.log('error')

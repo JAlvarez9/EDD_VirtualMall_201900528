@@ -13,6 +13,7 @@ import Arbolito from './components/Arbolito'
 import Carrito from './components/Carrito';
 import InicioSesion from './components/InicioSesion'
 import CrearUsu from './components/CrearUsu';
+import Reportes from './components/Reportes';
 
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/mostrarproductos/:id" component={MostrarProductos} />
         <Route path="/mostrararbol/:id" component={Arbolito} />
         <Route path="/carrito" component={Carrito} />
+        <Route path="/reportes" component={Reportes} />
       </Router>
 
     </>

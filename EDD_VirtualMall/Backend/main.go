@@ -20,6 +20,7 @@ import (
 
 var tiendas2 []Structs.List
 var pedidios Structs.ListYear
+var botoncitos []string
 var Btree *Structs.BTree
 var BtreeE *Structs.BTree
 var BtreeES *Structs.BTree
@@ -708,29 +709,25 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveDot(s string, i int) {
-	nombre := string("lista" + strconv.Itoa(i) + ".pdf")
-	f, err := os.Create("lista.dot")
-	if err != nil {
-		fmt.Println("There was an error!")
-	}
-	l, err := f.WriteString(s)
-	if err != nil {
-		fmt.Println("There was an error!")
-		f.Close()
-		return
-	}
-	fmt.Println(l, "Created Succesfully")
-	p := "dot -Tpdf lista.dot -o " + nombre
 
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("lista" + strconv.Itoa(i) + ".png")
+	botoncitos = append(botoncitos, nombre)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\arreglo.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\arreglo.dot -o "+path+"\\Arreglo\\" + nombre
 	args := strings.Split(p, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("A ocurrido un error", err)
-
+		fmt.Printf("%s\n", b)
 	}
-	fmt.Printf("%s\n", b)
 }
 
 func convertAscii(s string) int {
@@ -832,6 +829,20 @@ func mostrarImagenMatriz(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func mostrarArregloL(w http.ResponseWriter, r *http.Request)  {
+	vars := mux.Vars(r)
+	i, _ := vars["id"]
+	http.ServeFile(w, r, "Arreglo/"+i)
+
+}
+
+func mostrarBTrees(w http.ResponseWriter, r *http.Request)  {
+	vars := mux.Vars(r)
+	i, _ := vars["id"]
+	http.ServeFile(w, r, "Btree/"+i)
+
+}
+
 func getYears(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -839,6 +850,19 @@ func getYears(w http.ResponseWriter, r *http.Request) {
 	arreglo := pedidios.GetYeats()
 	json.NewEncoder(w).Encode(arreglo)
 
+}
+
+func getBotones(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(botoncitos)
+}
+
+func getBTrees(w http.ResponseWriter, r *http.Request)  {
+	b := [3]string{"BTree.png","BTreeE.png","BTreeES.png"}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(b)
 }
 
 func carritoPedidos(w http.ResponseWriter, r *http.Request) {
@@ -868,7 +892,7 @@ func carritoPedidos(w http.ResponseWriter, r *http.Request) {
 			Calificacion: cali,
 			Cantidad:     canti,
 			Fecha:        newDoc[i][10],
-			Cliente:      newDoc[i][11],
+			Cliente:      stringToint(newDoc[i][11]),
 		}
 		pedidos = append(pedidos, aux)
 	}
@@ -1006,11 +1030,16 @@ func main() {
 	router.HandleFunc("/obtenerYears", getYears).Methods("GET")
 	router.HandleFunc("/obtenerUsu", getUsuario).Methods("POST")
 	router.HandleFunc("/obtenerPedidos/{id}", getPedidos).Methods("GET")
+	router.HandleFunc("/botoncitos", getBotones).Methods("GET")
+	router.HandleFunc("/btrees", getBTrees).Methods("GET")
 	router.HandleFunc("/cargarproductos", CargarProductos).Methods("POST")
 	router.HandleFunc("/carrito", carritoPedidos).Methods("POST")
 	router.HandleFunc("/cargarpedidos", CargarPedidos).Methods("POST")
 	router.HandleFunc("/arbolito/{id}", mostrarImagenArbolito)
 	router.HandleFunc("/matriz/{id}", mostrarImagenMatriz)
+	router.HandleFunc("/arreglito/{id}", mostrarArregloL)
+	router.HandleFunc("/arbolitosb/{id}", mostrarBTrees)
+
 
 	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})

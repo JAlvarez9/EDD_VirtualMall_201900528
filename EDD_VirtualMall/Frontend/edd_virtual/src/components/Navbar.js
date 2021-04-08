@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 const state = { activeItem: 'home' }
 
 
-const opciones = ['Principal', 'Cargar Tiendas', 'Cargar Productos', 'Cargar Pedidos', 'Mostrar Pedidos', 'Mostrar Tiendas']
-const urls = ['/principal', '/cargartienda', '/cargarproducto', 'cargarpedidos', '/mostrarpedidos', '/mostrartiendas']
+const opciones = ['Principal', 'Cargar Tiendas', 'Cargar Productos', 'Cargar Pedidos', 'Mostrar Pedidos', 'Mostrar Tiendas','Reportes']
+const urls = ['/principal', '/cargartienda', '/cargarproducto', 'cargarpedidos', '/mostrarpedidos', '/mostrartiendas', '/reportes']
 
 
 const opciones2 = ['Principal', 'Mostrar Tiendas']
@@ -18,7 +18,7 @@ function Navbar() {
     console.log(cuent)
     const { activeItem } = state
 
-    if (cuent == "Admin") {
+    if (cuent === "Admin") {
         return (
             <Menu pointing>
                 {opciones.map((c, index) => (
@@ -31,7 +31,7 @@ function Navbar() {
                 ))}
             </Menu>
         )
-    } else if (cuent == "Usuario") {
+    } else if (cuent === "Usuario") {
         return (
             <Menu pointing>
                 {opciones2.map((c, index) => (

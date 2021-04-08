@@ -1,0 +1,40 @@
+digraph G{ 
+rankdir= "LR" 
+node[fontname="Arial" style="filled" shape="box" color="blue" fillcolor="mediumspringgreen"]; 
+node15[label="vacio | 15 "]; 
+ node15v[label=" ", color="white" fillcolor="white"] 
+node15->node15v; 
+node16[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
+<TABLE BORDER="0" ALIGN="LEFT"> 
+<TR> 
+<TD >Indice B</TD> 
+<TD BORDER="1"> No. 16 </TD> 
+</TR> 
+<TR> 
+<TD BORDER="1">Television y video</TD> 
+<TD> Cal. 2 </TD> 
+</TR> 
+</TABLE> 
+>, ]; 
+node0xc0002b66e0[shape="record" label="Borrego Rocha e Hijos| Ascii:1919| 923.436.384 " fillcolor="olivedrab1"]; 
+ node16->node0xc0002b66e0; 
+node17[label="vacio | 17 "]; 
+ node17v[label=" ", color="white" fillcolor="white"] 
+node17->node17v; 
+node18[label="vacio | 18 "]; 
+ node18v[label=" ", color="white" fillcolor="white"] 
+node18->node18v; 
+node19[label="vacio | 19 "]; 
+ node19v[label=" ", color="white" fillcolor="white"] 
+node19->node19v; 
+{rank="same" ;node15 
+;node16
+;node17
+;node18
+;node19
+ }
+node15 -> node16 
+node16 -> node17 
+node17 -> node18 
+node18 -> node19 
+} 

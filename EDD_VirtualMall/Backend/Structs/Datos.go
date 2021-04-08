@@ -7,8 +7,8 @@ type (
 
 	Pedidos struct {
 		Fecha        string        `json:Fecha`
-		Cliente      string         `json:Cliente`
-		Tienda       string        `json:Tienda`
+		Cliente      int           `json:Cliente`
+		Tienda       string         `json:Tienda`
 		Departamento string        `json:Departamento`
 		Calificacion int           `json:Calificacion`
 		Productos    []CodProducto `json:Productos`
@@ -93,7 +93,7 @@ type (
 		Fecha string
 		Tiendas string
 		Departamento string
-		Cliente string
+		Cliente int
 		Producto [] string
 
 	}
@@ -114,14 +114,14 @@ type (
 		Calificacion int
 		Cantidad int
 		Fecha string
-		Cliente string
+		Cliente int
 	}
 
 	ValidarPedidos struct {
 		Tienda string
 		Departamento string
 		Calificacion int
-		Cliente string
+		Cliente int
 		Producto   CodProducto
 		Productos   []CodProducto
 	}

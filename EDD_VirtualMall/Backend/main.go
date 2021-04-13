@@ -31,6 +31,7 @@ var departa []string
 var indice []string
 var cont int
 var prueba Structs.Enlace
+var grafito Structs.Grafo
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
@@ -93,7 +94,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
+	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente las tiendas"}
 	json.NewEncoder(w).Encode(error)
 }
 
@@ -239,6 +240,34 @@ func CargarUsuarios(w http.ResponseWriter, r *http.Request)  {
 	w.WriteHeader(http.StatusCreated)
 	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los Usuarios"}
 	json.NewEncoder(w).Encode(error)
+
+}
+
+func CargarGrafo(w http.ResponseWriter, r *http.Request)  {
+	var newDoc Structs.EnlaceGrafos
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	sup := Structs.NewStack3()
+	for _, enlace := range newDoc.Nodos{
+		aux:= Structs.NodeStack3{
+			Nodo: enlace,
+			Next: nil,
+			Prev: nil,
+		}
+		sup.Push3(&aux)
+	}
+	grafito.Final = newDoc.Entrega
+	grafito.Inicio = newDoc.PosicionInicialRobot
+	grafito.Nodos = sup
+	GraphvizGrafo()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	mensa := Structs.JsonErrors{Mensaje: "Se Creo exitosamente el Grafo"}
+	json.NewEncoder(w).Encode(mensa)
 
 }
 
@@ -497,6 +526,28 @@ func SaveStuff(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GraphvizGrafo()  {
+	var s strings.Builder
+	fmt.Fprintf(&s, "digraph Grafito{ \n")
+	aux := grafito.Nodos.ArregloVGrafo()
+	fmt.Fprintf(&s, "inicio -> %s \n", grafito.Inicio)
+	for _, v := range *aux{
+		for _, enla := range v.Enlaces{
+			fmt.Fprintf(&s, "%s -> %s [label=\" %v \" dir=both] \n",v.Nombre, enla.Nombre,enla.Distancia)
+		}
+	}
+	fmt.Fprintf(&s, "%s -> Final \n", grafito.Final)
+	fmt.Fprintf(&s, "}")
+
+	saveDotGrafo(s.String())
+
+
+}
+
+func CaminoMasCorto(w http.ResponseWriter, r *http.Request)  {
+
+}
+
 func searchingVectorE(pedido *Structs.PedidosE) int {
 	var indicefound, depafound bool
 	var first, second, result int
@@ -532,9 +583,9 @@ func searchingVectorE(pedido *Structs.PedidosE) int {
 func searchingVectorS(pedido *Structs.PedidosS) int {
 	var indicefound, depafound bool
 	var first, second, result int
-
+	aux := strings.ToUpper(pedido.Nombre)
 	for i, s := range indice {
-		if s[0] == pedido.Nombre[0] {
+		if s[0] == aux[0] {
 			first = i
 			indicefound = true
 		}
@@ -695,6 +746,7 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 			Departamento: pedi.Departamento,
 			Cliente: pedi.Cliente,
 			Producto:     sup3,
+			CaminmoCorto: "",
 		}
 		for _, codProd := range pedi.Productos {
 			aux4 := finded.Arbolito.SearchPrduc(codProd.Codigo)
@@ -720,6 +772,27 @@ func saveDot(s string, i int) {
 	_ = ioutil.WriteFile(path+"\\Dots\\arreglo.dot",[]byte(s),0644)
 
 	p := "dot -Tpng " + path +"\\Dots\\arreglo.dot -o "+path+"\\Arreglo\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
+}
+func saveDotGrafo(s string) {
+
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("Grafo.png")
+	botoncitos = append(botoncitos, nombre)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\grafo.dot",[]byte(s),0644)
+
+	p := "circo -Tpng " + path +"\\Dots\\grafo.dot -o "+path+"\\Grafo\\" + nombre
 	args := strings.Split(p, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 
@@ -1017,6 +1090,7 @@ func main() {
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
 	router.HandleFunc("/cargarusuarios", CargarUsuarios).Methods("POST")
+	router.HandleFunc("/cargarGrafo", CargarGrafo).Methods("POST")
 	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")
 	router.HandleFunc("/CreateUsu", CreateUsu).Methods("POST")

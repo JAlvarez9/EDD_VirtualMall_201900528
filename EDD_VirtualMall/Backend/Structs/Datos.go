@@ -25,8 +25,9 @@ type (
 		Precio       float64`json:Precio`
 		Cantidad     int    `json:Cantidad`
 		Imagen       string `json:Imagen`
-		Departamento string `json:"Departamento,omitempty"`
-		Tienda       string `json:"Tienda,omitempty"`
+		Almacenamiento string `json:Almacenamiento`
+		Departamento string `json:Departamento,omitempty`
+		Tienda       string `json:Tienda,omitempty`
 		Calificacion int    `json:Calificacion,omitempty`
 		Contacto 	 string    `json:Contacto,omitempty`
 	}
@@ -95,7 +96,7 @@ type (
 		Departamento string
 		Cliente int
 		Producto [] string
-
+		CaminmoCorto string
 	}
 
 	ArregloPedidos struct {
@@ -151,5 +152,28 @@ type (
 		Password string
 		Cuenta string
 	}
+
+	Enlaces struct {
+		Nombre string `json:Nombre`
+		Distancia int `json:Distancia`
+	}
+
+	Vertices struct {
+		Nombre string `json:Nombre`
+		Enlaces []Enlaces `json:Enlaces`
+	}
+
+	EnlaceGrafos struct {
+		Nodos []Vertices `json:Nodos`
+		PosicionInicialRobot string `json:PosicionInicialRobot`
+		Entrega string `json:Entrega`
+	}
+
+	Grafo struct {
+		Inicio string
+		Final string
+		Nodos *Stack3
+	}
+
 
 )

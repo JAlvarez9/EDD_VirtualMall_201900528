@@ -24,6 +24,17 @@ type (
 		Size int
 	}
 
+	NodeStack3 struct {
+		Nodo Vertices
+		Next *NodeStack3
+		Prev *NodeStack3
+	}
+
+	Stack3 struct {
+		Top *NodeStack3
+		Size int
+	}
+
 )
 
 /*  Stack de Producto dentro Pedidos   */
@@ -121,3 +132,51 @@ func (this *Stack2)ArregloVPedidos() *[]ValidarPedidos {
 	return &sup
 }
 
+/*  Stack de Nodos de los Grafos  */
+
+func NewStack3() *Stack3 {
+	return &Stack3{
+		Top:  nil,
+		Size: 0,
+	}
+}
+
+func (this *Stack3)Push3(stack *NodeStack3) {
+	aux := this.Top
+	if aux == nil {
+		this.Top = stack
+	}else {
+		aux.Next = stack
+		stack.Prev = this.Top
+		this.Top = stack
+
+	}
+	this.Size++
+
+}
+
+func (this *Stack3)Pop3() *Vertices{
+	if this.Size == 0{
+		aux := this.Top
+		this.Top.Prev.Next = nil
+		aux.Prev = this.Top
+		this.Top.Next = nil
+		return &aux.Nodo
+	}
+	return nil
+}
+
+func (this *Stack3)ArregloVGrafo() *[]Vertices {
+	aux := this.Top
+	var sup []Vertices
+	for aux!= nil{
+		sup = append(sup,aux.Nodo)
+		aux = aux.Prev
+	}
+
+	return &sup
+}
+
+func (this *Stack3)ArregloDobleD()*[][]int  {
+	return nil
+}

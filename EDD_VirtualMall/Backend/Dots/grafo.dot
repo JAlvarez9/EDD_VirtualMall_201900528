@@ -1,0 +1,9 @@
+digraph Grafito{ 
+inicio -> Textiles 
+Textiles -> Reparaciones [label=" 7 " dir=both] 
+Aranceles -> Textiles [label=" 10 " dir=both] 
+Despacho -> Aranceles [label=" 5 " dir=both] 
+Despacho -> Reparaciones [label=" 6 " dir=both] 
+Despacho -> Textiles [label=" 100 " dir=both] 
+Despacho -> Final 
+}

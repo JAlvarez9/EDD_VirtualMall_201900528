@@ -8,6 +8,7 @@ import (
 	"github.com/fernet/fernet-go"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -32,9 +33,11 @@ var indice []string
 var cont int
 var prueba Structs.Enlace
 var grafito Structs.Grafo
+var mk string
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
+	fmt.Printf("%x", cubix[1][1])
 
 }
 
@@ -196,8 +199,21 @@ func CargarUsuarios(w http.ResponseWriter, r *http.Request)  {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
 	}
+	vars := mux.Vars(r)
+	i, _ := vars["id"]
+
 	json.Unmarshal(reqBody, &newDoc)
-	mk:= "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4="
+	if i == "$"{
+		mk = "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4="
+	}else {
+
+		aux := EncryptPass(i)
+		var sup2 strings.Builder
+		fmt.Fprintf(&sup2, "%x",aux)
+		mk = sup2.String()
+
+	}
+
 	Btree = Structs.NewBTree(5)
 	BtreeE = Structs.NewBTree(5)
 	BtreeES = Structs.NewBTree(5)
@@ -264,6 +280,8 @@ func CargarGrafo(w http.ResponseWriter, r *http.Request)  {
 	grafito.Inicio = newDoc.PosicionInicialRobot
 	grafito.Nodos = sup
 	GraphvizGrafo()
+	fmt.Printf("%s", CaminoMasCorto(*grafito.Nodos.ArregloDobleD()))
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	mensa := Structs.JsonErrors{Mensaje: "Se Creo exitosamente el Grafo"}
@@ -274,7 +292,6 @@ func CargarGrafo(w http.ResponseWriter, r *http.Request)  {
 func CreateUsu(w http.ResponseWriter, r *http.Request)  {
 	var newUsu []string
 	reqBody, err := ioutil.ReadAll(r.Body)
-	mk:= "cw_0x689RpI-jtRR7oE8h_eQsKImvJapLeSbXpwF4e4="
 	if err != nil {
 		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
 		json.NewEncoder(w).Encode(error)
@@ -530,13 +547,13 @@ func GraphvizGrafo()  {
 	var s strings.Builder
 	fmt.Fprintf(&s, "digraph Grafito{ \n")
 	aux := grafito.Nodos.ArregloVGrafo()
-	fmt.Fprintf(&s, "inicio -> %s \n", grafito.Inicio)
+	fmt.Fprintf(&s, "inicio -> \"%s\" \n", grafito.Inicio)
 	for _, v := range *aux{
 		for _, enla := range v.Enlaces{
-			fmt.Fprintf(&s, "%s -> %s [label=\" %v \" dir=both] \n",v.Nombre, enla.Nombre,enla.Distancia)
+			fmt.Fprintf(&s, "\"%s\" -> \"%s\" [label=\" %v \" dir=both] \n",v.Nombre, enla.Nombre,enla.Distancia)
 		}
 	}
-	fmt.Fprintf(&s, "%s -> Final \n", grafito.Final)
+	fmt.Fprintf(&s, "\"%s\" -> Final \n", grafito.Final)
 	fmt.Fprintf(&s, "}")
 
 	saveDotGrafo(s.String())
@@ -544,8 +561,82 @@ func GraphvizGrafo()  {
 
 }
 
-func CaminoMasCorto(w http.ResponseWriter, r *http.Request)  {
+func CaminoMasCorto(aux [][]string) string{
+	vertices := len(aux)
+	matrizAdya := aux
+	caminos := make([][]string, vertices-1)
+	for i := 0; i < vertices-1; i++ {
+		sup := make([]string, vertices-1)
+		caminos[i]=sup
+	}
+	caminosAux := make([][]string, vertices-1)
+	for i := 0; i < vertices-1; i++ {
+		sup := make([]string, vertices-1)
+		caminosAux[i]=sup
+	}
+	var temporal1,temporal2,temporal3,temporal4, minimo float64
+	var caminoRecorrido, cadena, caminitos string
 
+	for i := 0; i < vertices-1; i++ {
+		for j := 0; j < vertices-1; j++ {
+			caminos[i][j] = ""
+			caminosAux[i][j] = ""
+		}
+	}
+
+	for i := 0; i < vertices-1; i++ {
+		for j := 0; j < vertices-1; j++ {
+			for k := 0; k < vertices-1; k++ {
+				temporal1 = Structs.StringTofloat(matrizAdya[j+1][k+1])
+				temporal2 = Structs.StringTofloat(matrizAdya[j+1][i+1])
+				temporal3 = Structs.StringTofloat(matrizAdya[i+1][k+1])
+				temporal4 = temporal2 + temporal3
+				minimo = math.Min(temporal1,temporal4)
+				if temporal1!= temporal4{
+					if minimo==temporal4{
+						caminoRecorrido=""
+						caminosAux[j][k] = intTostring(i) + ""
+						caminos[j][k] = caminosR(i,k, caminosAux, caminoRecorrido) + matrizAdya[i+1][0]
+					}
+				}
+				matrizAdya[j+1][k+1] = Structs.FloatTostring(minimo)
+			}
+		}
+	}
+
+	for i := 1; i < vertices; i++ {
+		for j := 1; j < vertices; j++ {
+			cadena += "[" + matrizAdya[i][j] + "]"
+		}
+		cadena+= "\n"
+	}
+
+	for i := 0; i < vertices-1; i++ {
+		for j := 0; j < vertices-1; j++ {
+			if matrizAdya[i+1][j+1] != "1000000"{
+				if i != j{
+					if caminos[i][j] == ""{
+						caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+matrizAdya[0][j+1]+")\n"
+					}else{
+						caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+caminos[i][j]+", "+matrizAdya[0][j+1]+")\n"
+					}
+				}
+			}
+		}
+	}
+
+	return "La Matriz de Caminos mas cortos entre los diferentes vertices es: \n" + cadena +
+		"\n Los Diferentes caminos mas cortos entre los vertices son :\n" + caminitos
+
+}
+
+func caminosR(i int, k int, caminosAuxi [][] string, caminoRecorrido string) string {
+	if caminosAuxi[i][k] == "" {
+		return ""
+	}else {
+		caminoRecorrido += caminosR(i, stringToint(caminosAuxi[i][k]),caminosAuxi, caminoRecorrido) + intTostring(stringToint(caminosAuxi[i][k]) +1) + ", "
+		return caminoRecorrido
+	}
 }
 
 func searchingVectorE(pedido *Structs.PedidosE) int {
@@ -781,6 +872,7 @@ func saveDot(s string, i int) {
 		fmt.Printf("%s\n", b)
 	}
 }
+
 func saveDotGrafo(s string) {
 
 	path, err := os.Getwd()
@@ -1089,7 +1181,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
-	router.HandleFunc("/cargarusuarios", CargarUsuarios).Methods("POST")
+	router.HandleFunc("/cargarusuarios/{id}", CargarUsuarios).Methods("POST")
 	router.HandleFunc("/cargarGrafo", CargarGrafo).Methods("POST")
 	router.HandleFunc("/Eliminar", Deletition).Methods("DELETE")
 	router.HandleFunc("/TiendaEspecifica", Search).Methods("POST")

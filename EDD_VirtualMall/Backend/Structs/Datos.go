@@ -99,6 +99,7 @@ type (
 		CaminmoCorto string
 	}
 
+
 	ArregloPedidos struct {
 		Pedidos []ShowingPedidos
 	}
@@ -155,7 +156,7 @@ type (
 
 	Enlaces struct {
 		Nombre string `json:Nombre`
-		Distancia int `json:Distancia`
+		Distancia float64 `json:Distancia`
 	}
 
 	Vertices struct {

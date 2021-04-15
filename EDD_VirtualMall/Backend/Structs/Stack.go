@@ -1,5 +1,10 @@
 package Structs
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type (
 
 	NodeStack struct {
@@ -177,6 +182,114 @@ func (this *Stack3)ArregloVGrafo() *[]Vertices {
 	return &sup
 }
 
-func (this *Stack3)ArregloDobleD()*[][]int  {
-	return nil
+func (this *Stack3)ArregloDobleD()*[][]string  {
+	matriz := make([][]string, this.Size+1)
+	aux := this.Top
+	sup := make([]string, this.Size+1)
+	for i:= 1; i < this.Size+1;i++{
+		sup[i]= aux.Nodo.Nombre
+		aux = aux.Prev
+	}
+	matriz[0] = sup
+	aux = this.Top
+	for i := 1; i < this.Size+1; i++ {
+		sup3 := make([]string, this.Size+1)
+		sup3[0] = aux.Nodo.Nombre
+		matriz[i] = sup3
+		aux = aux.Prev
+	}
+
+	var aux3 []Vertices
+
+	for aux = this.Top; aux != nil; aux=aux.Prev{
+		for _, a := range aux.Nodo.Enlaces {
+			for aux2:= this.Top; aux2 != nil; aux2=aux2.Prev{
+				if aux2.Nodo.Nombre == a.Nombre{
+					sup3 := Enlaces{
+						Nombre:    aux.Nodo.Nombre,
+						Distancia: a.Distancia,
+					}
+					var sup4 []Enlaces
+					sup4 = append(sup4, sup3)
+					sup2 :=Vertices{
+						Nombre:    a.Nombre,
+						Enlaces: sup4,
+					}
+					aux3 = append(aux3, sup2)
+				}
+
+			}
+		}
+
+	}
+
+	for aux = this.Top; aux != nil; aux=aux.Prev{
+
+		for _, i2 := range aux3 {
+			if aux.Nodo.Nombre == i2.Nombre{
+				aux.Nodo.Enlaces = append(aux.Nodo.Enlaces, i2.Enlaces...)
+			}
+		}
+
+	}
+
+	for aux = this.Top; aux != nil; aux = aux.Prev{
+		for i := 1; i < this.Size+1; i++{
+			if aux.Nodo.Nombre == matriz[i][0]{
+				for j:=1; j< this.Size+1; j++{
+					for _, i2 := range aux.Nodo.Enlaces{
+						if i2.Nombre == matriz[0][j]{
+
+							matriz[i][j] = FloatTostring(i2.Distancia)
+
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	for i := 1; i < this.Size+1; i++ {
+		for j := 1; j < this.Size+1; j++ {
+			if matriz[i][0] == matriz[0][j]{
+				matriz[i][j] = "0"
+			}else if matriz[i][j] == ""{
+				matriz[i][j] = "999999"
+			}
+		}
+	}
+	/*
+	for i := 1; i < this.Size+1; i++ {
+		for j := 1; j < this.Size+1; j++ {
+			fmt.Printf("| %s |", matriz[i][j])
+		}
+		fmt.Print("\n")
+	}
+
+	fmt.Print("asdf")
+	*/
+	return &matriz
+}
+
+/* Funciones Extras */
+
+func StringToint(cadena string) int {
+	numero, _ := strconv.Atoi(cadena)
+	return numero
+}
+
+func IntTostring(numero int) string {
+	cadena := strconv.Itoa(numero)
+	return cadena
+}
+
+func FloatTostring(f float64) string {
+	s := fmt.Sprint(f)
+	return s
+}
+
+func StringTofloat(s string) float64 {
+	f, _ := strconv.ParseFloat(s,64)
+	return f
 }

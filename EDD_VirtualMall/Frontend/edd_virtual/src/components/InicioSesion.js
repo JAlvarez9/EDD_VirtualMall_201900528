@@ -6,8 +6,13 @@ import { useHistory } from 'react-router-dom'
 const axios = require('axios')
 const cargarUsuarios = (event) => {
     const json = event.target.files[0];
+    var id = (document.getElementById("master")).value
+    console.log(id)
+    if (id === ""){
+        id = "$"
+    }
     console.log(json)
-    axios.post('http://localhost:3000/cargarusuarios',
+    axios.post(`http://localhost:3000/cargarusuarios/${id}`,
         json,
         { headers: { 'content-type': 'application/json' } }
     ).then(data => {
@@ -64,15 +69,15 @@ function InicioSesion() {
             Start Sesion
           </Header>
                             <div textAlign="center">
-                                <div class="ui input" style={{marginRight:10}}>
+                                <div class="ui input" style={{ marginRight: 10 }}>
                                     <input id="use" type="text" placeholder="User" />
                                 </div>
                                 <div class="ui input">
                                     <input id="pas" type="password" placeholder="Password" />
                                 </div>
                             </div>
-                            <div style={{marginTop:10}}>
-                                <Button  primary onClick={setUsu}> Log In </Button>
+                            <div style={{ marginTop: 10 }}>
+                                <Button primary onClick={setUsu}> Log In </Button>
                             </div>
                         </Grid.Column>
 
@@ -82,10 +87,13 @@ function InicioSesion() {
             Add New
           </Header>
                             <Button primary onClick={goCreate}>Create Single User</Button>
-                            <Button style={{marginTop:10}} as="label" htmlFor="file" type="button">
+                            <Button style={{ marginTop: 10 }} as="label" htmlFor="file" type="button">
                                 Massive Charge
-        </Button>
+        </Button> 
                             <input type="file" id="file" hidden onChange={cargarUsuarios} />
+                            <div class="ui input" style={{ marginTop: 10 }}>
+                                <input id="master" type="text" placeholder="MasterKey..." />
+                            </div>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

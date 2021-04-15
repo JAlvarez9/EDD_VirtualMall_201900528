@@ -1,60 +1,54 @@
 digraph G{ 
 rankdir= "LR" 
 node[fontname="Arial" style="filled" shape="box" color="blue" fillcolor="mediumspringgreen"]; 
-node95[label="vacio | 95 "]; 
- node95v[label=" ", color="white" fillcolor="white"] 
-node95->node95v; 
-node96[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
+node15[label="vacio | 15 "]; 
+ node15v[label=" ", color="white" fillcolor="white"] 
+node15->node15v; 
+node16[label="vacio | 16 "]; 
+ node16v[label=" ", color="white" fillcolor="white"] 
+node16->node16v; 
+node17[label="vacio | 17 "]; 
+ node17v[label=" ", color="white" fillcolor="white"] 
+node17->node17v; 
+node18[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
 <TABLE BORDER="0" ALIGN="LEFT"> 
 <TR> 
-<TD >Indice D</TD> 
-<TD BORDER="1"> No. 96 </TD> 
+<TD >Indice B</TD> 
+<TD BORDER="1"> No. 18 </TD> 
 </TR> 
 <TR> 
-<TD BORDER="1">Patio y Jardin</TD> 
-<TD> Cal. 2 </TD> 
+<TD BORDER="1">Reproductores web</TD> 
+<TD> Cal. 4 </TD> 
 </TR> 
 </TABLE> 
 >, ]; 
-node0xc0003466e0[shape="record" label="Delgado e Hijos| Ascii:1362| 943 043 073 " fillcolor="olivedrab1"]; 
- node96->node0xc0003466e0; 
-node97[label="vacio | 97 "]; 
- node97v[label=" ", color="white" fillcolor="white"] 
-node97->node97v; 
-node98[label="vacio | 98 "]; 
- node98v[label=" ", color="white" fillcolor="white"] 
-node98->node98v; 
-node99[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
+node0xc00032ac80[shape="record" label="Báez Mota e Hijos| Ascii:1621| 905149779 " fillcolor="olivedrab1"]; 
+ node18->node0xc00032ac80; 
+node19[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
 <TABLE BORDER="0" ALIGN="LEFT"> 
 <TR> 
-<TD >Indice D</TD> 
-<TD BORDER="1"> No. 99 </TD> 
+<TD >Indice B</TD> 
+<TD BORDER="1"> No. 19 </TD> 
 </TR> 
 <TR> 
-<TD BORDER="1">Patio y Jardin</TD> 
+<TD BORDER="1">Reproductores web</TD> 
 <TD> Cal. 5 </TD> 
 </TR> 
 </TABLE> 
 >, ]; 
-node0xc000346960[shape="record" label="Dueñas y Galindo| Ascii:1626| 909-617-565 " fillcolor="olivedrab1"]; 
- node0xc0003468c0[shape="record" label="Delagarza Noriega Hermanos| Ascii:2509| 908-280-674 " fillcolor="olivedrab1"]; 
- node0xc000346960->node0xc0003468c0; 
-node0xc0003468c0->node0xc000346960; 
-node0xc000346820[shape="record" label="Dueñas, Ponce y Molina Asociados| Ascii:3059| 919 663 483 " fillcolor="olivedrab1"]; 
- node0xc0003468c0->node0xc000346820; 
-node0xc000346820->node0xc0003468c0; 
-node0xc000346780[shape="record" label="de Jesús, Aranda y Galarza Asociados| Ascii:3388| 984.890.460 " fillcolor="olivedrab1"]; 
- node0xc000346820->node0xc000346780; 
-node0xc000346780->node0xc000346820; 
-node99->node0xc000346960; 
-{rank="same" ;node95 
-;node96
-;node97
-;node98
-;node99
+node0xc00032abe0[shape="record" label="Bernal e Hijos| Ascii:1270| 925-701-604 " fillcolor="olivedrab1"]; 
+ node0xc00032ad20[shape="record" label="Barraza Roldán e Hijos| Ascii:2149| 953 483 753 " fillcolor="olivedrab1"]; 
+ node0xc00032abe0->node0xc00032ad20; 
+node0xc00032ad20->node0xc00032abe0; 
+node19->node0xc00032abe0; 
+{rank="same" ;node15 
+;node16
+;node17
+;node18
+;node19
  }
-node95 -> node96 
-node96 -> node97 
-node97 -> node98 
-node98 -> node99 
+node15 -> node16 
+node16 -> node17 
+node17 -> node18 
+node18 -> node19 
 } 

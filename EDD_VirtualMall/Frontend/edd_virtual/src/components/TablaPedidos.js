@@ -1,6 +1,6 @@
 import React from 'react'
 import Fila from './FilaPedidos'
-import { Table } from 'semantic-ui-react'
+import { Button, Table } from 'semantic-ui-react'
 
 function TablaPedidos(props) {
     return (
@@ -19,16 +19,15 @@ function TablaPedidos(props) {
                     <Fila
                         index={index}
                         cliente={dato.Cliente}
-                        fecha = {dato.Fecha}
-                        tienda = {dato.Tiendas}
-                        depa = {dato.Departamento}
-                        producs = {dato.Producto}
-
+                        fecha={dato.Fecha}
+                        tienda={dato.Tiendas}
+                        depa={dato.Departamento}
+                        producs={dato.Producto}
+                        camino={dato.CaminmoCorto}
 
                     />
                 ))}
             </Table.Body>
-            
         </Table>
     )
 }

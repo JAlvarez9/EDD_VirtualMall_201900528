@@ -34,11 +34,10 @@ var cont int
 var prueba Structs.Enlace
 var grafito Structs.Grafo
 var mk string
+var CaminitosCortos *Structs.Stack4
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
-	fmt.Printf("%x", cubix[1][1])
-
 }
 
 func cargaArchivos(w http.ResponseWriter, r *http.Request) {
@@ -280,6 +279,8 @@ func CargarGrafo(w http.ResponseWriter, r *http.Request)  {
 	grafito.Inicio = newDoc.PosicionInicialRobot
 	grafito.Nodos = sup
 	GraphvizGrafo()
+
+
 	fmt.Printf("%s", CaminoMasCorto(*grafito.Nodos.ArregloDobleD()))
 
 	w.Header().Set("Content-Type", "application/json")
@@ -562,6 +563,7 @@ func GraphvizGrafo()  {
 }
 
 func CaminoMasCorto(aux [][]string) string{
+	CaminitosCortos = Structs.NewStac4k()
 	vertices := len(aux)
 	matrizAdya := aux
 	caminos := make([][]string, vertices-1)
@@ -616,17 +618,47 @@ func CaminoMasCorto(aux [][]string) string{
 			if matrizAdya[i+1][j+1] != "1000000"{
 				if i != j{
 					if caminos[i][j] == ""{
-						caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+matrizAdya[0][j+1]+")\n"
+						//caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+matrizAdya[0][j+1]+")\n"
+						var sup2 []string
+						sup2 = append(sup2, matrizAdya[i+1][0])
+						sup2 = append(sup2, matrizAdya[0][j+1])
+						sup:= Structs.CaminosCortos{
+							Inicia:    matrizAdya[i+1][0],
+							Termina:   matrizAdya[0][j+1],
+							Recorrido: sup2,
+							Peso:      0,
+						}
+						sup3 := Structs.NodeStack4{
+							Nodo: sup,
+							Next: nil,
+							Prev: nil,
+						}
+						CaminitosCortos.Push4(&sup3)
 					}else{
-						caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+caminos[i][j]+", "+matrizAdya[0][j+1]+")\n"
+						//caminitos += "De (" + matrizAdya[i+1][0] + "--->" + matrizAdya[0][j+1] + ") Irse Por ...(" + matrizAdya[i+1][0]+", "+caminos[i][j]+", "+matrizAdya[0][j+1]+")\n"
+						var sup2 []string
+						sup2 = append(sup2, matrizAdya[i+1][0])
+						sup2 = append(sup2, caminos[i][j])
+						sup2 = append(sup2, matrizAdya[0][j+1])
+						sup:= Structs.CaminosCortos{
+							Inicia:    matrizAdya[i+1][0],
+							Termina:   matrizAdya[0][j+1],
+							Recorrido: sup2,
+							Peso:      0,
+						}
+						sup3 := Structs.NodeStack4{
+							Nodo: sup,
+							Next: nil,
+							Prev: nil,
+						}
+						CaminitosCortos.Push4(&sup3)
 					}
 				}
 			}
 		}
 	}
 
-	return "La Matriz de Caminos mas cortos entre los diferentes vertices es: \n" + cadena +
-		"\n Los Diferentes caminos mas cortos entre los vertices son :\n" + caminitos
+	return caminitos
 
 }
 
@@ -838,17 +870,88 @@ func getPedidos(w http.ResponseWriter, r *http.Request) {
 			Cliente: pedi.Cliente,
 			Producto:     sup3,
 			CaminmoCorto: "",
+			CodProductos: pedi.Productos,
+			Calificacion: pedi.Calificacion,
 		}
+
 		for _, codProd := range pedi.Productos {
+
 			aux4 := finded.Arbolito.SearchPrduc(codProd.Codigo)
 			sup2.Producto = append(sup2.Producto, *aux4)
+
 		}
 		pedidosEnviar = append(pedidosEnviar, sup2)
-
 	}
+	for j := 0; j < len(pedidosEnviar); j++ {
+		pedidosEnviar[j].CaminmoCorto = PedidoCaminoCorto(&pedidosEnviar)
+	}
+
+	PedidoCaminoCorto(&pedidosEnviar)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(pedidosEnviar)
+}
+
+func PedidoCaminoCorto(pedidosEnviar *[]Structs.ShowingPedidos) string{
+	var aux2 []Structs.Productos
+	for _, s := range *pedidosEnviar{
+		for _, j := range s.CodProductos{
+			aux := Structs.PedidosS{
+				Departamento: s.Departamento,
+				Nombre:       s.Tiendas,
+				Calificacion: s.Calificacion,
+			}
+			aux2 = append(aux2, SearchProductA(j, &aux))
+		}
+	}
+	aux3 := Structs.NewStack5()
+	for _, productos := range aux2 {
+		if aux3.VerificarExsite5(&productos) {
+
+		}else {
+			var sup6 []Structs.Productos
+			sup6 = append(sup6, productos)
+			sup5 := Structs.CaminosProductos{
+				Almacenamiento: productos.Almacenamiento,
+				Productos:      sup6,
+			}
+			sup4 := Structs.NodeStack5{
+				Value: sup5,
+				Next:  nil,
+				Prev:  nil,
+			}
+			aux3.Push5(&sup4)
+		}
+	}
+
+	aux := aux3.ArregloCaminosProductos()
+
+	var c strings.Builder
+	aux4 := CaminitosCortos.ArregloStack4()
+	inicio := grafito.Inicio
+	final := grafito.Final
+	fmt.Fprintf(&c, "%s ->", grafito.Inicio)
+	for _, productos := range *aux {
+		for _, cortos := range *aux4 {
+			if inicio == cortos.Inicia && productos.Almacenamiento == cortos.Termina{
+				for _, s := range cortos.Recorrido {
+					fmt.Fprintf(&c, "%s ->", s)
+					inicio = s
+				}
+
+			}
+		}
+
+	}
+
+	fmt.Fprintf(&c, "%s", final)
+	return c.String()
+}
+
+func SearchProductA(cod Structs.CodProducto, aux *Structs.PedidosS) Structs.Productos {
+	 position:= searchingVectorS(aux)
+	 finded := tiendas2[position].Search(aux).Arbolito.SearchPrduc2(cod.Codigo)
+	 return finded.Productos
 }
 
 func saveDot(s string, i int) {
@@ -1006,6 +1109,10 @@ func mostrarBTrees(w http.ResponseWriter, r *http.Request)  {
 	i, _ := vars["id"]
 	http.ServeFile(w, r, "Btree/"+i)
 
+}
+
+func mostrarGrafito(w http.ResponseWriter, r *http.Request)  {
+	http.ServeFile(w, r, "Grafo/Grafo.png")
 }
 
 func getYears(w http.ResponseWriter, r *http.Request) {
@@ -1205,6 +1312,7 @@ func main() {
 	router.HandleFunc("/matriz/{id}", mostrarImagenMatriz)
 	router.HandleFunc("/arreglito/{id}", mostrarArregloL)
 	router.HandleFunc("/arbolitosb/{id}", mostrarBTrees)
+	router.HandleFunc("/grafita", mostrarGrafito)
 
 
 	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type", "Authorization"})

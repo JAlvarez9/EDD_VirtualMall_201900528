@@ -6,7 +6,7 @@ import (
 )
 
 type (
-
+	/* Stack1 */
 	NodeStack struct {
 		Value Pedidos
 		Next *NodeStack
@@ -17,6 +17,8 @@ type (
 		Top *NodeStack
 		Size int
 	}
+
+	/* Stack2 */
 
 	NodeStack2 struct {
 		Pedido ValidarPedidos
@@ -29,6 +31,8 @@ type (
 		Size int
 	}
 
+	/* Stack3 */
+
 	NodeStack3 struct {
 		Nodo Vertices
 		Next *NodeStack3
@@ -37,6 +41,31 @@ type (
 
 	Stack3 struct {
 		Top *NodeStack3
+		Size int
+	}
+
+	/* Stack4 */
+	NodeStack4 struct {
+		Nodo CaminosCortos
+		Next *NodeStack4
+		Prev *NodeStack4
+	}
+
+	Stack4 struct {
+		Top *NodeStack4
+		Size int
+	}
+
+	/* Stack5 */
+
+	NodeStack5 struct {
+		Value CaminosProductos
+		Next *NodeStack5
+		Prev *NodeStack5
+	}
+
+	Stack5 struct {
+		Top *NodeStack5
 		Size int
 	}
 
@@ -271,6 +300,98 @@ func (this *Stack3)ArregloDobleD()*[][]string  {
 	*/
 	return &matriz
 }
+
+/*  Stack de Caminos mas Cortos*/
+
+func NewStac4k() *Stack4 {
+	return &Stack4{
+		Top:  nil,
+		Size: 0,
+	}
+}
+
+func (this *Stack4)Push4(stack *NodeStack4) {
+	aux := this.Top
+	if aux == nil {
+		this.Top = stack
+	}else {
+		aux.Next = stack
+		stack.Prev = this.Top
+		this.Top = stack
+
+	}
+	this.Size++
+
+}
+
+func (this *Stack4)Pop4() *CaminosCortos{
+	if this.Size == 0{
+		aux := this.Top
+		this.Top.Prev.Next = nil
+		aux.Prev = this.Top
+		this.Top.Next = nil
+		return &aux.Nodo
+	}
+	return nil
+}
+
+func (this *Stack4)ArregloStack4() *[]CaminosCortos{
+	aux := this.Top
+	var sup []CaminosCortos
+	for aux!= nil{
+		sup = append(sup,aux.Nodo)
+		aux = aux.Prev
+	}
+
+	return &sup
+}
+
+/*  Stack de Caminos mas Cortos*/
+
+func NewStack5() *Stack5 {
+	return &Stack5{
+		Top:  nil,
+		Size: 0,
+	}
+}
+
+func (this *Stack5)Push5(stack *NodeStack5) {
+	aux := this.Top
+	if aux == nil {
+		this.Top = stack
+	}else {
+		aux.Next = stack
+		stack.Prev = this.Top
+		this.Top = stack
+
+	}
+	this.Size++
+
+}
+
+func (this *Stack5)VerificarExsite5(stack *Productos)bool {
+	aux := this.Top
+	for aux != nil{
+		if stack.Almacenamiento == aux.Value.Almacenamiento {
+			aux.Value.Productos = append(aux.Value.Productos, *stack)
+			return true
+		}
+		aux = aux.Prev
+	}
+	return false
+}
+
+func (this *Stack5)ArregloCaminosProductos() *[]CaminosProductos {
+	aux := this.Top
+	var sup []CaminosProductos
+	for aux!= nil{
+		sup = append(sup,aux.Value)
+		aux = aux.Prev
+	}
+
+	return &sup
+}
+
 
 /* Funciones Extras */
 

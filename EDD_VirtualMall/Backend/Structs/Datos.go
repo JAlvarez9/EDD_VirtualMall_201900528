@@ -97,6 +97,8 @@ type (
 		Cliente int
 		Producto [] string
 		CaminmoCorto string
+		CodProductos []CodProducto
+		Calificacion int
 	}
 
 
@@ -176,5 +178,16 @@ type (
 		Nodos *Stack3
 	}
 
+	CaminosCortos struct {
+		Inicia string
+		Termina string
+		Recorrido []string
+		Peso int
+	}
+
+	CaminosProductos struct {
+		Almacenamiento string
+		Productos []Productos
+	}
 
 )

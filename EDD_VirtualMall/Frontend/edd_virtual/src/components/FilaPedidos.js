@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Table } from 'semantic-ui-react'
+import { Header, Table, Modal, Button } from 'semantic-ui-react'
 
 
 function FilaPedidos(props) {
@@ -22,8 +22,16 @@ function FilaPedidos(props) {
             <Table.Cell>
                 {props.producs.map((dato, index) => (
                     <p>{dato}</p>
-                    
+
                 ))}
+            </Table.Cell>
+            <Table.Cell>
+                <Modal
+                    trigger={<Button>Caminito</Button>}
+                    header='CAMINO CORTO '
+                    content={props.camino}
+                    actions={['Snooze', { key: 'done', content: 'Done', positive: true }]}
+                />
             </Table.Cell>
         </Table.Row>
     )

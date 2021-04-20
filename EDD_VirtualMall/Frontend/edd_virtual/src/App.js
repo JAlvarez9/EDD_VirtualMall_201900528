@@ -14,6 +14,7 @@ import Carrito from './components/Carrito';
 import InicioSesion from './components/InicioSesion'
 import CrearUsu from './components/CrearUsu';
 import Reportes from './components/Reportes';
+import CargarGrafico from './components/CargarGrafico';
 
 
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/cargartienda" component={CargarTiendas} />
         <Route path="/cargarproducto" component={CargarProductos} />
         <Route path="/cargarpedidos" component={CargarPedidos} />
+        <Route path="/cargargrafo" component={CargarGrafico} />
         <Route path="/mostrarpedidos" component={MostrarPedidos} />
         <Route path="/mostrartiendas" component={MostrarTiendas} />
         <Route path="/mostrarproductos/:id" component={MostrarProductos} />

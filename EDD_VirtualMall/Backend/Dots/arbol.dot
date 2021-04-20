@@ -1,10 +1,4 @@
 digraph G{
 node[shape="record"];
-node0xc000492180[label="<f0> | <f1> code: 913|<f2> Name:Pequeño Fresco Mesa |<f3> Mount:347  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc0004920c0[label="<f0>|<f1> code: 912|<f2> Name:Increíble Acero Embutidos |<f3> Mount:44  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000492180:f0 -> node0xc0004920c0:f2 
-node0xc000492000[label="<f0>|<f1> code: 915|<f2> Name:Hecho a mano Fresco Teclado |<f3> Mount:35  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000492180:f4 -> node0xc000492000:f2 
-node0xc000492240[label="<f0>|<f1> code: 914|<f2> Name:Fantástico Hormigón Toallas |<f3> Mount:48  | <f4>" style = filled, fillcolor = darkolivegreen2];
-node0xc000492000:f0 -> node0xc000492240:f2 
+node0xc000490780[label="<f0> | <f1> code: 635|<f2> Name:Fantástico Fresco Toallas |<f3> Mount:455  | <f4>" style = filled, fillcolor = darkolivegreen2];
 } 

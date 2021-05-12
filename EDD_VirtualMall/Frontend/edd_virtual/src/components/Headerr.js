@@ -16,7 +16,7 @@ function Headerr() {
         histori.push(`/inicio`)
     }
     const name = window.sessionStorage.getItem("user")
-    if (name === "" ) {
+    if (name === "" || name === null) {
         return (
             <>
                 <Segment basic inverted textAlign="center">

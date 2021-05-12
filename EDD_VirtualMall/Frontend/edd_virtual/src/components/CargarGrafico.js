@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header, Icon, Segment } from 'semantic-ui-react'
+import { useHistory } from 'react-router-dom'
 
 const axios = require('axios')
 const cargarTienditas = (event) => {
@@ -19,28 +20,41 @@ const cargarTienditas = (event) => {
 
 
 const SegmentExamplePlaceholderInline = () => (
-    <Segment placeholder>
-      <Header icon>
-        <Icon name='search' />
+  <Segment placeholder>
+    <Header icon>
+      <Icon name='search' />
         Choose your file json with Graph in your device !
       </Header>
-      <Segment.Inline>
-        <input type="file" 
+    <Segment.Inline>
+      <input type="file"
         id="files"
         accept='.json'
         onChange={cargarTienditas}
-        ></input>
-      </Segment.Inline>
-      
-    </Segment>
-  )
+      ></input>
+    </Segment.Inline>
+
+  </Segment>
+)
 
 function CargarGrafico() {
+  const histori = useHistory();
+
+  function nelpastel(){
+    histori.push('/inicio')
+  }
+
+
+  const name = window.sessionStorage.getItem("user")
+  
+     
+    
     return (
-        <div>
-            <SegmentExamplePlaceholderInline/>
-        </div>
+      <div>
+        <SegmentExamplePlaceholderInline />
+      </div>
     )
+  
+
 }
 
 export default CargarGrafico

@@ -25,6 +25,10 @@ var botoncitos []string
 var Btree *Structs.BTree
 var BtreeE *Structs.BTree
 var BtreeES *Structs.BTree
+var MerTreePedidos Structs.MerckleTree
+var MerTreeProductos Structs.MerckleTreeProductos
+var MerTreeUsuarios Structs.MerckleTreeUsuarios
+var MerTreeTiendas Structs.MerckleTreeTiendas
 var cubix [][]Structs.NodeListas
 var sizedep int
 var sizeindex int
@@ -35,9 +39,11 @@ var prueba Structs.Enlace
 var grafito Structs.Grafo
 var mk string
 var CaminitosCortos *Structs.Stack4
+var indiceblo string
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
+	pruebaDeTrabajo()
 }
 
 func cargaArchivos(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +60,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 		}
 		sizeindex = i + 1
 	}
+	MerTreeTiendas = *Structs.NewArbolMerckleTiendas()
 	cubix = make([][]Structs.NodeListas, sizeindex)
 	for i := 0; i < len(newDoc.Datos[0].Departamentos); i++ {
 		departa = append(departa, newDoc.Datos[0].Departamentos[i].Nombre)
@@ -75,7 +82,20 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 					nil,
 					nil,
 				}
-
+				aux4:= tienda.Nombre+departamentos.Nombre+tienda.Descripcion+tienda.Contacto+intTostring(tienda.Calificacion)+tienda.Logo
+				aux3:= Structs.TransaccionTiendas{
+					Id:           EncryptPass(aux4),
+					Sha:          "",
+					Sha2:         "",
+					Accion:       "Crear Tienda",
+					Nombre:       tienda.Nombre,
+					Departamento: departamentos.Nombre,
+					Descripcion:  tienda.Descripcion,
+					Contacto:     tienda.Contacto,
+					Calificacion: tienda.Calificacion,
+					Logo:         tienda.Logo,
+				}
+				MerTreeTiendas.InsertarUsuario(aux3)
 				sup = putStore(aux2, sup, j)
 			}
 		}
@@ -94,6 +114,7 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
+	MerTreeTiendas.GrafiquitaUsuarios()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente las tiendas"}
@@ -110,8 +131,10 @@ func CargarProductos(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(reqBody, &newDoc)
 	var finded *Structs.Tiendas
 	var position int
-
+	MerTreeProductos = *Structs.NewArbolMerckleProductos()
 	for _, inven := range newDoc.Inventarios {
+
+
 		sup := Structs.PedidosS{
 			Departamento: inven.Departamento,
 			Nombre:       inven.Tienda,
@@ -128,6 +151,25 @@ func CargarProductos(w http.ResponseWriter, r *http.Request) {
 					product.Calificacion = finded.Calificacion
 					product.Contacto = finded.Contacto
 					finded.Arbolito.Insert(product, &inven.Departamento, &inven.Departamento, &inven.Calificacion)
+					aux6 := inven.Tienda+inven.Departamento+intTostring(inven.Calificacion)+product.Tienda+ intTostring(product.Codigo)+
+							 product.Descripcion + FloatTostring(product.Precio) + intTostring(product.Cantidad) + product.Imagen + product.Almacenamiento
+						aux5 := Structs.TransaccionProductos{
+						Id:             EncryptPass(aux6),
+						Sha:            "",
+						Sha2:           "",
+						Accion:         "Crear Producto",
+						Tienda:         inven.Tienda,
+						Departamento:   inven.Departamento,
+						Calificacion:   inven.Calificacion,
+						Nombre:         product.Nombre,
+						Codigo:         product.Codigo,
+						Descripcion:    product.Descripcion,
+						Precio:         product.Precio,
+						Cantidad:       product.Cantidad,
+						Imagen:         product.Imagen,
+						Almacenamiento: product.Almacenamiento,
+					}
+					MerTreeProductos.InsertarProductos(aux5)
 				}
 
 			}
@@ -136,6 +178,7 @@ func CargarProductos(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
+	MerTreeProductos.GrafiquitaProductos()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
@@ -150,7 +193,7 @@ func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(error)
 	}
 	json.Unmarshal(reqBody, &newDoc)
-
+	MerTreePedidos = *Structs.NewArbolMerckle()
 	for _, pedido := range newDoc.Pedidos {
 		//fmt.Println(pedido.Fecha)
 		supp := Structs.Stack{
@@ -162,7 +205,15 @@ func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 			Next:  nil,
 			Prev:  nil,
 		}
-
+		aux4:= Structs.TransaccionPedidos{
+			Id:    EncryptPass(intTostring(pedido.Cliente)+pedido.Fecha+intTostring(44)),
+			Sha: "",
+			Sha2: "",
+			Dpi:   pedido.Cliente,
+			Fecha: pedido.Fecha,
+			Monto: 44,
+		}
+		MerTreePedidos.Insertar(aux4)
 		supp.Push(&aux2)
 		aux3 := supp.First()
 		aux := Structs.NodeMatrix{
@@ -182,6 +233,7 @@ func CargarPedidos(w http.ResponseWriter, r *http.Request) {
 		pedidios.AddYear(&aux)
 
 	}
+	MerTreePedidos.GrafiquitaPedidos()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	error := Structs.JsonErrors{Mensaje: "Se han cargado correctamente los archivos"}
@@ -216,6 +268,7 @@ func CargarUsuarios(w http.ResponseWriter, r *http.Request)  {
 	Btree = Structs.NewBTree(5)
 	BtreeE = Structs.NewBTree(5)
 	BtreeES = Structs.NewBTree(5)
+	MerTreeUsuarios = *Structs.NewArbolMerckleUsuarios()
 	for _, usu := range newDoc.Usuarios{
 		sup := Structs.UsuariosEncrit{
 			DPI:      strconv.Itoa(usu.DPI),
@@ -247,7 +300,21 @@ func CargarUsuarios(w http.ResponseWriter, r *http.Request)  {
 		}
 		aux3:= Structs.NewKey(sup3)
 		BtreeE.Insert(aux3)
+		aux4:= intTostring(usu.DPI) + usu.Nombre + usu.Correo+ usu.Password+usu.Cuenta
+		aux5:= Structs.TransaccionUsuarios{
+			Id:     EncryptPass(aux4),
+			Sha:    "",
+			Sha2:   "",
+			Accion: "Crear Usuario",
+			DPI:    usu.DPI,
+			Nombre: usu.Nombre,
+			Correo: usu.Correo,
+			Pass:   usu.Password,
+			Cuenta: usu.Cuenta,
+		}
+		MerTreeUsuarios.InsertarUsu(aux5)
 	}
+	MerTreeUsuarios.GrafiquitaPedidos()
 	Btree.Graph()
 	BtreeE.GraphBTreeE()
 	BtreeES.GraphBTreeES()
@@ -1137,6 +1204,34 @@ func getBTrees(w http.ResponseWriter, r *http.Request)  {
 	json.NewEncoder(w).Encode(b)
 }
 
+func getMTrees(w http.ResponseWriter, r *http.Request)  {
+	var b []Structs.ArbolitioMerckle
+	aux:= Structs.ArbolitioMerckle{
+		Nombre:     "Tiendas",
+		Grafiquita: MerTreeTiendas.GrafiquitaUsuarios(),
+	}
+	aux1:= Structs.ArbolitioMerckle{
+		Nombre:     "Productos",
+		Grafiquita: MerTreeProductos.GrafiquitaProductos(),
+	}
+	aux2:= Structs.ArbolitioMerckle{
+		Nombre:     "Usuarios",
+		Grafiquita: MerTreeUsuarios.GrafiquitaPedidos(),
+	}
+	aux3:= Structs.ArbolitioMerckle{
+		Nombre:     "Pedidos",
+		Grafiquita: MerTreePedidos.GrafiquitaPedidos(),
+	}
+	b = append(b, aux)
+	b = append(b, aux1)
+	b = append(b, aux2)
+	b = append(b, aux3)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(b)
+}
+
 func carritoPedidos(w http.ResponseWriter, r *http.Request) {
 	var newDoc [][]string
 	var pedidos []Structs.Carrito
@@ -1283,6 +1378,30 @@ func intTostring(numero int) string {
 	return cadena
 }
 
+func FloatTostring(f float64) string {
+	s := fmt.Sprint(f)
+	return s
+}
+
+func pruebaDeTrabajo(){
+	fecha,data,nonce,pHash,hash := "34/56/233","asfasfdas","","000034241234124",""
+	cont34 := 0
+	nonce = intTostring(cont34)
+	for{
+		hash = EncryptPass(indiceblo+fecha+data+nonce+pHash)
+		var asdf strings.Builder
+		fmt.Fprintf(&asdf, "%x",hash)
+		hash = asdf.String()
+		if hash[0] == 48 &&hash[1] == 48 &&hash[2] == 48 &&hash[3] == 48{
+			break
+		}
+		nonce = intTostring(cont34)
+		cont34++
+	}
+	fmt.Println(hash)
+
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -1313,6 +1432,7 @@ func main() {
 	router.HandleFunc("/arreglito/{id}", mostrarArregloL)
 	router.HandleFunc("/arbolitosb/{id}", mostrarBTrees)
 	router.HandleFunc("/grafita", mostrarGrafito)
+	router.HandleFunc("/botoncitosmerckle", getMTrees)
 
 
 	headers := handlers.AllowedHeaders([]string{"X-Requested-with", "Content-Type", "Authorization"})

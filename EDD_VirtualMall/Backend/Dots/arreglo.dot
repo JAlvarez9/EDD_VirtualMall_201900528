@@ -22,8 +22,8 @@ node18[style="filled" color="blue" fillcolor="mediumspringgreen" label=<
 </TR> 
 </TABLE> 
 >, ]; 
-node0xc00037ac80[shape="record" label="Báez Mota e Hijos| Ascii:1621| 905149779 " fillcolor="olivedrab1"]; 
- node18->node0xc00037ac80; 
+node0xc0000fcc80[shape="record" label="Báez Mota e Hijos| Ascii:1621| 905149779 " fillcolor="olivedrab1"]; 
+ node18->node0xc0000fcc80; 
 node19[style="filled" color="blue" fillcolor="mediumspringgreen" label=< 
 <TABLE BORDER="0" ALIGN="LEFT"> 
 <TR> 
@@ -36,11 +36,11 @@ node19[style="filled" color="blue" fillcolor="mediumspringgreen" label=<
 </TR> 
 </TABLE> 
 >, ]; 
-node0xc00037abe0[shape="record" label="Bernal e Hijos| Ascii:1270| 925-701-604 " fillcolor="olivedrab1"]; 
- node0xc00037ad20[shape="record" label="Barraza Roldán e Hijos| Ascii:2149| 953 483 753 " fillcolor="olivedrab1"]; 
- node0xc00037abe0->node0xc00037ad20; 
-node0xc00037ad20->node0xc00037abe0; 
-node19->node0xc00037abe0; 
+node0xc0000fcbe0[shape="record" label="Bernal e Hijos| Ascii:1270| 925-701-604 " fillcolor="olivedrab1"]; 
+ node0xc0000fcd20[shape="record" label="Barraza Roldán e Hijos| Ascii:2149| 953 483 753 " fillcolor="olivedrab1"]; 
+ node0xc0000fcbe0->node0xc0000fcd20; 
+node0xc0000fcd20->node0xc0000fcbe0; 
+node19->node0xc0000fcbe0; 
 {rank="same" ;node15 
 ;node16
 ;node17

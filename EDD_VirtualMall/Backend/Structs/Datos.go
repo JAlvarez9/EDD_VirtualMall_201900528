@@ -30,6 +30,7 @@ type (
 		Tienda       string `json:Tienda,omitempty`
 		Calificacion int    `json:Calificacion,omitempty`
 		Contacto 	 string    `json:Contacto,omitempty`
+		//Comen 	     ComentariosDentro `json:Comentario,omitempty`
 	}
 	Inventario struct {
 		Tienda       string      `json:Tienda`
@@ -49,6 +50,7 @@ type (
 		Logo         string   `json:Logo`
 		Arbolito     *TreeAVL `json:"Arbol,omitempty"`
 		Key          string   `json:"Key,omitempty"`
+		//Comen 		 ComentariosDentro  `json:Comentario,omitempty`
 
 	}
 
@@ -188,6 +190,76 @@ type (
 	CaminosProductos struct {
 		Almacenamiento string
 		Productos []Productos
+	}
+
+	TransaccionPedidos struct {
+		Id string
+		Sha string
+		Sha2 string
+		Dpi int
+		Fecha string
+		Monto float64
+	}
+
+	TransaccionTiendas struct {
+		Id string
+		Sha string
+		Sha2 string
+		Accion string
+		Nombre string
+		Departamento string
+		Descripcion string
+		Contacto string
+		Calificacion int
+		Logo string
+	}
+
+	TransaccionProductos struct {
+		Id string
+		Sha string
+		Sha2 string
+		Accion string
+		Tienda string
+		Departamento string
+		Calificacion int
+		Nombre string
+		Codigo int
+		Descripcion string
+		Precio float64
+		Cantidad int
+		Imagen string
+		Almacenamiento string
+	}
+
+	TransaccionUsuarios struct {
+		Id string
+		Sha string
+		Sha2 string
+		Accion string
+		DPI int
+		Nombre string
+		Correo string
+		Pass string
+		Cuenta string
+	}
+
+	Comentarios struct {
+		Comen string
+		Tablita HashTable
+	}
+
+	Bloqusitos struct {
+		Indice int
+		Fecha string
+		Data string
+		Nonce int
+		PreviousHash string
+		Hash string
+	}
+
+	ArbolitioMerckle struct {
+		Nombre string
+		Grafiquita string
 	}
 
 )

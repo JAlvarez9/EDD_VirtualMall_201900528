@@ -2,11 +2,12 @@ import React from 'react'
 import { Grid, Modal, Image, Button } from 'semantic-ui-react'
 import Fila from './RowBotonArreglos'
 import FilaA from './RowArbolesUsu'
+import FilaM from './RowBotonesMerckle'
 
 function Reportes() {
 
     return (
-        <Grid columns={3} divided>
+        <Grid columns={4} divided>
             <Grid.Column textAlign="center">
                 <Grid.Row><h1>Arreglo Linealizado</h1></Grid.Row>
                 <Fila />
@@ -23,6 +24,10 @@ function Reportes() {
                     content={<Image src="http://localhost:3000/grafita"></Image>}
                     actions={[ { key: 'done', content: 'Done', positive: true }]}
                 />
+            </Grid.Column>
+            <Grid.Column textAlign="center">
+                <Grid.Row><h1>Arboles de Merckle</h1></Grid.Row>
+                <FilaM></FilaM>
             </Grid.Column>
 
         </Grid>

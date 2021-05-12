@@ -15,11 +15,11 @@ import InicioSesion from './components/InicioSesion'
 import CrearUsu from './components/CrearUsu';
 import Reportes from './components/Reportes';
 import CargarGrafico from './components/CargarGrafico';
+import Cargarusu from './components/Cargarusu';
 
 
 
 function App() {
-  
 
   return (
     <>
@@ -34,6 +34,7 @@ function App() {
         <Route path="/cargarproducto" component={CargarProductos} />
         <Route path="/cargarpedidos" component={CargarPedidos} />
         <Route path="/cargargrafo" component={CargarGrafico} />
+        <Route path="/cargarusu" component={Cargarusu} />
         <Route path="/mostrarpedidos" component={MostrarPedidos} />
         <Route path="/mostrartiendas" component={MostrarTiendas} />
         <Route path="/mostrarproductos/:id" component={MostrarProductos} />

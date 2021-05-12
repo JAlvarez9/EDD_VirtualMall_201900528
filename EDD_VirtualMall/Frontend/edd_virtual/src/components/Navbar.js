@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 const state = { activeItem: 'home' }
 
 
-const opciones = ['Principal', 'Cargar Tiendas', 'Cargar Productos', 'Cargar Pedidos','Cargar Grafo', 'Mostrar Pedidos', 'Mostrar Tiendas','Reportes']
-const urls = ['/principal', '/cargartienda', '/cargarproducto', 'cargarpedidos', '/cargargrafo','/mostrarpedidos', '/mostrartiendas', '/reportes']
+const opciones = ['Principal', 'Cargar Tiendas', 'Cargar Productos', 'Cargar Pedidos','Cargar Grafo','Cargar Usuarios', 'Mostrar Pedidos', 'Mostrar Tiendas','Reportes']
+const urls = ['/principal', '/cargartienda', '/cargarproducto', 'cargarpedidos', '/cargargrafo','/cargarusu','/mostrarpedidos', '/mostrartiendas', '/reportes']
 
 
 const opciones2 = ['Principal', 'Mostrar Tiendas']

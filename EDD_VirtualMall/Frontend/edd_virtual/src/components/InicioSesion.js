@@ -2,58 +2,45 @@ import React from 'react'
 import { Button, Divider, Grid, Header, Icon, Search, Segment, Input } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
 
-
 const axios = require('axios')
-const cargarUsuarios = (event) => {
-    const json = event.target.files[0];
-    var id = (document.getElementById("master")).value
-    console.log(id)
-    if (id === ""){
-        id = "$"
-    }
-    console.log(json)
-    axios.post(`http://localhost:3000/cargarusuarios/${id}`,
-        json,
-        { headers: { 'content-type': 'application/json' } }
-    ).then(data => {
-        alert('file uploaded')
-        console.log(data)
-    }).catch(e => {
-        console.log('error')
-        console.log(e)
-    })
-
-
-}
-
 
 
 function InicioSesion() {
     const histori = useHistory();
     const setUsu = () => {
-
-        var json = [
-            (document.getElementById("use")).value,
-            (document.getElementById("pas")).value
-        ]
-        axios.post('http://localhost:3000/obtenerUsu',
-            json,
-            { headers: { 'content-type': 'application/json' } }
-        ).then(data => {
+        if ((document.getElementById("use")).value === "admin" && (document.getElementById("pas")).value) {
             alert('Se Inicio sesión')
-            window.sessionStorage.setItem("user", data.data.Nombre);
-            window.sessionStorage.setItem("cuenta", data.data.Cuenta);
-            window.sessionStorage.setItem("dpi", data.data.DPI);
+            window.sessionStorage.setItem("user", "admin");
+            window.sessionStorage.setItem("cuenta", "Admin");
+            window.sessionStorage.setItem("dpi", "123456789");
             histori.push('/principal')
-        }).catch(e => {
-            alert('Verifique los datos')
-            console.log(e)
-        })
+        } else {
+            var json = [
+                (document.getElementById("use")).value,
+                (document.getElementById("pas")).value
+            ]
+            axios.post('http://localhost:3000/obtenerUsu',
+                json,
+                { headers: { 'content-type': 'application/json' } }
+            ).then(data => {
+                alert('Se Inicio sesión')
+                window.sessionStorage.setItem("user", data.data.Nombre);
+                window.sessionStorage.setItem("cuenta", data.data.Cuenta);
+                window.sessionStorage.setItem("dpi", data.data.DPI);
+                histori.push('/principal')
+            }).catch(e => {
+                alert('Verifique los datos')
+                console.log(e)
+            })
+        }
+
     }
 
     const goCreate = () => {
         histori.push(`/form`)
     }
+
+
 
     return (
         <>
@@ -87,13 +74,7 @@ function InicioSesion() {
             Add New
           </Header>
                             <Button primary onClick={goCreate}>Create Single User</Button>
-                            <Button style={{ marginTop: 10 }} as="label" htmlFor="file" type="button">
-                                Massive Charge
-        </Button> 
-                            <input type="file" id="file" hidden onChange={cargarUsuarios} />
-                            <div class="ui input" style={{ marginTop: 10 }}>
-                                <input id="master" type="text" placeholder="MasterKey..." />
-                            </div>
+                            
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

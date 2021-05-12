@@ -1205,31 +1205,11 @@ func getBTrees(w http.ResponseWriter, r *http.Request)  {
 }
 
 func getMTrees(w http.ResponseWriter, r *http.Request)  {
-	var b []Structs.ArbolitioMerckle
-	aux:= Structs.ArbolitioMerckle{
-		Nombre:     "Tiendas",
-		Grafiquita: MerTreeTiendas.GrafiquitaUsuarios(),
-	}
-	aux1:= Structs.ArbolitioMerckle{
-		Nombre:     "Productos",
-		Grafiquita: MerTreeProductos.GrafiquitaProductos(),
-	}
-	aux2:= Structs.ArbolitioMerckle{
-		Nombre:     "Usuarios",
-		Grafiquita: MerTreeUsuarios.GrafiquitaPedidos(),
-	}
-	aux3:= Structs.ArbolitioMerckle{
-		Nombre:     "Pedidos",
-		Grafiquita: MerTreePedidos.GrafiquitaPedidos(),
-	}
-	b = append(b, aux)
-	b = append(b, aux1)
-	b = append(b, aux2)
-	b = append(b, aux3)
-
+	b:= [4]string{"MercklePedidos.png","MerckleProductos.png","MerckleTiendas.png","MerckleUsuarios.png"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(b)
+
 }
 
 func carritoPedidos(w http.ResponseWriter, r *http.Request) {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Grid } from 'semantic-ui-react'
-import Boton from './ButtonMerckle'
+
+import Boton from './ButtonArreglo'
 
 const axios = require('axios')
-function RowBotonesMerckle() {
-
+function RowBotonesMer() {
     const [botones, setbotones] = useState([])
     const [loading, setloading] = useState(false)
     useEffect(() => {
@@ -22,6 +22,7 @@ function RowBotonesMerckle() {
         }
         obtener()
     });
+
 
     if (loading === false) {
         return (
@@ -42,7 +43,6 @@ function RowBotonesMerckle() {
                         <Boton
                             name={dato.Nombre}
                             graph={dato.Grafiquita}
-
                         />
                     </Grid.Row>
                 ))}
@@ -51,4 +51,4 @@ function RowBotonesMerckle() {
     }
 }
 
-export default RowBotonesMerckle
+export default RowBotonesMer

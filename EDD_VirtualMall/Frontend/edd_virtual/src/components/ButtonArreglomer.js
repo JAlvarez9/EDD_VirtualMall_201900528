@@ -1,10 +1,20 @@
-import React from 'react'
-
+import React,{useState} from 'react'
 import { Button, Image, Modal } from 'semantic-ui-react'
 import { Graphviz } from 'graphviz-react';
 
-function ButtonMerckle(props) {
-    const optionsgp = { fit: true, lenght: 900, width: 850, zoom: true }
+function ButtonArreglomer(props) {
+
+    const [open, setOpen] = React.useState(false)
+    const [grafi, setgrafi] = useState("")
+
+    const conversion = () => {
+        let asdf = props.graph.replace('\"', '"')
+        console.log(asdf)
+        setgrafi =asdf
+    }
+
+    conversion()
+
     return (
         <Modal
             onClose={() => setOpen(false)}
@@ -14,9 +24,10 @@ function ButtonMerckle(props) {
         >
             <Modal.Header>{props.name}</Modal.Header>
             <Modal.Content image>
-               <Graphviz options={optionsgp}  dot={props.graph}  ></Graphviz>
+                <Graphviz dot={grafi}/>
             </Modal.Content>
             <Modal.Actions>
+                <Button onClick={() => setOpen(false)}>Cancel</Button>
                 <Button onClick={() => setOpen(false)} positive>
                     Ok
         </Button>
@@ -25,4 +36,4 @@ function ButtonMerckle(props) {
     )
 }
 
-export default ButtonMerckle
+export default ButtonArreglomer

@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Modal, Image, Button } from 'semantic-ui-react'
 import Fila from './RowBotonArreglos'
 import FilaA from './RowArbolesUsu'
-import FilaM from './RowBotonesMerckle'
+import Ejem from './RowBotonesMer'
 
 function Reportes() {
 
@@ -27,7 +27,7 @@ function Reportes() {
             </Grid.Column>
             <Grid.Column textAlign="center">
                 <Grid.Row><h1>Arboles de Merckle</h1></Grid.Row>
-                <FilaM></FilaM>
+                <Ejem></Ejem>
             </Grid.Column>
 
         </Grid>

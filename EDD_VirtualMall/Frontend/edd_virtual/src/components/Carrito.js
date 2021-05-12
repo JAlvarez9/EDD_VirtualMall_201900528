@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Segment } from 'semantic-ui-react'
+import { useHistory } from 'react-router-dom'
 import Tabla from './Tablita'
 
 
 
 
 function Carrito() {
-    const encabezados = ["Usuario","Producto", "Precio Unitario", "Cantidad", "Total"]
+    const histori = useHistory();
+    const verifyRoute = () => {
+        if (!window.sessionStorage.getItem("cuenta")) {
+            return histori.push('/inicio');
+        }
+    }; 
+    verifyRoute()
+    const encabezados = ["Usuario", "Producto", "Precio Unitario", "Cantidad", "Total"]
     const [listado, setlistado] = useState([])
     const [cliente] = useState(window.sessionStorage.getItem("dpi"))
     useEffect(() => {
@@ -19,8 +27,8 @@ function Carrito() {
     return (
         <Segment inverted color='grey'>
             <h2></h2>
-            <Tabla data = {listado}
-                enca = {encabezados}
+            <Tabla data={listado}
+                enca={encabezados}
             />
         </Segment>
     )

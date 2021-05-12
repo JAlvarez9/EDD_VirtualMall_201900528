@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header, Icon, Segment } from 'semantic-ui-react'
+import { useHistory } from 'react-router-dom'
 import '../css/CargarTiendas.css'
 
 const axios = require('axios')
@@ -22,6 +23,14 @@ const cargarTienditas = (event) => {
 
 
 function CargarTiendas() {
+  const histori = useHistory();
+  const verifyRoute = () => {
+    if (!window.sessionStorage.getItem("cuenta")) {
+      return histori.push('/inicio');
+    }
+  };
+
+  verifyRoute()
   return (
     <Segment placeholder>
       <Header icon>

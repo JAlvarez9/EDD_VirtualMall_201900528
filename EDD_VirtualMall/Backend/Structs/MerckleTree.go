@@ -4,7 +4,11 @@ import (
 	"container/list"
 	"crypto/sha256"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math"
+	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -155,7 +159,7 @@ func (this *MerckleTree)contruirarbol(lista *list.List){
 	this.root = lista.Front().Value.(*NodoMerckle)
 }
 
-func (this *MerckleTree) GrafiquitaPedidos() string{
+func (this *MerckleTree) GrafiquitaPedidos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
 	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
@@ -165,14 +169,15 @@ func (this *MerckleTree) GrafiquitaPedidos() string{
 		this.genereaPedidos(&cadena, this.root, this.root.right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	return cadena.String()
+
+	saveMercklePedidos(cadena.String())
 
 }
 
 func (this *MerckleTree) genereaPedidos(cadena *strings.Builder, padre *NodoMerckle, actual *NodoMerckle, izquierda bool)  {
 	if actual != nil{
 		if actual.valor.Fecha != "" {
-			fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x| %v|%v|%v }| <f2> \"fillcolor=\"olivedrab1\"] \n", &(*actual), actual.valor.Id,actual.valor.Dpi,actual.valor.Fecha,actual.valor.Monto)
+			fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x| id:%v| fecha:%v }| <f2> \"fillcolor=\"olivedrab1\"] \n", &(*actual), actual.valor.Id,actual.valor.Dpi,actual.valor.Fecha)
 			if izquierda {
 				fmt.Fprintf(cadena,"node%p:f0 -> node%p:f1 \n", &(*padre), &(*actual) )
 			}else{
@@ -205,6 +210,29 @@ func (this *MerckleTree) genereaPedidos(cadena *strings.Builder, padre *NodoMerc
 
 
 }
+
+func saveMercklePedidos(s string)  {
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("MercklePedidos.png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\merckle.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\merckle.dot -o "+path+"\\Merckle\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
+
+}
+
 
 /*  ---------------------	  Arbol de Producto   -------------------   */
 
@@ -337,7 +365,7 @@ func (this *MerckleTreeProductos)contruirarbolProductos(lista *list.List){
 	this.root = lista.Front().Value.(*NodoMerckleProductos)
 }
 
-func (this *MerckleTreeProductos) GrafiquitaProductos() string{
+func (this *MerckleTreeProductos) GrafiquitaProductos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
 	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
@@ -347,16 +375,14 @@ func (this *MerckleTreeProductos) GrafiquitaProductos() string{
 		this.genereaProductos(&cadena, this.root, this.root.right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	return cadena.String()
+	saveMerckleProductos(cadena.String())
 
 }
 
 func (this *MerckleTreeProductos) genereaProductos(cadena *strings.Builder, padre *NodoMerckleProductos, actual *NodoMerckleProductos, izquierda bool)  {
 	if actual != nil{
 		if actual.valor.Accion != "" {
-			fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x| %v|%v|%v|%v|%v|%v|%v|%v|%v|%v|%v }| <f2> \"fillcolor=\"olivedrab1\"] \n", &(*actual),
-				actual.valor.Id,actual.valor.Accion,actual.valor.Tienda,actual.valor.Departamento,actual.valor.Calificacion,actual.valor.Nombre,actual.valor.Codigo,
-				actual.valor.Descripcion,actual.valor.Precio,actual.valor.Cantidad,actual.valor.Imagen,actual.valor.Almacenamiento)
+			fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x| %v }| <f2> \"fillcolor=\"olivedrab1\"] \n", &(*actual),	actual.valor.Id,actual.valor.Accion)
 			if izquierda {
 				fmt.Fprintf(cadena,"node%p:f0 -> node%p:f1 \n", &(*padre), &(*actual) )
 			}else{
@@ -387,6 +413,27 @@ func (this *MerckleTreeProductos) genereaProductos(cadena *strings.Builder, padr
 
 	}
 
+
+}
+func saveMerckleProductos(s string)  {
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("MerckleProductos.png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\merckle.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\merckle.dot -o "+path+"\\Merckle\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
 
 }
 
@@ -508,7 +555,7 @@ func (this *MerckleTreeTiendas)contruirarbolTienda(lista *list.List){
 	this.root = lista.Front().Value.(*NodoMerckleTiendas)
 }
 
-func (this *MerckleTreeTiendas) GrafiquitaUsuarios() string{
+func (this *MerckleTreeTiendas) GrafiquitaUsuarios() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
 	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
@@ -518,7 +565,7 @@ func (this *MerckleTreeTiendas) GrafiquitaUsuarios() string{
 		this.genereaTiendas(&cadena, this.root, this.root.right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	return cadena.String()
+	saveMerckleTiendas(cadena.String())
 
 }
 
@@ -535,9 +582,9 @@ func (this *MerckleTreeTiendas) genereaTiendas(cadena *strings.Builder, padre *N
 
 		}else {
 			if(actual.valor.Sha == "-1"){
-				fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x | %v | %v}| <f2> \"fillcolor=\"olivedrab1\"] \n", &(*actual), actual.valor.Id, actual.valor.Sha, actual.valor.Sha2)
+				fmt.Fprintf(cadena, "node%p[label=\"<f0>|{<f1> id:%x | %v | %v}| <f2> \" fillcolor=\"olivedrab1\"] \n", &(*actual), actual.valor.Id, actual.valor.Sha, actual.valor.Sha2)
 				if izquierda {
-					fmt.Fprintf(cadena,"node%p:f0 -> node%p:f1 \n", &(*padre), &(*actual) )
+					fmt.Fprintf(cadena,"node%p:f0 -> node%p:f1\n", &(*padre), &(*actual) )
 				}else{
 					fmt.Fprintf(cadena,"node%p:f2 -> node%p:f1 \n", &(*padre), &(*actual) )
 				}
@@ -559,6 +606,29 @@ func (this *MerckleTreeTiendas) genereaTiendas(cadena *strings.Builder, padre *N
 
 
 }
+
+func saveMerckleTiendas(s string)  {
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("MerckleTiendas.png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\merckle.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\merckle.dot -o "+path+"\\Merckle\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
+
+}
+
 
 
 /*  --------------------	 Arbol de Usuarios	 ------------------------  */
@@ -676,7 +746,7 @@ func (this *MerckleTreeUsuarios)contruirarbolUsu(lista *list.List){
 	this.root = lista.Front().Value.(*NodoMerckleUsuarios)
 }
 
-func (this *MerckleTreeUsuarios) GrafiquitaPedidos() string{
+func (this *MerckleTreeUsuarios) GrafiquitaPedidos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
 	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
@@ -686,7 +756,7 @@ func (this *MerckleTreeUsuarios) GrafiquitaPedidos() string{
 		this.genereaUsu(&cadena, this.root, this.root.right, false)
 	}
 	fmt.Fprintf(&cadena, "} \n")
-	return cadena.String()
+	saveMerckleUsuarios(cadena.String())
 
 }
 
@@ -727,6 +797,29 @@ func (this *MerckleTreeUsuarios) genereaUsu(cadena *strings.Builder, padre *Nodo
 
 
 }
+
+func saveMerckleUsuarios(s string)  {
+	path, err := os.Getwd()
+	if err!=nil{
+		log.Println(err)
+	}
+	nombre := string("MerckleUsuarios.png")
+	nombre = strings.Replace(nombre," ","-",-1)
+
+	_ = ioutil.WriteFile(path+"\\Dots\\merckle.dot",[]byte(s),0644)
+
+	p := "dot -Tpng " + path +"\\Dots\\merckle.dot -o "+path+"\\Merckle\\" + nombre
+	args := strings.Split(p, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("A ocurrido un error", err)
+		fmt.Printf("%s\n", b)
+	}
+
+}
+
 
 
 /*	----------- Graficar Pedidos---------------	*/

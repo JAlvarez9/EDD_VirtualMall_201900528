@@ -37,16 +37,15 @@ const SegmentExamplePlaceholderInline = () => (
 )
 
 function CargarGrafico() {
+
   const histori = useHistory();
+  const verifyRoute = () => {
+    if (!window.sessionStorage.getItem("cuenta")) {
+        return histori.push('/inicio');
+    }
+};
 
-  function nelpastel(){
-    histori.push('/inicio')
-  }
-
-
-  const name = window.sessionStorage.getItem("user")
-  
-     
+  verifyRoute()
     
     return (
       <div>

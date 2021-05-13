@@ -1,11 +1,13 @@
 package Structs
 
-import "math"
+import (
+	"math"
+)
 
 type (
 	HashNode struct {
 		hash 	int
-		Value   Comentarios
+		Value   string
 	}
 
 	HashTable struct {
@@ -28,7 +30,9 @@ func NewHashTable(size int, porcentaje int, porc_crecimiento int)*HashTable{
 	}
 }
 
-func (this *HashTable)insertar(valor Comentarios, nuevo int){
+
+
+func (this *HashTable)insertar(valor string, nuevo int){
 		new_node := HashNode{
 			hash:  nuevo,
 			Value: valor,
@@ -77,6 +81,5 @@ func (this *HashTable)posicion(clave int) int{
 
 	}
 	return p
-
 }
 

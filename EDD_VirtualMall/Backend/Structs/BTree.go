@@ -331,7 +331,7 @@ func gra(actual *BTNode, cadena *strings.Builder, arr map[string]*BTNode, father
 			}
 		}
 	}
-	fmt.Fprintf(cadena,"\"] \n")
+	fmt.Fprintf(cadena,"\" fillcolor=\"olivedrab1\" style=filled] \n")
 	ji := 0
 	for i:= 0; i< actual.Max; i++{
 		if actual.Keys[i] == nil{

@@ -30,7 +30,7 @@ type (
 		Tienda       string `json:Tienda,omitempty`
 		Calificacion int    `json:Calificacion,omitempty`
 		Contacto 	 string    `json:Contacto,omitempty`
-		//Comen 	     ComentariosDentro `json:Comentario,omitempty`
+		Tablita 	HashTable  `json:Tablita,omitempty`
 	}
 	Inventario struct {
 		Tienda       string      `json:Tienda`
@@ -50,7 +50,7 @@ type (
 		Logo         string   `json:Logo`
 		Arbolito     *TreeAVL `json:"Arbol,omitempty"`
 		Key          string   `json:"Key,omitempty"`
-		//Comen 		 ComentariosDentro  `json:Comentario,omitempty`
+		Tablita 	HashTable  `json:Tablita,omitempty`
 
 	}
 
@@ -245,7 +245,6 @@ type (
 
 	Comentarios struct {
 		Comen string
-		Tablita HashTable
 	}
 
 	Bloqusitos struct {
@@ -260,6 +259,22 @@ type (
 	ArbolitioMerckle struct {
 		Nombre string
 		Grafiquita string
+	}
+
+	Bloquito struct {
+		Indice string
+		Fecha string
+		Data ArreglosBloc
+		Nonce string
+		PreviousHash string
+		Hash string
+	}
+
+	ArreglosBloc struct {
+		Tienditas []TransaccionTiendas
+		Productitos []TransaccionProductos
+		Usuaritos []TransaccionUsuarios
+		Pediditos []TransaccionPedidos
 	}
 
 )

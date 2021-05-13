@@ -1,19 +1,11 @@
 import React,{useState} from 'react'
 import { Button, Image, Modal } from 'semantic-ui-react'
-import { Graphviz } from 'graphviz-react';
 
-function ButtonArreglomer(props) {
 
+function ButtonMerckle(props) {
     const [open, setOpen] = React.useState(false)
-    const [grafi, setgrafi] = useState("")
 
-    const conversion = () => {
-        let asdf = props.graph.replace('\"', '"')
-        console.log(asdf)
-        setgrafi =asdf
-    }
-
-    conversion()
+    const [imagen] = useState("http://localhost:3000/arbolitosm/"+props.name)
 
     return (
         <Modal
@@ -24,7 +16,7 @@ function ButtonArreglomer(props) {
         >
             <Modal.Header>{props.name}</Modal.Header>
             <Modal.Content image>
-                <Graphviz dot={grafi}/>
+                <Image size='massive' src={imagen} />
             </Modal.Content>
             <Modal.Actions>
                 <Button onClick={() => setOpen(false)}>Cancel</Button>
@@ -36,4 +28,4 @@ function ButtonArreglomer(props) {
     )
 }
 
-export default ButtonArreglomer
+export default ButtonMerckle

@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -40,10 +41,12 @@ var grafito Structs.Grafo
 var mk string
 var CaminitosCortos *Structs.Stack4
 var indiceblo string
+var hashant string
+var nonce string
 
 func example(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to my REST API of EDD, hopefully you enjoy it! :)")
-	pruebaDeTrabajo()
+	//pruebaDeTrabajo()
 }
 
 func cargaArchivos(w http.ResponseWriter, r *http.Request) {
@@ -615,10 +618,12 @@ func GraphvizGrafo()  {
 	var s strings.Builder
 	fmt.Fprintf(&s, "digraph Grafito{ \n")
 	aux := grafito.Nodos.ArregloVGrafo()
+	fmt.Fprintf(&s, "node[ fillcolor=\"olivedrab1\" style=filled]")
 	fmt.Fprintf(&s, "inicio -> \"%s\" \n", grafito.Inicio)
+
 	for _, v := range *aux{
 		for _, enla := range v.Enlaces{
-			fmt.Fprintf(&s, "\"%s\" -> \"%s\" [label=\" %v \" dir=both] \n",v.Nombre, enla.Nombre,enla.Distancia)
+			fmt.Fprintf(&s, "\"%s\" -> \"%s\" [label=\" %v \" dir=both ] \n",v.Nombre, enla.Nombre,enla.Distancia)
 		}
 	}
 	fmt.Fprintf(&s, "\"%s\" -> Final \n", grafito.Final)
@@ -1182,6 +1187,12 @@ func mostrarGrafito(w http.ResponseWriter, r *http.Request)  {
 	http.ServeFile(w, r, "Grafo/Grafo.png")
 }
 
+func mostrarMTrees(w http.ResponseWriter, r *http.Request)  {
+	vars := mux.Vars(r)
+	i, _ := vars["id"]
+	http.ServeFile(w, r, "Merckle/"+i)
+}
+
 func getYears(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -1363,12 +1374,19 @@ func FloatTostring(f float64) string {
 	return s
 }
 
-func pruebaDeTrabajo(){
-	fecha,data,nonce,pHash,hash := "34/56/233","asfasfdas","","000034241234124",""
+func pruebaDeTrabajo(fecha string, data string) string{
+
+	if hashant == ""{
+		hashant = "0000000000"
+	}
+	if indiceblo == ""{
+		indiceblo = "1"
+	}
+	hash:= ""
 	cont34 := 0
 	nonce = intTostring(cont34)
 	for{
-		hash = EncryptPass(indiceblo+fecha+data+nonce+pHash)
+		hash = EncryptPass(indiceblo+fecha+data+nonce+hashant)
 		var asdf strings.Builder
 		fmt.Fprintf(&asdf, "%x",hash)
 		hash = asdf.String()
@@ -1378,12 +1396,72 @@ func pruebaDeTrabajo(){
 		nonce = intTostring(cont34)
 		cont34++
 	}
-	fmt.Println(hash)
+
+
+	return hash
 
 }
 
+func creationBlock(){
+	for{
+		time.Sleep(1 * time.Minute)
+		t := time.Now()
+		fecha := fmt.Sprintf("%02d-%02d-%dT%02d:%02d:%02d",
+			t.Day(), t.Month(), t.Year(),
+			t.Hour(), t.Minute(), t.Second())
+		var aux2 []Structs.TransaccionPedidos
+		var aux3 []Structs.TransaccionProductos
+		var aux4 []Structs.TransaccionTiendas
+		var aux5 []Structs.TransaccionUsuarios
+
+		aux5 = MerTreeUsuarios.ObtenerArreglitoUsuarios()
+		aux2 = MerTreePedidos.ObtenerArreglitoPedidos()
+		aux3 = MerTreeProductos.ObtenerArreglitoProductos()
+		aux4 = MerTreeTiendas.ObtenerArreglitoTiendas()
+		aux := Structs.ArreglosBloc{
+			Tienditas:   aux4,
+			Productitos: aux3,
+			Usuaritos:   aux5,
+			Pediditos:   aux2,
+		}
+		crear_json2, _ := json.Marshal(aux)
+		convertir_a_cadena2 := string(crear_json2)
+		a:= Structs.Bloquito{
+			Indice:       indiceblo,
+			Fecha:        fecha,
+			Data:         aux,
+			Nonce:        nonce,
+			PreviousHash: hashant,
+			Hash:         "",
+		}
+		a.Hash = pruebaDeTrabajo(fecha,convertir_a_cadena2)
+		a.Nonce = nonce
+		a.PreviousHash = hashant
+		a.Indice = indiceblo
+
+
+		path, err := os.Getwd()
+		if err!=nil{
+			log.Println(err)
+		}
+		hashant = a.Hash
+		nombre := string("Block"+indiceblo+".txt")
+		f, _ := json.MarshalIndent(a, "", " ")
+		_ = ioutil.WriteFile(path+"\\Bloques\\"+nombre, f, 0644)
+		aux8:= stringToint(indiceblo) + 1
+		indiceblo = intTostring(aux8)
+		fmt.Println("Se creo el bloquesito")
+
+
+	}
+}
+
+
+
 func main() {
 
+
+	go creationBlock()
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
@@ -1411,6 +1489,7 @@ func main() {
 	router.HandleFunc("/matriz/{id}", mostrarImagenMatriz)
 	router.HandleFunc("/arreglito/{id}", mostrarArregloL)
 	router.HandleFunc("/arbolitosb/{id}", mostrarBTrees)
+	router.HandleFunc("/arbolitosm/{id}", mostrarMTrees)
 	router.HandleFunc("/grafita", mostrarGrafito)
 	router.HandleFunc("/botoncitosmerckle", getMTrees)
 

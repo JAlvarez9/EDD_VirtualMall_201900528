@@ -115,6 +115,17 @@ func obtenerLista(lista *list.List, actual *NodoMerckle)  {
 	}
 }
 
+func (this *MerckleTree)ObtenerArreglitoPedidos()[]TransaccionPedidos{
+	l:= this.ObtenerLista()
+	var aux []TransaccionPedidos
+	for e := l.Front(); e != nil; e = e.Next() {
+		h:= e.Value.(*NodoMerckle)
+		j:= h.valor
+		aux = append(aux, j)
+	}
+	return aux
+}
+
 func (this *MerckleTree)contruirarbol(lista *list.List){
 	size:= float64(lista.Len())
 	cant := 1
@@ -162,7 +173,7 @@ func (this *MerckleTree)contruirarbol(lista *list.List){
 func (this *MerckleTree) GrafiquitaPedidos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
-	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
+	fmt.Fprint(&cadena, "node[shape=\"record\" style=filled]; \n")
 	if(this.root != nil){
 		fmt.Fprintf(&cadena, "node%p[label=\"<f0>|{<f1> %x | %x | %x}| <f2> \"fillcolor=\"olivedrab1\"]; \n", &(*this.root),this.root.valor.Id,this.root.valor.Sha,this.root.valor.Sha2)
 		this.genereaPedidos(&cadena, (this.root), this.root.left, true)
@@ -294,6 +305,17 @@ func (this *MerckleTreeProductos)ObtenerListaProductos()*list.List  {
 	return lista
 }
 
+func (this *MerckleTreeProductos)ObtenerArreglitoProductos()[]TransaccionProductos{
+	l:= this.ObtenerListaProductos()
+	var aux []TransaccionProductos
+	for e := l.Front(); e != nil; e = e.Next() {
+		h:= e.Value.(*NodoMerckleProductos)
+		j:= h.valor
+		aux = append(aux, j)
+	}
+	return aux
+}
+
 func obtenerListaProductos(lista *list.List, actual *NodoMerckleProductos)  {
 	if actual != nil{
 		obtenerListaProductos(lista, actual.left)
@@ -368,7 +390,7 @@ func (this *MerckleTreeProductos)contruirarbolProductos(lista *list.List){
 func (this *MerckleTreeProductos) GrafiquitaProductos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
-	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
+	fmt.Fprint(&cadena, "node[shape=\"record\" style=filled]; \n")
 	if(this.root != nil){
 		fmt.Fprintf(&cadena, "node%p[label=\"<f0>|{<f1> %x | %x | %x}| <f2> \" fillcolor=\"olivedrab1\"]; \n", &(*this.root),this.root.valor.Id,this.root.valor.Sha,this.root.valor.Sha2)
 		this.genereaProductos(&cadena, (this.root), this.root.left, true)
@@ -503,6 +525,17 @@ func obtenerListaTiendas(lista *list.List, actual *NodoMerckleTiendas)  {
 	}
 }
 
+func (this *MerckleTreeTiendas)ObtenerArreglitoTiendas()[]TransaccionTiendas{
+	l:= this.ObtenerListaTienda()
+	var aux []TransaccionTiendas
+	for e := l.Front(); e != nil; e = e.Next() {
+		h:= e.Value.(*NodoMerckleTiendas)
+		j:= h.valor
+		aux = append(aux, j)
+	}
+	return aux
+}
+
 func (this *MerckleTreeTiendas)contruirarbolTienda(lista *list.List){
 	size:= float64(lista.Len())
 	cant := 1
@@ -558,7 +591,7 @@ func (this *MerckleTreeTiendas)contruirarbolTienda(lista *list.List){
 func (this *MerckleTreeTiendas) GrafiquitaUsuarios() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
-	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
+	fmt.Fprint(&cadena, "node[shape=\"record\" style=filled]; \n")
 	if(this.root != nil){
 		fmt.Fprintf(&cadena, "node%p[label=\"<f0>|{<f1> %x | %x | %x}| <f2> \"fillcolor=\"olivedrab1\"]; \n", &(*this.root),this.root.valor.Id,this.root.valor.Sha,this.root.valor.Sha2)
 		this.genereaTiendas(&cadena, (this.root), this.root.left, true)
@@ -686,6 +719,17 @@ func (this *MerckleTreeUsuarios)ObtenerListaUsu()*list.List  {
 	return lista
 }
 
+func (this *MerckleTreeUsuarios)ObtenerArreglitoUsuarios()[]TransaccionUsuarios{
+	l:= this.ObtenerListaUsu()
+	var aux []TransaccionUsuarios
+	for e := l.Front(); e != nil; e = e.Next() {
+		h:= e.Value.(*NodoMerckleUsuarios)
+		j:= h.valor
+		aux = append(aux, j)
+	}
+	return aux
+}
+
 func obtenerListaUsu(lista *list.List, actual *NodoMerckleUsuarios)  {
 	if actual != nil{
 		obtenerListaUsu(lista, actual.left)
@@ -749,7 +793,7 @@ func (this *MerckleTreeUsuarios)contruirarbolUsu(lista *list.List){
 func (this *MerckleTreeUsuarios) GrafiquitaPedidos() {
 	var cadena strings.Builder
 	fmt.Fprint(&cadena, "digraph{ \n")
-	fmt.Fprint(&cadena, "node[shape=\"record\"]; \n")
+	fmt.Fprint(&cadena, "node[shape=\"record\" style=filled]; \n")
 	if this.root != nil{
 		fmt.Fprintf(&cadena, "node%p[label=\"<f0>|{<f1> %x | %x | %x}| <f2> \" fillcolor=\"olivedrab1\"]; \n", &(*this.root),this.root.valor.Id,this.root.valor.Sha,this.root.valor.Sha2)
 		this.genereaUsu(&cadena, (this.root), this.root.left, true)

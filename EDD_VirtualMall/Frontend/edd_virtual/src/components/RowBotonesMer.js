@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Grid } from 'semantic-ui-react'
+import Boton from './ButtonMerckle'
 
-import Boton from './ButtonArreglo'
 
 const axios = require('axios')
 function RowBotonesMer() {
@@ -40,10 +40,7 @@ function RowBotonesMer() {
                 {botones.map((dato, index) => (
 
                     <Grid.Row>
-                        <Boton
-                            name={dato.Nombre}
-                            graph={dato.Grafiquita}
-                        />
+                        <Boton name={dato}/>
                     </Grid.Row>
                 ))}
             </>

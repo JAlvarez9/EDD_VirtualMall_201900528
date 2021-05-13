@@ -178,6 +178,7 @@ func (this *List)GetStores() []Tiendas {
 		return tiendas
 	}else {
 		for aux != nil{
+
 			tiendas = append(tiendas, aux.Tienda)
 			aux = aux.Next
 		}

@@ -32,7 +32,7 @@ func NewHashTable(size int, porcentaje int, porc_crecimiento int)*HashTable{
 
 
 
-func (this *HashTable)insertar(valor string, nuevo int){
+func (this *HashTable)Insertar(valor string, nuevo int){
 		new_node := HashNode{
 			hash:  nuevo,
 			Value: valor,
@@ -67,14 +67,19 @@ func (this *HashTable)insertar(valor string, nuevo int){
 
 func (this *HashTable)posicion(clave int) int{
 	i,p:=0,0
-	aux:= int(float64(clave) * .2520)
-	aux2:= aux % 1
+	aux:= math.Mod(1,float64(clave) * .2520)
 
-	p= this.size * aux2
 
+	p= int(float64(this.size) * aux)
+	if p >= this.size{
+		this.size = this.size + 8
+		nuevo_array:= make([]*HashNode,this.size)
+		copy(nuevo_array,this.arreglo)
+		this.arreglo = nuevo_array
+	}
 	for this.arreglo[p] != nil && this.arreglo[p].hash != clave{
-		i++
-		p = int(math.Pow(float64(p), float64(2)))
+		i = int(math.Pow(float64(i),float64(2)))
+		p = p + i
 		if p >= this.size{
 			p = p -this.size
 		}
@@ -82,4 +87,19 @@ func (this *HashTable)posicion(clave int) int{
 	}
 	return p
 }
+
+func (this *HashTable)ArregloValores() []string {
+	var aux []string
+	for _, node := range this.arreglo {
+		if node != nil{
+			if node.Value != ""{
+				aux = append(aux, node.Value)
+			}
+		}
+
+	}
+	return aux
+}
+
+
 

@@ -76,7 +76,8 @@ func cargaArchivos(w http.ResponseWriter, r *http.Request) {
 		for j, departamentos := range datos.Departamentos {
 
 			for _, tienda := range departamentos.Tiendas {
-
+				soporte := Structs.NewHashTable(7,50,50)
+				tienda.Tablita = *soporte
 				aux2 := Structs.Node{
 					tienda,
 					departamentos.Nombre,
@@ -137,7 +138,6 @@ func CargarProductos(w http.ResponseWriter, r *http.Request) {
 	MerTreeProductos = *Structs.NewArbolMerckleProductos()
 	for _, inven := range newDoc.Inventarios {
 
-
 		sup := Structs.PedidosS{
 			Departamento: inven.Departamento,
 			Nombre:       inven.Tienda,
@@ -149,6 +149,8 @@ func CargarProductos(w http.ResponseWriter, r *http.Request) {
 			if finded.Arbolito == nil {
 				finded.Arbolito = Structs.NewArbol()
 				for _, product := range inven.Productos {
+					soporte := Structs.NewHashTable(7,50,50)
+					product.Tablita = *soporte
 					product.Tienda = inven.Tienda
 					product.Departamento = inven.Departamento
 					product.Calificacion = finded.Calificacion
@@ -835,6 +837,7 @@ func getShops(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < len(tiendas2); i++ {
 			aux := tiendas2[i].GetStores()
 			for _, tienda := range aux {
+
 				tienda.Key = strconv.Itoa(i) + "$" + tienda.Contacto
 				ShopList.Tiendas = append(ShopList.Tiendas, tienda)
 			}
@@ -1456,12 +1459,42 @@ func creationBlock(){
 	}
 }
 
+func mandarArregloComentTienda(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	elements := strings.Split(vars["id"], "$")
+	vectorPos, _ := strconv.Atoi(elements[0])
+	ShopList := tiendas2[vectorPos]
+	selectShop := ShopList.GetShop(elements[1])
+	arreglo := selectShop.Tablita.ArregloValores()
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(arreglo)
+
+}
+
+func agregarComentTienda(w http.ResponseWriter, r *http.Request)  {
+	vars := mux.Vars(r)
+	elements := strings.Split(vars["id"], "$")
+	vectorPos, _ := strconv.Atoi(elements[0])
+	ShopList := tiendas2[vectorPos]
+	selectShop := ShopList.GetShop(elements[1])
+	var newDoc []string
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		error := Structs.JsonErrors{Mensaje: "Ha ocurrido un problema! :("}
+		json.NewEncoder(w).Encode(error)
+	}
+	json.Unmarshal(reqBody, &newDoc)
+	selectShop.Tablita.Insertar(newDoc[0],stringToint(newDoc[1]))
+	fmt.Println("asdf")
+}
+
 
 
 func main() {
 
 
-	go creationBlock()
+	//go creationBlock()
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", example).Methods("GET")
 	router.HandleFunc("/cargartienda", cargaArchivos).Methods("POST")
@@ -1474,6 +1507,8 @@ func main() {
 	router.HandleFunc("/getArreglo", Graphviz).Methods("GET")
 	router.HandleFunc("/guardar", SaveStuff).Methods("GET")
 	router.HandleFunc("/obtenerTiendas", getShops).Methods("GET")
+	router.HandleFunc("/obtenerArregloTiendas/{id}", mandarArregloComentTienda).Methods("GET")
+	router.HandleFunc("/agregarComentTienda/{id}", agregarComentTienda).Methods("POST")
 	router.HandleFunc("/obtenerTiendas/{id}", getProducts).Methods("GET")
 	router.HandleFunc("/obtenerArbolito/{id}", getArbolito).Methods("GET")
 	router.HandleFunc("/obtenerMatriz/{id}", getMatrix).Methods("GET")
